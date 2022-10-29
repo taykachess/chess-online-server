@@ -7,7 +7,7 @@ const config = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['Cormorant Infant', ...defaultTheme.fontFamily.sans],
+        sans: ['Inter', ...defaultTheme.fontFamily.sans],
       },
     },
   },

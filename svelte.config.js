@@ -16,7 +16,12 @@ const config = {
     alias: {
       $components: "src/components",
       $types: "../types",
+      $prisma: "../prisma",
+      $store: "src/store"
     },
+    env:{
+      dir:'./'
+    }
   },
 };
 
