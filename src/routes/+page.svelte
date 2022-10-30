@@ -8,7 +8,11 @@
   import Challenge from "$components/home/Challenge.svelte";
   import Tournament from "$components/home/Tournament.svelte";
   import Match from "$components/home/Match.svelte";
+  import Dialog from "$components/common/Dialog.svelte";
+  import CreateTable from "$components/home/CreateTable.svelte";
   export let data: PageData;
+
+  let isOpen = false;
 </script>
 
 <div class="mx-auto max-w-7xl px-4 sm:px-6 md:px-8">

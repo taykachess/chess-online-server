@@ -1,14 +1,24 @@
 <script lang="ts">
+  import Dialog from "$components/common/Dialog.svelte";
   import { Icon, type IconSource } from "svelte-hero-icons";
+  import CreateTable from "./CreateTable.svelte";
   export let gridElement: {
     svg: IconSource;
     title: string;
     description: string;
   };
+  let isOpen = false;
 </script>
 
+<Dialog bind:isOpen>
+  <CreateTable bind:isOpen />
+</Dialog>
+
 <div
-  class="group relative  bg-white p-6 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-500 sm:rounded-tr-none"
+  on:click={() => {
+    isOpen = true;
+  }}
+  class="group relative   bg-white p-6 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-500 sm:rounded-tr-none"
 >
   <div>
     <span
