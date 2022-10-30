@@ -1,11 +1,13 @@
 <script lang="ts">
-  import ChallengeTable from "$components/home/ChallengeTable.svelte";
-  import GameSender from "$components/home/GameSender.svelte";
   import Tabs from "$components/home/Tabs.svelte";
   import TitleAndDescription from "$components/home/TitleAndDescription.svelte";
   import { tab } from "$store/home/tab";
 
   import type { PageData } from "./$types";
+
+  import Challenge from "$components/home/Challenge.svelte";
+  import Tournament from "$components/home/Tournament.svelte";
+  import Match from "$components/home/Match.svelte";
   export let data: PageData;
 </script>
 
@@ -17,11 +19,16 @@
   </div>
 </div>
 
-<div class="  mt-10 bg-gradient-to-br from-slate-700 to-slate-800  p-8">
-  <div class="  mx-auto grid max-w-7xl grid-cols-2  px-4 sm:px-6 md:px-8 ">
-    {#if $tab === "challenge"}
-      <GameSender />
-      <ChallengeTable />
-    {/if}
-  </div>
+<div
+  class="  mt-10 flex flex-col items-center  bg-gradient-to-br from-slate-700 to-slate-800 px-8 pb-6"
+>
+  {#if $tab === "challenge"}
+    <Challenge />
+  {:else if $tab === "match"}
+    <Match />
+  {:else if $tab === "tournament"}
+    <Tournament />
+  {:else if $tab === "puzzle"}
+    <div class="" />
+  {/if}
 </div>
