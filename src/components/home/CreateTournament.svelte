@@ -1,5 +1,7 @@
 <script lang="ts">
   import Select from "$components/common/Select.svelte";
+  import Switch from "$components/common/Switch.svelte";
+  import { DateInput } from "date-picker-svelte";
 
   export let isOpen: boolean;
   import type { createTournamentDto } from "$types/dto/createTournamentDto";
@@ -8,20 +10,16 @@
     description: "",
     control: "3+2",
     format: "swiss",
-    startTime: new Date(new Date().getTime() + 60 * 60 * 1000),
+    startTime: new Date(),
   };
-
-  // let formatOption: { name: string; value: string };
-
-  // $: formDataSend = { ...formData, format: formatOption?.value };
 </script>
 
 <div
   class="inline-block transform overflow-hidden  rounded-lg bg-white text-left align-middle  shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg "
 >
-  {JSON.stringify(formData)}
+  <!-- {JSON.stringify(formData)} -->
 
-  <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+  <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4 ">
     <input
       bind:value={formData.name}
       placeholder="Название турнира"
@@ -31,13 +29,20 @@
     <dl
       class="flex flex-wrap divide-y divide-slate-200 border-b border-slate-200 text-sm dark:divide-slate-200/5 dark:border-slate-200/5 sm:text-base lg:text-sm xl:text-base"
     >
-      <div class="px-4 pb-4 sm:px-6 lg:px-4 xl:px-6">
-        {formData.startTime.toLocaleString()}
+      <div class=" px-4  pb-4 sm:px-6 lg:px-4 xl:px-6">
+        <!-- {formData.startTime.toLocaleString()} -->
+        <DateInput
+          bind:value={formData.startTime}
+          format="yyyy-MM-dd HH:mm"
+          min={new Date()}
+          max={new Date(new Date().getTime() + 60 * 60 * 1000 * 24 * 31)}
+          placeholder="время и дата"
+        />
       </div>
 
       <div class="flex w-full flex-none items-center p-4 sm:p-6 lg:p-4 xl:p-6">
         <dt
-          class="w-2/5 flex-none font-medium text-slate-500  transition-opacity delay-500 duration-[1.5s] dark:text-slate-300 sm:w-1/5"
+          class="w-2/5 flex-none font-medium text-slate-500  transition-opacity delay-500 duration-[1.5s] dark:text-slate-300 sm:w-1/4"
         >
           Система
         </dt>
@@ -57,7 +62,7 @@
           class="flex w-full flex-none items-center p-4 sm:p-6 lg:p-4 xl:p-6"
         >
           <dt
-            class="w-2/5 flex-none font-medium text-slate-500  transition-opacity delay-500 duration-[1.5s] dark:text-slate-300 sm:w-1/5"
+            class="w-2/5 flex-none font-medium text-slate-500  transition-opacity delay-500 duration-[1.5s] dark:text-slate-300 sm:w-1/4"
           >
             Раундов
           </dt>
@@ -83,7 +88,7 @@
           class="flex w-full flex-none items-center p-4 sm:py-5 sm:px-6 lg:p-4 xl:py-5 xl:px-6"
         >
           <div
-            class="w-3/5 flex-none font-medium text-slate-500  transition-opacity delay-500 duration-[1.5s]  sm:w-1/5"
+            class="w-3/5 flex-none font-medium text-slate-500  transition-opacity delay-500 duration-[1.5s]  sm:w-1/4"
           >
             Сетка
           </div>
@@ -100,6 +105,17 @@
             colorOptions={{ bg: "bg-slate-100", hover: "hover:bg-slate-300" }}
           />
         </div>
+
+        <div
+          class="flex w-full flex-none items-center p-4 sm:p-6 lg:p-4 xl:p-6"
+        >
+          <dt
+            class="w-2/5 flex-none font-medium text-slate-500  transition-opacity delay-500 duration-[1.5s] dark:text-slate-300 sm:w-1/4"
+          >
+            Двойное выбивание
+          </dt>
+          <Switch bind:state={formData.double} />
+        </div>
       {/if}
 
       {#if formData.format === "round robin"}
@@ -107,7 +123,7 @@
           class="flex w-full flex-none items-center p-4 sm:py-5 sm:px-6 lg:p-4 xl:py-5 xl:px-6"
         >
           <div
-            class="w-3/5 flex-none font-medium text-slate-500  transition-opacity delay-500 duration-[1.5s]  sm:w-1/5"
+            class=" mr-5 flex-none font-medium text-slate-500  transition-opacity delay-500 duration-[1.5s] "
           >
             Кол-во игроков
           </div>
@@ -127,11 +143,22 @@
             colorOptions={{ bg: "bg-slate-100", hover: "hover:bg-slate-300" }}
           />
         </div>
+
+        <div
+          class="flex w-full flex-none items-center p-4 sm:p-6 lg:p-4 xl:p-6"
+        >
+          <dt
+            class="w-2/5 flex-none font-medium text-slate-500  transition-opacity delay-500 duration-[1.5s] dark:text-slate-300 sm:w-1/4"
+          >
+            В 2 круга
+          </dt>
+          <Switch bind:state={formData.double} />
+        </div>
       {/if}
 
       <div class="flex w-full flex-none items-center p-4 sm:p-6 lg:p-4 xl:p-6">
         <dt
-          class="w-2/5 flex-none font-medium text-slate-500  transition-opacity delay-500 duration-[1.5s] dark:text-slate-300 sm:w-1/5"
+          class="w-2/5 flex-none font-medium text-slate-500  transition-opacity delay-500 duration-[1.5s] dark:text-slate-300 sm:w-1/4"
         >
           Контроль
         </dt>
@@ -149,7 +176,7 @@
 
       <div class="flex w-full flex-none  items-center p-4 sm:p-6 lg:p-4 xl:p-6">
         <dt
-          class="w-2/5 flex-none font-medium text-slate-500  transition-opacity delay-500 duration-[1.5s] dark:text-slate-300 sm:w-1/5"
+          class="w-2/5 flex-none font-medium text-slate-500  transition-opacity delay-500 duration-[1.5s] dark:text-slate-300 sm:w-1/4"
         >
           Описание
         </dt>
