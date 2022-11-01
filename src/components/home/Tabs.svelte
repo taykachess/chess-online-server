@@ -6,7 +6,7 @@
 
 <ul
   class="inline-grid flex-none gap-x-2 px-4 sm:px-0 xl:gap-x-6"
-  style="grid-template-columns:repeat(4, minmax(6rem, 1fr))"
+  style="grid-template-columns:repeat(4, minmax(6rem, 1fr)) "
 >
   <!-- svelte-ignore a11y-click-events-have-key-events -->
   <li

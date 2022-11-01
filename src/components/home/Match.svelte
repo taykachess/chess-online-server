@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Badge from "$components/common/Badge.svelte";
+  import Select from "$components/common/Select.svelte";
   import Table from "$components/common/Table.svelte";
   import Palleter from "$components/common/Palleter.svelte";
   import type { PalleterLi } from "$lib/types/palleter";
@@ -34,31 +34,34 @@
 </script>
 
 <div class=" my-4 flex items-center space-x-2">
-  <Badge
-    title="Рейтинговая"
+  <Select
+    options={[{ name: "Рейтинговая", value: "rating" }]}
     color={{ bg: " bg-indigo-100", text: "text-indigo-800" }}
   />
-  <Badge
-    title="&#x00B1;300 рейтинг"
+  <Select
+    options={[{ name: "&#x00B1;300 рейтинг", value: "300" }]}
     color={{ bg: "bg-green-100", text: "text-green-800" }}
   />
-  <Badge title="3+0" color={{ bg: "bg-red-100", text: "text-red-800" }} />
-  <Badge
-    title="белые/черные"
+  <Select
+    options={[{ name: "3+0", value: "3+0" }]}
+    color={{ bg: "bg-red-100", text: "text-red-800" }}
+  />
+  <Select
+    options={[{ name: "белые/черные", value: "w/b" }]}
     color={{ bg: "bg-cyan-100", text: "text-cyan-800" }}
   />
-  <Badge
-    title="бесплатно"
+  <Select
+    options={[{ name: "бесплатно", value: "free" }]}
     color={{ bg: "bg-yellow-100", text: "text-yellow-800" }}
   />
-  <Badge
-    title="12 партий"
+  <Select
+    options={[{ name: "12 партий", value: "12" }]}
     color={{ bg: "bg-orange-100", text: "text-orange-800" }}
   />
-  <Badge
-    title="Армагедон"
+  <!-- <Select
+    options={["Армагедон"]}
     color={{ bg: "bg-purple-100", text: "text-purple-800" }}
-  />
+  /> -->
 </div>
 
 <div class="mx-auto grid max-w-7xl grid-cols-2  px-4 sm:px-6 md:px-8">

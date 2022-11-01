@@ -8,11 +8,7 @@
   import Challenge from "$components/home/Challenge.svelte";
   import Tournament from "$components/home/Tournament.svelte";
   import Match from "$components/home/Match.svelte";
-  import Dialog from "$components/common/Dialog.svelte";
-  import CreateTable from "$components/home/CreateTable.svelte";
   export let data: PageData;
-
-  let isOpen = false;
 </script>
 
 <div class="mx-auto max-w-7xl px-4 sm:px-6 md:px-8">
@@ -24,7 +20,7 @@
 </div>
 
 <div
-  class="  mt-10 flex flex-col items-center  bg-gradient-to-br from-slate-700 to-slate-800 px-8 pb-6"
+  class="mt-10 flex flex-col items-center bg-gradient-to-br from-slate-700 to-slate-800 px-8 pb-6"
 >
   {#if $tab === "challenge"}
     <Challenge />

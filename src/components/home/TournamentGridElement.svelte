@@ -1,7 +1,7 @@
 <script lang="ts">
   import Dialog from "$components/common/Dialog.svelte";
   import { Icon, type IconSource } from "svelte-hero-icons";
-  import CreateTable from "./CreateTable.svelte";
+  import CreateTable from "$components/home/CreateTournament.svelte";
   export let gridElement: {
     svg: IconSource;
     title: string;
@@ -14,7 +14,7 @@
   <CreateTable bind:isOpen />
 </Dialog>
 
-<div
+<button
   on:click={() => {
     isOpen = true;
   }}
@@ -30,11 +30,11 @@
   </div>
   <div class="mt-8">
     <h3 class="text-lg font-medium text-slate-700">
-      <a href="#" class=" focus:outline-none">
+      <div class=" focus:outline-none">
         <!-- Extend touch target to entire panel -->
         <span class="absolute inset-0 " aria-hidden="true" />
         {gridElement.title}
-      </a>
+      </div>
     </h3>
     <p class="mt-2 text-sm text-gray-500">
       {gridElement.description}
@@ -55,4 +55,4 @@
       />
     </svg>
   </span>
-</div>
+</button>

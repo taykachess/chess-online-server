@@ -1,6 +1,6 @@
 <script lang="ts">
   import { Cog } from "svelte-hero-icons";
-  import TournamentGridElement from "./TournamentGridElement.svelte";
+  import TournamentGridElement from "$components/home/TournamentGridElement.svelte";
 
   const tournaments = [
     {
