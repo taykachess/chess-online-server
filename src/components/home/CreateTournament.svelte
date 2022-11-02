@@ -26,7 +26,7 @@
       class=" px-4 pt-4 pb-2 text-lg font-semibold text-slate-500 transition-opacity delay-500  duration-[1.5s] placeholder:text-slate-300 focus:outline-none focus:ring-0 dark:text-slate-100 sm:px-6 lg:px-4 xl:px-6"
     />
 
-    <dl
+    <div
       class="flex flex-wrap divide-y divide-slate-200 border-b border-slate-200 text-sm dark:divide-slate-200/5 dark:border-slate-200/5 sm:text-base lg:text-sm xl:text-base"
     >
       <div class=" px-4  pb-4 sm:px-6 lg:px-4 xl:px-6">
@@ -186,7 +186,7 @@
           placeholder="The best tournament "
         />
       </div>
-    </dl>
+    </div>
   </div>
   <div
     class="grid grid-cols-2 gap-x-4 p-4 sm:gap-x-6 sm:px-6 sm:py-5 lg:gap-x-4 lg:p-4 xl:gap-x-6 xl:px-6 xl:py-5"

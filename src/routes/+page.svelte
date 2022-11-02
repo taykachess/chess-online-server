@@ -3,12 +3,12 @@
   import TitleAndDescription from "$components/home/TitleAndDescription.svelte";
   import { tab } from "$store/home/tab";
 
-  import type { PageData } from "./$types";
-
   import Challenge from "$components/home/Challenge.svelte";
   import Tournament from "$components/home/Tournament.svelte";
   import Match from "$components/home/Match.svelte";
-  export let data: PageData;
+  import type { ActionData } from "./$types";
+
+  export let form: ActionData;
 </script>
 
 <div class="mx-auto max-w-7xl px-4 sm:px-6 md:px-8">

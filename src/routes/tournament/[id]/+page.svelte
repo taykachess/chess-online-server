@@ -4,4 +4,4 @@
   export let data: PageData;
 </script>
 
-<div class="">{data.name} {data.age}</div>
+<div class="">Tournament</div>

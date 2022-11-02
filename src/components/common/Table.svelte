@@ -1,6 +1,8 @@
 <script lang="ts">
   export let titles: string[];
   export let records: string[][];
+
+  export let onClick: any = () => {};
 </script>
 
 <div class="px-4 sm:px-6 lg:px-8">
@@ -24,7 +26,7 @@
             </thead>
             <tbody class="divide-y divide-gray-200 bg-white  ">
               {#each records as record}
-                <tr class="cursor-pointer hover:bg-slate-50">
+                <tr on:click={onClick} class="cursor-pointer hover:bg-slate-50">
                   {#each record as field}
                     <td
                       class="whitespace-nowrap py-2 pl-4 pr-3 text-sm font-medium  text-gray-900 sm:pl-6"

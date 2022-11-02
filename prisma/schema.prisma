@@ -11,8 +11,87 @@ datasource db {
 }
 
 model User {
-  id             Int    @id @default(autoincrement())
-  username       String @unique
-  email          String @unique
+  id             Int      @id @default(autoincrement())
+  username       String   @unique
+  email          String   @unique
   hashedPassword String
+  roles          Role[]
+  participant    Player[]
+  games          Game[]
+}
+
+model Role {
+  id    Int    @id @default(autoincrement())
+  name  String
+  users User[]
+}
+
+model Tournament {
+  id            String   @id @default(cuid())
+  format        String
+  sorting       String   @default("none")
+  consolation   Boolean  @default(false)
+  playerLimit   Int      @default(0)
+  pointsForWin  Decimal  @default(1)
+  pointsForDraw Decimal  @default(0.5)
+  pointsForBye  Decimal  @default(1)
+  currentRound  Int      @default(0)
+  startTime     DateTime
+  players       Player[]
+  matches       Match[]
+  status        String   @default("registration")
+  rounds        Int?
+  playoffs      String?
+  bestOf        Int?
+  cut           Json?
+  tiebreakers   String[]
+  double        Boolean?
+}
+
+model Player {
+  id           String     @id @default(cuid())
+  Tournament   Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+  tournamentId String
+  seed         Int        @default(0)
+  initialByes  Int        @default(0)
+  User         User       @relation(fields: [alies], references: [username])
+  alies        String
+  pairingBye   Boolean    @default(false)
+  // matchesWhite Match[]    @relation(name: "w")
+  // matchesBlack Match[]    @relation(name: "b")
+  pairUpDown   Boolean    @default(false)
+  matchCount   Int        @default(0)
+  matchPoints  Int        @default(0)
+  gameCount    Int        @default(0)
+  gamePoints   Int        @default(0)
+  bsn          Int        @default(0)
+  active       Boolean    @default(true)
+  results      Json[]
+  tiebreakers  Json
+}
+
+model Match {
+  id           String      @unique
+  Tournament   Tournament? @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+  tournamentId String?
+  round        Int
+  match        Int
+  // userOne      Player     @relation(fields: [playerOne], references: [id], name: "w")
+  playerOne    String
+  // userTwo      Player     @relation(fields: [playerTwo], references: [id], name: "b")
+  playerTwo    String
+  result       Json?
+  active       Boolean?
+  winnersPath  String?
+  losersPath   String?
+  userId       Int?
+  games        Game[]
+}
+
+model Game {
+  id      String  @id @default(cuid())
+  pgn     String
+  User    User[]
+  Match   Match?  @relation(fields: [matchId], references: [id], onDelete: SetNull)
+  matchId String?
 }

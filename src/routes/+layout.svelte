@@ -1,4 +1,5 @@
 <script lang="ts">
+  import Header from "$components/layout/Header.svelte";
   import "../app.postcss";
 </script>
 
@@ -11,7 +12,8 @@
   />
 </svelte:head>
 
-<main class="  text-slate-500">
+<Header />
+<main class="  text-slate-500  ">
   <slot />
 </main>
 

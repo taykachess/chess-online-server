@@ -5,6 +5,7 @@
   import Palleter from "$components/common/Palleter.svelte";
   import type { PalleterLi } from "$lib/types/palleter";
   import { Cog, Code } from "svelte-hero-icons";
+  import { goto } from "$app/navigation";
 
   let palleterRecords: PalleterLi[] = [
     {
@@ -64,5 +65,11 @@
   <div class=" flex flex-col items-start">
     <Palleter records={palleterRecords} />
   </div>
-  <Table {titles} {records} />
+  <Table
+    {titles}
+    {records}
+    onClick={() => {
+      goto("/game/1");
+    }}
+  />
 </div>
