@@ -17,8 +17,6 @@
 <div
   class="inline-block transform overflow-hidden  rounded-lg bg-white text-left align-middle  shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg "
 >
-  <!-- {JSON.stringify(formData)} -->
-
   <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4 ">
     <input
       bind:value={formData.name}
@@ -30,7 +28,6 @@
       class="flex flex-wrap divide-y divide-slate-200 border-b border-slate-200 text-sm dark:divide-slate-200/5 dark:border-slate-200/5 sm:text-base lg:text-sm xl:text-base"
     >
       <div class=" px-4  pb-4 sm:px-6 lg:px-4 xl:px-6">
-        <!-- {formData.startTime.toLocaleString()} -->
         <DateInput
           bind:value={formData.startTime}
           format="yyyy-MM-dd HH:mm"

@@ -6,12 +6,15 @@
   import Challenge from "$components/home/Challenge.svelte";
   import Tournament from "$components/home/Tournament.svelte";
   import Match from "$components/home/Match.svelte";
-  import type { ActionData } from "./$types";
+  import type { ActionData, PageData } from "./$types";
 
+  export let data: PageData;
   export let form: ActionData;
 </script>
 
-<div class="mx-auto max-w-7xl px-4 sm:px-6 md:px-8">
+<!-- px-4 sm:px-6 md:px-8 -->
+
+<div class="mx-auto max-w-7xl ">
   <TitleAndDescription />
 
   <div class="mt-6">
@@ -20,7 +23,7 @@
 </div>
 
 <div
-  class="mt-10 flex flex-col items-center bg-gradient-to-br from-slate-700 to-slate-800 px-8 pb-6"
+  class="mt-10  flex flex-col items-center bg-gradient-to-br from-slate-700 to-slate-800  pb-6"
 >
   {#if $tab === "challenge"}
     <Challenge />

@@ -61,15 +61,17 @@
   />
 </div>
 
-<div class="mx-auto grid max-w-7xl grid-cols-2  px-4 sm:px-6 md:px-8">
-  <div class=" flex flex-col items-start">
+<div class=" grid w-full max-w-7xl grid-cols-2 gap-x-4 ">
+  <div class=" w-full   ">
     <Palleter records={palleterRecords} />
   </div>
-  <Table
-    {titles}
-    {records}
-    onClick={() => {
-      goto("/game/1");
-    }}
-  />
+  <div class=" w-full ">
+    <Table
+      {titles}
+      {records}
+      onClick={() => {
+        goto("/game/1");
+      }}
+    />
+  </div>
 </div>

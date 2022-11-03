@@ -1,16 +1,17 @@
 import type { PageServerLoad, Actions } from "./$types";
-import { registerSchema } from "$lib/validate/registerUser";
+import { loginSchema, registerSchema } from "$lib/validate/registerUser";
 import { invalid } from "@sveltejs/kit";
 import { compare, hash } from "bcrypt";
 import { prisma } from "$lib/db/prisma";
-import { verify, sign } from "jsonwebtoken";
+import { sign } from "jsonwebtoken";
 
 import type { createUserDto } from "$types/dto/createUserDto";
 import { JWT_SECRET } from "$env/static/private";
 
 export const load: PageServerLoad = async ({ locals }) => {
-  console.log(locals.user);
-  return {};
+  return {
+    user: locals.user,
+  };
 };
 
 export const actions: Actions = {
@@ -67,7 +68,62 @@ export const actions: Actions = {
     return { success: true };
   },
 
-  login: ({ request, cookies }) => {
+  login: async ({ request, cookies }) => {
+    const formData = Object.fromEntries(await request.formData());
+    const password = formData["password"] as string;
+    const username = formData["username"] as string;
+
+    try {
+      loginSchema.parse(formData);
+    } catch (err) {
+      console.log("err");
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      const { fieldErrors: errors } = err.flatten();
+      return invalid(400, { errors });
+    }
+
+    const user = await prisma.user.findUnique({
+      where: { username },
+      select: {
+        hashedPassword: true,
+        username: true,
+        id: true,
+        roles: { select: { name: true } },
+      },
+    });
+
+    if (!user) {
+      return invalid(400, {
+        errors: {
+          username: ["User with this username and password not found"],
+          password: ["User with this username and password not found"],
+        },
+      });
+    }
+
+    const result = await compare(password, user.hashedPassword);
+
+    if (!result) {
+      return invalid(400, {
+        errors: {
+          username: ["User with this username and password not found"],
+          password: ["User with this username and password not found"],
+        },
+      });
+    }
+
+    const token = sign(
+      { id: user.id, username: user.username, roles: user.roles },
+      JWT_SECRET
+    );
+    cookies.set("token", token);
+
+    return { success: true };
+  },
+  logout: async ({ request, cookies }) => {
+    console.log("logout");
+    cookies.delete("token");
     return { success: true };
   },
 };

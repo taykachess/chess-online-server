@@ -5,7 +5,7 @@
 </script>
 
 <div
-  class=" max-w-xl transform divide-y divide-gray-100 overflow-hidden rounded-xl bg-white shadow-2xl ring-1 ring-black ring-opacity-5 transition-all"
+  class=" w-full transform divide-y divide-gray-100 overflow-hidden rounded-xl bg-white shadow-2xl ring-1 ring-black ring-opacity-5 transition-all"
 >
   <ul
     class="max-h-96 scroll-py-3 overflow-y-auto p-3"
