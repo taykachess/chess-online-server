@@ -28,7 +28,10 @@ model Role {
 
 model Tournament {
   id            String   @id @default(cuid())
+  name          String
+  description   String
   format        String
+  control       String
   sorting       String   @default("none")
   consolation   Boolean  @default(false)
   playerLimit   Int      @default(0)

@@ -4,14 +4,30 @@
   import { DateInput } from "date-picker-svelte";
 
   export let isOpen: boolean;
-  import type { createTournamentDto } from "$types/dto/createTournamentDto";
-  let formData: createTournamentDto = {
+  import type { Prisma } from "@prisma/client";
+  import { goto } from "$app/navigation";
+  let formData: Prisma.TournamentCreateInput = {
     name: "",
     description: "",
     control: "3+2",
     format: "swiss",
     startTime: new Date(),
   };
+
+  async function createTournament() {
+    console.log("Tournament");
+    const response = await fetch("/api/tournament/create", {
+      method: "POST",
+      body: JSON.stringify(formData),
+      headers: {
+        "content-type": "application/json",
+      },
+    });
+
+    const id = await response.json();
+
+    goto(`/tournament/${id}`);
+  }
 </script>
 
 <div
@@ -195,7 +211,7 @@
       Отмена
     </button>
     <button
-      on:click={() => (isOpen = false)}
+      on:click={createTournament}
       class="dark:highlight-white/20 cursor-pointer rounded-lg bg-sky-500 py-3 text-center text-base font-medium text-white"
     >
       Создать турнир

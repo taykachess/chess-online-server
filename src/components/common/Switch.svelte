@@ -5,7 +5,7 @@
     return classes.filter(Boolean).join(" ");
   }
 
-  export let state = false;
+  export let state: boolean = false;
 </script>
 
 <div class="flex h-full w-screen items-start  ">

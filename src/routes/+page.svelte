@@ -6,13 +6,7 @@
   import Challenge from "$components/home/Challenge.svelte";
   import Tournament from "$components/home/Tournament.svelte";
   import Match from "$components/home/Match.svelte";
-  import type { ActionData, PageData } from "./$types";
-
-  export let data: PageData;
-  export let form: ActionData;
 </script>
-
-<!-- px-4 sm:px-6 md:px-8 -->
 
 <div class="mx-auto max-w-7xl ">
   <TitleAndDescription />

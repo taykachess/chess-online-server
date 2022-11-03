@@ -5,7 +5,6 @@ import { compare, hash } from "bcrypt";
 import { prisma } from "$lib/db/prisma";
 import { sign } from "jsonwebtoken";
 
-import type { createUserDto } from "$types/dto/createUserDto";
 import { JWT_SECRET } from "$env/static/private";
 
 export const load: PageServerLoad = async ({ locals }) => {
@@ -122,7 +121,6 @@ export const actions: Actions = {
     return { success: true };
   },
   logout: async ({ request, cookies }) => {
-    console.log("logout");
     cookies.delete("token");
     return { success: true };
   },
