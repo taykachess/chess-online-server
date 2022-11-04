@@ -4,10 +4,7 @@
   import { Icon, Cog } from "svelte-hero-icons";
 </script>
 
-<ul
-  class="inline-grid flex-none gap-x-2 px-4 sm:px-0 xl:gap-x-6"
-  style="grid-template-columns:repeat(4, minmax(6rem, 1fr)) "
->
+<ul class="flex space-x-10">
   <!-- svelte-ignore a11y-click-events-have-key-events -->
   <li
     on:click={() => {
@@ -16,7 +13,7 @@
     }}
   >
     <Tab title="Игра" active={$tab === "challenge" ? true : false}
-      ><Icon src={Cog} size="48" /></Tab
+      ><Icon src={Cog} size="52" /></Tab
     >
   </li>
   <!-- svelte-ignore a11y-click-events-have-key-events -->
@@ -26,7 +23,7 @@
     }}
   >
     <Tab title="Матч" active={$tab === "match" ? true : false}
-      ><Icon src={Cog} size="48" /></Tab
+      ><Icon src={Cog} size="52" /></Tab
     >
   </li>
   <!-- svelte-ignore a11y-click-events-have-key-events -->
@@ -36,7 +33,7 @@
     }}
   >
     <Tab title="Турнир" active={$tab === "tournament" ? true : false}>
-      <svg width="48" height="48" fill="none" aria-hidden="true" class=""
+      <svg width="52" height="52" fill="none" aria-hidden="true" class=""
         ><path
           d="M6 8h32a4 4 0 0 1 4 4v28H6V8Z"
           fill="currentColor"

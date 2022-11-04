@@ -11,7 +11,7 @@
 <div class="mx-auto max-w-7xl ">
   <TitleAndDescription />
 
-  <div class="mt-6">
+  <div class="mt-6 flex justify-center">
     <Tabs />
   </div>
 </div>
@@ -24,6 +24,8 @@
   {:else if $tab === "match"}
     <Match />
   {:else if $tab === "tournament"}
+    <div class=" my-4" />
+
     <Tournament />
   {:else if $tab === "puzzle"}
     <div class="" />

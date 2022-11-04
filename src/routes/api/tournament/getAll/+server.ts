@@ -7,13 +7,33 @@
 // }
 
 import { prisma } from "$lib/db/prisma";
+import type { getTournament } from "$types/home/tournament";
 import { json } from "@sveltejs/kit";
 import type { RequestHandler } from "./$types";
 
-export const GET: RequestHandler = async ({ request }) => {
-  const tournaments = await prisma.tournament.findMany({
-    take: 10,
-    where: { status: "registration" },
+export const GET: RequestHandler = async ({ request, locals, url }) => {
+  console.log("Req");
+  let page = url.searchParams.get("page");
+
+  if (!page) {
+    page = "1";
+  }
+
+  const whereParam: any = {};
+  const register = url.searchParams.get("register");
+
+  if (locals.user && register === "yes") {
+    whereParam.players = { some: { alies: locals.user.username } };
+  }
+
+  const take = 10;
+  const tournaments: getTournament[] = await prisma.tournament.findMany({
+    take,
+    skip: take * (+page - 1),
+    where: {
+      status: "registration",
+      ...whereParam,
+    },
     orderBy: { startTime: "desc" },
     select: {
       id: true,
@@ -22,8 +42,11 @@ export const GET: RequestHandler = async ({ request }) => {
       playerLimit: true,
       startTime: true,
       _count: { select: { players: true } },
+      // players: { where: { alies: locals.user?.username } },
       format: true,
     },
   });
+
+  console.log(tournaments.length);
   return json(tournaments);
 };

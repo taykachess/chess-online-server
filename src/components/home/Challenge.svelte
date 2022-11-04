@@ -3,7 +3,7 @@
   import Table from "$components/common/Table.svelte";
 
   import Palleter from "$components/common/Palleter.svelte";
-  import type { PalleterLi } from "$lib/types/palleter";
+  import type { PalleterLi } from "$types/common/palleter";
   import { Cog, Code } from "svelte-hero-icons";
   import { goto } from "$app/navigation";
 
@@ -22,15 +22,11 @@
     },
   ];
   const titles = ["Игрок", "Рейтинг"];
-  export let records = [
-    ["<span class='text-green-500'>Taykas</span>", "2459"],
-    ["<span>Tayka</span>", "2459"],
-    ["<span>Tayka</span>", "2459"],
-    ["<span>Tayka</span>", "2459"],
-    ["<span>Tayka</span>", "2459"],
-    ["<span>Tayka</span>", "2459"],
-    ["<span>Tayka</span>", "2459"],
-    ["<span>Tayka</span>", "2459"],
+  export let records: { link: string; records: string[] }[] = [
+    {
+      link: "",
+      records: ["<span class='text-green-500'>Taykas</span>", "2459"],
+    },
   ];
 </script>
 
@@ -66,12 +62,12 @@
     <Palleter records={palleterRecords} />
   </div>
   <div class=" w-full ">
-    <Table
+    <!-- <Table
       {titles}
       {records}
       onClick={() => {
         goto("/game/1");
-      }}
+      }} -->
     />
   </div>
 </div>

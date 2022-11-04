@@ -2,19 +2,15 @@
   import Select from "$components/common/Select.svelte";
   import Table from "$components/common/Table.svelte";
   import Palleter from "$components/common/Palleter.svelte";
-  import type { PalleterLi } from "$lib/types/palleter";
+  import type { PalleterLi } from "$types/common/palleter";
   import { Cog, Code } from "svelte-hero-icons";
 
   const titles = ["Игрок", "Рейтинг", "Партий"];
-  export let records = [
-    ["<span class='text-green-500'>Taykas</span>", "2459", "12"],
-    ["<span>Tayka</span>", "2459", "15"],
-    ["<span>Tayka</span>", "2459", "9"],
-    ["<span>Tayka</span>", "2459", "14"],
-    ["<span>Tayka</span>", "2459", "10"],
-    ["<span>Tayka</span>", "2459", "8"],
-    ["<span>Tayka</span>", "2459", "6"],
-    ["<span>Tayka</span>", "2459", "8"],
+  export let records: { link: string; records: string[] }[] = [
+    {
+      link: "",
+      records: ["<span class='text-green-500'>Taykas</span>", "2459", "12"],
+    },
   ];
 
   let palleterRecords: PalleterLi[] = [
@@ -69,5 +65,5 @@
     <Palleter records={palleterRecords} />
   </div>
 
-  <Table {titles} {records} />
+  <!-- <Table {titles} {records} /> -->
 </div>

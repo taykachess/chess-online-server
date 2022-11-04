@@ -1,8 +1,14 @@
 <script lang="ts">
-  export let titles: string[];
-  export let records: string[][];
+  import { goto } from "$app/navigation";
+  import Pagination from "./Pagination.svelte";
 
+  export let titles: string[];
+  export let records: { link: string; records: string[] }[];
+  export let count: number;
   export let onClick: any = () => {};
+  export let onClickPagination: (page: number) => void;
+
+  let currentPage = 1;
 </script>
 
 <div class="">
@@ -26,8 +32,13 @@
             </thead>
             <tbody class="divide-y divide-gray-200 bg-white  ">
               {#each records as record}
-                <tr on:click={onClick} class="cursor-pointer hover:bg-slate-50">
-                  {#each record as field}
+                <tr
+                  on:click={() => {
+                    goto(record.link);
+                  }}
+                  class="cursor-pointer hover:bg-slate-50"
+                >
+                  {#each record.records as field}
                     <td
                       class="whitespace-nowrap py-2 pl-4 pr-3 text-sm font-medium  text-gray-900 sm:pl-6"
                       >{@html field}</td
@@ -42,5 +53,10 @@
         </div>
       </div>
     </div>
+  </div>
+  <div class="">
+    {#if count > 10}
+      <Pagination {count} bind:currentPage cb={onClickPagination} />
+    {/if}
   </div>
 </div>

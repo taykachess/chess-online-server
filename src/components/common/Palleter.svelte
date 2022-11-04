@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { PalleterLi } from "$lib/types/palleter";
+  import type { PalleterLi } from "$types/common/palleter";
   import { Icon } from "svelte-hero-icons";
   export let records: PalleterLi[];
 </script>

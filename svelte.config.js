@@ -15,7 +15,7 @@ const config = {
     adapter: adapter(),
     alias: {
       $components: "src/components",
-      $types: "../types",
+      $types: "src/types",
       $prisma: "../prisma",
       $store: "src/store"
     },

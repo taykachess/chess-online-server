@@ -4,10 +4,12 @@
   import Table from "$components/common/Table.svelte";
   import { page } from "$app/stores";
   import { onMount } from "svelte";
-
-  const titles = ["Турнир", "Дата", "Тип", "Контроль", "Участники"];
-
-  $: isAdmin = $page?.data?.user?.roles.find((role) => role.name === "ADMIN");
+  import TournamentTabs from "./TournamentTabs.svelte";
+  import Pagination from "$components/common/Pagination.svelte";
+  import type { getTournament } from "$types/home/tournament";
+  import { allTournaments, registedTournaments } from "$store/home/tournaments";
+  import { tournamentTab } from "$store/home/tounamentTab";
+  import { json } from "@sveltejs/kit";
 
   function formatDate(datePar: Date): string {
     const now = new Date();
@@ -24,71 +26,120 @@
     else return `${date.toLocaleString()}`;
   }
 
-  onMount(async () => {
-    const response = await fetch("/api/tournament/getAll", {
+  type Inte = ({ page, register }: { page: number; register?: "yes" }) => any;
+  async function getAllTournaments({
+    page,
+    register,
+  }: {
+    page: number;
+    register?: "yes";
+  }) {
+    return fetch(`/api/tournament/getAll?page=${page}&register=${register}`, {
       method: "GET",
     });
+  }
 
-    const tournaments: {
-      id: string;
-      name: string;
-      format: string;
-      control: string;
-      playerLimit: number;
-      startTime: Date;
-      _count: {
-        players: number;
-      };
-    }[] = await response.json();
-    tournaments.forEach((tournament) => {
-      records.push([
-        tournament.name,
-        `${formatDate(tournament.startTime)}`,
-        tournament.format,
-        tournament.control,
-        `${tournament._count.players}/${tournament.playerLimit}`,
-      ]);
-      records = records;
+  async function getCountAllTournaments({ register }: { register?: "yes" }) {
+    return fetch(`/api/tournament/count?register=${register}`, {
+      method: "GET",
     });
-    console.log(tournaments);
-  });
+  }
 
-  export let records = [
-    [
-      "<span>Новогодний турнир</span>",
-      "через 3 часа",
-      "Щвейцарка",
-      "3+0",
-      "0/10",
-    ],
-    [
-      "<span>Новогодний турнир</span>",
-      "через 5 часов",
-      "Щвейцарка",
-      "1+0",
-      "2/64",
-    ],
-    [
-      "<span>Новогодний турнир</span>",
-      "через 8 часов",
-      "Олимпийская система",
-      "15+10",
-      "15/16",
-    ],
-    [
-      "<span>Новогодний турнир</span>",
-      "через 12 часа",
-      "Щвейцарка",
-      "10+10",
-      "7/100",
-    ],
-  ];
+  async function onClickPagination(page: number) {
+    const response = await getAllTournaments({ page });
+    const tournaments: getTournament[] = await response.json();
+    $allTournaments.tournaments = tournaments;
+  }
+
+  async function onClickPaginationRegisted(page: number) {
+    const response = await getAllTournaments({ page, register: "yes" });
+    const tournaments: getTournament[] = await response.json();
+    $registedTournaments.tournaments = tournaments;
+  }
+
+  async function getInitialTournaments() {
+    const [tournamentsData, countData] = await Promise.all([
+      getAllTournaments({ page: 1 }),
+      getCountAllTournaments({}),
+    ]);
+    const tournaments: getTournament[] = await tournamentsData.json();
+    const count: number = await countData.json();
+    $allTournaments.tournaments = tournaments;
+    $allTournaments.count = count;
+  }
+
+  async function getInitialRegistedTournaments() {
+    const [tournamentsData, countData] = await Promise.all([
+      getAllTournaments({ page: 1, register: "yes" }),
+      getCountAllTournaments({}),
+    ]);
+    const tournaments: getTournament[] = await tournamentsData.json();
+    const count: number = await countData.json();
+    $registedTournaments.tournaments = tournaments;
+    $registedTournaments.count = count;
+  }
+
+  function createTournamentRecords(
+    tournaments: getTournament[] | null
+  ): { link: string; records: string[] }[] {
+    const arrayRecords: { link: string; records: string[] }[] = [];
+    if (!tournaments) return [];
+    tournaments.forEach((tournament) => {
+      arrayRecords.push({
+        link: `/tournament/${tournament.id}`,
+        records: [
+          tournament.name,
+          `${formatDate(tournament.startTime)}`,
+          tournament.format,
+          tournament.control,
+          ` ${
+            tournament.playerLimit
+              ? `${tournament._count.players}/${tournament.playerLimit}`
+              : `${tournament._count.players}`
+          }`,
+        ],
+      });
+    });
+
+    return arrayRecords;
+  }
+  const titles = ["Турнир", "Дата", "Тип", "Контроль", "Участники"];
+
+  $: isAdmin = $page?.data?.user?.roles.find((role) => role.name === "ADMIN");
+  $: records = createTournamentRecords($allTournaments.tournaments);
+  $: registedRecords = createTournamentRecords(
+    $registedTournaments.tournaments
+  );
+
+  getInitialTournaments();
+  getInitialRegistedTournaments();
 </script>
 
-<div class=" my-4" />
-<div class=" mx-auto grid max-w-7xl {isAdmin ? 'grid-cols-2 gap-6 ' : ''}  ">
+<div class="  max-w-7xl  {isAdmin ? ' grid grid-cols-2 gap-6 ' : ''}  ">
   {#if isAdmin}
     <TournamentGrid />
   {/if}
-  <Table {titles} {records} />
+  <TournamentTabs />
+  {#if $tournamentTab === "all"}
+    <Table
+      {titles}
+      {records}
+      {onClickPagination}
+      count={$allTournaments.count}
+    />
+  {:else if $tournamentTab === "IRegistered"}
+    <!-- <div use:getInitialRegistedTournaments class=""> -->
+
+    {#await Promise.all( [getAllTournaments( { page: 1, register: "yes" } ), getCountAllTournaments( { register: "yes" } )] ) then value}
+      {#await Promise.all( [value[0].json(), value[1].json()] ) then [tournaments, count]}
+        <Table
+          {titles}
+          records={createTournamentRecords(tournaments)}
+          {onClickPagination}
+          {count}
+        />
+      {/await}
+    {/await}
+    <!-- </div> -->
+  {/if}
 </div>
