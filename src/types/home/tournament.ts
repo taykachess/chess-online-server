@@ -7,5 +7,6 @@ export interface getTournament {
   format: string;
   control: string;
   playerLimit: number;
+  players: { id: string }[];
   startTime: Date;
 }

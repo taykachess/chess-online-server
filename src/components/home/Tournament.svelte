@@ -3,13 +3,11 @@
 
   import Table from "$components/common/Table.svelte";
   import { page } from "$app/stores";
-  import { onMount } from "svelte";
   import TournamentTabs from "./TournamentTabs.svelte";
-  import Pagination from "$components/common/Pagination.svelte";
   import type { getTournament } from "$types/home/tournament";
-  import { allTournaments, registedTournaments } from "$store/home/tournaments";
+  import { allTournaments } from "$store/home/tournaments";
   import { tournamentTab } from "$store/home/tounamentTab";
-  import { json } from "@sveltejs/kit";
+  import type { TournamentTableRecord } from "$types/home/TournamentTableRecord";
 
   function formatDate(datePar: Date): string {
     const now = new Date();
@@ -26,7 +24,6 @@
     else return `${date.toLocaleString()}`;
   }
 
-  type Inte = ({ page, register }: { page: number; register?: "yes" }) => any;
   async function getAllTournaments({
     page,
     register,
@@ -54,7 +51,7 @@
   async function onClickPaginationRegisted(page: number) {
     const response = await getAllTournaments({ page, register: "yes" });
     const tournaments: getTournament[] = await response.json();
-    $registedTournaments.tournaments = tournaments;
+    $allTournaments.tournaments = tournaments;
   }
 
   async function getInitialTournaments() {
@@ -71,22 +68,23 @@
   async function getInitialRegistedTournaments() {
     const [tournamentsData, countData] = await Promise.all([
       getAllTournaments({ page: 1, register: "yes" }),
-      getCountAllTournaments({}),
+      getCountAllTournaments({ register: "yes" }),
     ]);
     const tournaments: getTournament[] = await tournamentsData.json();
     const count: number = await countData.json();
-    $registedTournaments.tournaments = tournaments;
-    $registedTournaments.count = count;
+    $allTournaments.tournaments = tournaments;
+    $allTournaments.count = count;
   }
 
   function createTournamentRecords(
     tournaments: getTournament[] | null
-  ): { link: string; records: string[] }[] {
-    const arrayRecords: { link: string; records: string[] }[] = [];
+  ): TournamentTableRecord[] {
+    const arrayRecords: TournamentTableRecord[] = [];
     if (!tournaments) return [];
     tournaments.forEach((tournament) => {
       arrayRecords.push({
         link: `/tournament/${tournament.id}`,
+        registered: tournament.players.length >= 1 ? true : false,
         records: [
           tournament.name,
           `${formatDate(tournament.startTime)}`,
@@ -107,39 +105,54 @@
 
   $: isAdmin = $page?.data?.user?.roles.find((role) => role.name === "ADMIN");
   $: records = createTournamentRecords($allTournaments.tournaments);
-  $: registedRecords = createTournamentRecords(
-    $registedTournaments.tournaments
-  );
 
-  getInitialTournaments();
-  getInitialRegistedTournaments();
+  if ($tournamentTab == "all") {
+    getInitialTournaments();
+  } else if ($tournamentTab == "IRegistered") {
+    getInitialRegistedTournaments();
+  }
 </script>
 
 <div class="  max-w-7xl  {isAdmin ? ' grid grid-cols-2 gap-6 ' : ''}  ">
   {#if isAdmin}
     <TournamentGrid />
   {/if}
-  <TournamentTabs />
-  {#if $tournamentTab === "all"}
-    <Table
-      {titles}
-      {records}
-      {onClickPagination}
-      count={$allTournaments.count}
+  <div class="">
+    <TournamentTabs
+      tabs={[
+        { active: "all", title: "Турниры", load: getInitialTournaments },
+        {
+          active: "IRegistered",
+          title: "Зарегестрирован",
+          load: getInitialRegistedTournaments,
+          disabled: $page.data?.user ? false : true,
+        },
+        {
+          active: "ICreated",
+          title: "Созданные",
+          load: () => {},
+          disabled: true,
+        },
+      ]}
     />
-  {:else if $tournamentTab === "IRegistered"}
-    <!-- <div use:getInitialRegistedTournaments class=""> -->
-
-    {#await Promise.all( [getAllTournaments( { page: 1, register: "yes" } ), getCountAllTournaments( { register: "yes" } )] ) then value}
-      {#await Promise.all( [value[0].json(), value[1].json()] ) then [tournaments, count]}
+    {#if $tournamentTab === "all"}
+      <Table
+        {titles}
+        {records}
+        {onClickPagination}
+        count={$allTournaments.count}
+      />
+    {:else if $tournamentTab === "IRegistered"}
+      {#if $page?.data?.user}
         <Table
           {titles}
-          records={createTournamentRecords(tournaments)}
-          {onClickPagination}
-          {count}
+          {records}
+          onClickPagination={onClickPaginationRegisted}
+          count={$allTournaments.count}
         />
-      {/await}
-    {/await}
-    <!-- </div> -->
-  {/if}
+      {:else}
+        <div class=" w-[40rem] text-white">Зарегестрируйся</div>
+      {/if}
+    {/if}
+  </div>
 </div>

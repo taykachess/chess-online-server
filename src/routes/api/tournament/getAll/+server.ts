@@ -8,7 +8,7 @@
 
 import { prisma } from "$lib/db/prisma";
 import type { getTournament } from "$types/home/tournament";
-import { json } from "@sveltejs/kit";
+import { error, json } from "@sveltejs/kit";
 import type { RequestHandler } from "./$types";
 
 export const GET: RequestHandler = async ({ request, locals, url }) => {
@@ -20,11 +20,18 @@ export const GET: RequestHandler = async ({ request, locals, url }) => {
   }
 
   const whereParam: any = {};
+
   const register = url.searchParams.get("register");
 
   if (locals.user && register === "yes") {
     whereParam.players = { some: { alies: locals.user.username } };
   }
+
+  // if (!locals.user && register === "yes") {
+  //   throw error(403);
+  // }
+
+  console.log("Username", locals.user?.username);
 
   const take = 10;
   const tournaments: getTournament[] = await prisma.tournament.findMany({
@@ -42,11 +49,13 @@ export const GET: RequestHandler = async ({ request, locals, url }) => {
       playerLimit: true,
       startTime: true,
       _count: { select: { players: true } },
-      // players: { where: { alies: locals.user?.username } },
+      players: {
+        where: { alies: locals.user?.username ? locals.user?.username : "" },
+        select: { id: true },
+      },
       format: true,
     },
   });
 
-  console.log(tournaments.length);
   return json(tournaments);
 };

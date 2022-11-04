@@ -3,7 +3,11 @@
   import Pagination from "./Pagination.svelte";
 
   export let titles: string[];
-  export let records: { link: string; records: string[] }[];
+  export let records: {
+    link: string;
+    records: string[];
+    registered?: boolean;
+  }[];
   export let count: number;
   export let onClick: any = () => {};
   export let onClickPagination: (page: number) => void;
@@ -36,7 +40,9 @@
                   on:click={() => {
                     goto(record.link);
                   }}
-                  class="cursor-pointer hover:bg-slate-50"
+                  class="cursor-pointer hover:bg-slate-50 {record.registered
+                    ? ' bg-green-100'
+                    : ''}"
                 >
                   {#each record.records as field}
                     <td

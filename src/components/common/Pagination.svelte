@@ -62,7 +62,10 @@
       {#each arrayPages(PAGES) as page}
         <a
           href="#"
-          on:click={cb(page)}
+          on:click={() => {
+            cb(page);
+            currentPage = page;
+          }}
           aria-current="page"
           class="relative z-10 inline-flex items-center border {page ===
           currentPage
