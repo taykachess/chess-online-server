@@ -1,33 +1,115 @@
 <script lang="ts">
   import Select from "$components/common/Select.svelte";
   import Table from "$components/common/Table.svelte";
-
   import Palleter from "$components/common/Palleter.svelte";
   import type { PalleterLi } from "$types/common/palleter";
-  import { Cog, Code } from "svelte-hero-icons";
-  import { goto } from "$app/navigation";
+  import { Cog, Code, Library, Database } from "svelte-hero-icons";
+  import Tabs from "$components/common/Tabs.svelte";
+  import { challengeTab } from "$store/home/challengeTab";
+  import type { GetChallenge } from "$types/home/Challenge";
+  import type { ChallengeTab } from "$types/home/tab";
+  import { listOfChallenges } from "$store/home/challenges";
+  import { onMount } from "svelte";
+  // import { page } from "$app/stores";
 
   let palleterRecords: PalleterLi[] = [
     {
-      title: "Игра со случайным соперником",
-      description: "Вам будет выбран соперник исходя из ваших предпочтений",
+      title: "Игра ",
+      description: "Ваш друг может будет принять вызов по ссылке или напрямую",
       bg: "bg-indigo-500",
       svg: Cog,
+      onClick: createChallenge,
+    },
+    {
+      title: "Матч",
+      description: "Ваш друг может будет принять вызов по ссылке или напрямую",
+      bg: "bg-green-500",
+      svg: Library,
+      onClick: () => {},
     },
     {
       title: "Игра с другом",
       description: "Ваш друг может будет принять вызов по ссылке или напрямую",
-      bg: "bg-green-500",
+      bg: "bg-indigo-500",
       svg: Code,
+      onClick: () => {},
+    },
+    {
+      title: "Матч с другом",
+      description: "Ваш друг может будет принять вызов по ссылке или напрямую",
+      bg: "bg-green-500",
+      svg: Database,
+      onClick: () => {},
     },
   ];
-  const titles = ["Игрок", "Рейтинг"];
+  const titles = ["Игрок", "Контроль"];
+
+  const selectCSS =
+    "inline-flex items-center rounded text-slate-200 px-1 py-0.5 text-xs font-medium bg-slate-700 ml-1";
   export let records: { link: string; records: string[] }[] = [
     {
-      link: "",
-      records: ["<span class='text-green-500'>Taykas</span>", "2459"],
+      link: "/game/2",
+      records: [
+        `<span>Tayka<span class="${selectCSS}">2459</span></span>`,
+        "3+2",
+      ],
+    },
+    {
+      link: "/game/2",
+      records: ["Tayka", "3+2"],
     },
   ];
+
+  async function getAllChallenges() {
+    return fetch(`/api/challenge/getAll`, {
+      method: "GET",
+    });
+  }
+
+  async function getCountAllChallenges() {
+    return fetch(`/api/challenge/count`, {
+      method: "GET",
+    });
+  }
+
+  async function createChallenge() {
+    console.log("Tournament");
+    const response = await fetch("/api/challenge/create", {
+      method: "POST",
+      body: JSON.stringify({}),
+      headers: {
+        "content-type": "application/json",
+      },
+    });
+  }
+  async function getInitialChallenges() {
+    console.log("Try to load");
+    const [challengesData, countData] = await Promise.all([
+      getAllChallenges(),
+      getCountAllChallenges(),
+    ]);
+    const challenges: GetChallenge[] = await challengesData.json();
+    const count: number = await countData.json();
+    $listOfChallenges.challenges = challenges;
+    $listOfChallenges.count = count;
+  }
+
+  const tabs: {
+    active: ChallengeTab;
+    title: string;
+    load: any;
+    disabled?: any;
+  }[] = [
+    { active: "game", title: "Игра", load: getInitialChallenges },
+    {
+      active: "match",
+      title: "Матч",
+      load: getInitialChallenges,
+    },
+  ];
+  onMount(() => {
+    getInitialChallenges();
+  });
 </script>
 
 <div class=" my-4 flex items-center space-x-2">
@@ -62,12 +144,7 @@
     <Palleter records={palleterRecords} />
   </div>
   <div class=" w-full ">
-    <!-- <Table
-      {titles}
-      {records}
-      onClick={() => {
-        goto("/game/1");
-      }} -->
-    />
+    <Tabs currentTab={$challengeTab} {tabs} />
+    <Table {titles} {records} onClickPagination={() => {}} count={10} />
   </div>
 </div>

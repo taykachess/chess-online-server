@@ -8,12 +8,14 @@
   class=" w-full transform divide-y divide-gray-100 overflow-hidden rounded-xl bg-white shadow-2xl ring-1 ring-black ring-opacity-5 transition-all"
 >
   <ul
-    class="max-h-96 scroll-py-3 overflow-y-auto p-3"
+    class="grid max-h-96 scroll-py-3 grid-cols-2 overflow-y-auto p-3"
     id="options"
     role="listbox"
   >
     {#each records as record}
+      <!-- svelte-ignore a11y-click-events-have-key-events -->
       <li
+        on:click={record.onClick()}
         class="group flex  cursor-pointer select-none rounded-xl p-3 hover:bg-slate-100"
       >
         <div
@@ -21,11 +23,11 @@
         >
           <Icon src={record.svg} size="30" />
         </div>
-        <div class="ml-4 flex-auto">
+        <div class="ml-4   justify-center ">
           <!-- Active: "text-gray-900", Not Active: "text-gray-700" -->
-          <p class="text-sm font-medium text-gray-700">
+          <div class=" text-sm font-medium text-gray-700">
             {record.title}
-          </p>
+          </div>
           <!-- Active: "text-gray-700", Not Active: "text-gray-500" -->
           <p class="text-sm text-gray-500">
             {record.description}

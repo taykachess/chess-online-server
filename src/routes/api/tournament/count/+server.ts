@@ -18,6 +18,5 @@ export const GET: RequestHandler = async ({ request, locals, url }) => {
     },
   });
 
-  console.log("count", count);
   return json(count);
 };

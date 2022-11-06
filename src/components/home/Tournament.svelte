@@ -1,11 +1,11 @@
 <script lang="ts">
   import TournamentGrid from "$components/home/TournamentGrid.svelte";
-
+  import type { TournamentTab } from "$types/home/tab";
   import Table from "$components/common/Table.svelte";
   import { page } from "$app/stores";
-  import TournamentTabs from "./TournamentTabs.svelte";
+  import Tabs from "$components/common/Tabs.svelte";
   import type { getTournament } from "$types/home/tournament";
-  import { allTournaments } from "$store/home/tournaments";
+  import { listOfTournaments } from "$store/home/tournaments";
   import { tournamentTab } from "$store/home/tounamentTab";
   import type { TournamentTableRecord } from "$types/home/TournamentTableRecord";
 
@@ -45,13 +45,13 @@
   async function onClickPagination(page: number) {
     const response = await getAllTournaments({ page });
     const tournaments: getTournament[] = await response.json();
-    $allTournaments.tournaments = tournaments;
+    $listOfTournaments.tournaments = tournaments;
   }
 
   async function onClickPaginationRegisted(page: number) {
     const response = await getAllTournaments({ page, register: "yes" });
     const tournaments: getTournament[] = await response.json();
-    $allTournaments.tournaments = tournaments;
+    $listOfTournaments.tournaments = tournaments;
   }
 
   async function getInitialTournaments() {
@@ -61,8 +61,8 @@
     ]);
     const tournaments: getTournament[] = await tournamentsData.json();
     const count: number = await countData.json();
-    $allTournaments.tournaments = tournaments;
-    $allTournaments.count = count;
+    $listOfTournaments.tournaments = tournaments;
+    $listOfTournaments.count = count;
   }
 
   async function getInitialRegistedTournaments() {
@@ -72,8 +72,8 @@
     ]);
     const tournaments: getTournament[] = await tournamentsData.json();
     const count: number = await countData.json();
-    $allTournaments.tournaments = tournaments;
-    $allTournaments.count = count;
+    $listOfTournaments.tournaments = tournaments;
+    $listOfTournaments.count = count;
   }
 
   function createTournamentRecords(
@@ -104,7 +104,7 @@
   const titles = ["Турнир", "Дата", "Тип", "Контроль", "Участники"];
 
   $: isAdmin = $page?.data?.user?.roles.find((role) => role.name === "ADMIN");
-  $: records = createTournamentRecords($allTournaments.tournaments);
+  $: records = createTournamentRecords($listOfTournaments.tournaments);
 
   if ($tournamentTab == "all") {
     getInitialTournaments();
@@ -113,12 +113,14 @@
   }
 </script>
 
-<div class="  max-w-7xl  {isAdmin ? ' grid grid-cols-2 gap-6 ' : ''}  ">
-  {#if isAdmin}
+<!-- {isAdmin ? ' grid grid-cols-2 gap-6 ' : ''}  -->
+<div class="  max-w-7xl   ">
+  <!-- {#if isAdmin}
     <TournamentGrid />
-  {/if}
+  {/if} -->
   <div class="">
-    <TournamentTabs
+    <Tabs
+      bind:currentTab={$tournamentTab}
       tabs={[
         { active: "all", title: "Турниры", load: getInitialTournaments },
         {
@@ -140,7 +142,7 @@
         {titles}
         {records}
         {onClickPagination}
-        count={$allTournaments.count}
+        count={$listOfTournaments.count}
       />
     {:else if $tournamentTab === "IRegistered"}
       {#if $page?.data?.user}
@@ -148,7 +150,7 @@
           {titles}
           {records}
           onClickPagination={onClickPaginationRegisted}
-          count={$allTournaments.count}
+          count={$listOfTournaments.count}
         />
       {:else}
         <div class=" w-[40rem] text-white">Зарегестрируйся</div>

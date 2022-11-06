@@ -12,7 +12,6 @@ import { error, json } from "@sveltejs/kit";
 import type { RequestHandler } from "./$types";
 
 export const GET: RequestHandler = async ({ request, locals, url }) => {
-  console.log("Req");
   let page = url.searchParams.get("page");
 
   if (!page) {
@@ -26,12 +25,6 @@ export const GET: RequestHandler = async ({ request, locals, url }) => {
   if (locals.user && register === "yes") {
     whereParam.players = { some: { alies: locals.user.username } };
   }
-
-  // if (!locals.user && register === "yes") {
-  //   throw error(403);
-  // }
-
-  console.log("Username", locals.user?.username);
 
   const take = 10;
   const tournaments: getTournament[] = await prisma.tournament.findMany({

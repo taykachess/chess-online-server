@@ -39,8 +39,12 @@
       aria-label="Pagination"
     >
       <a
-        href="#"
-        class="relative inline-flex items-center rounded-l-md border border-gray-300 bg-white px-2 py-2 text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-20"
+        on:click={() => {
+          if (currentPage == 1) return;
+          cb(currentPage - 1);
+          currentPage = currentPage - 1;
+        }}
+        class="relative inline-flex cursor-pointer items-center rounded-l-md border border-gray-300 bg-white px-2 py-2 text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-20"
       >
         <span class="sr-only">Previous</span>
         <!-- Heroicon name: mini/chevron-left -->
@@ -81,8 +85,12 @@
         >...</span -->
 
       <a
-        href="#"
-        class="relative inline-flex items-center rounded-r-md border border-gray-300 bg-white px-2 py-2 text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-20"
+        on:click={() => {
+          if (currentPage == PAGES) return;
+          cb(currentPage + 1);
+          currentPage = currentPage + 1;
+        }}
+        class="relative inline-flex cursor-pointer items-center rounded-r-md border border-gray-300 bg-white px-2 py-2 text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-20"
       >
         <span class="sr-only">Next</span>
         <!-- Heroicon name: mini/chevron-right -->

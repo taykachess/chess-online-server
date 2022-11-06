@@ -1,7 +1,7 @@
 <script lang="ts">
   import Tab from "$components/common/TabWithSVG.svelte";
   import { tab } from "$store/home/tab";
-  import { Icon, Cog } from "svelte-hero-icons";
+  import { Icon, Cog, ThumbUp, Heart } from "svelte-hero-icons";
 </script>
 
 <ul class="flex space-x-10">
@@ -13,7 +13,7 @@
     }}
   >
     <Tab title="Игра" active={$tab === "challenge" ? true : false}
-      ><Icon src={Cog} size="52" /></Tab
+      ><Icon src={ThumbUp} size="52" /></Tab
     >
   </li>
   <!-- svelte-ignore a11y-click-events-have-key-events -->
@@ -23,7 +23,7 @@
     }}
   >
     <Tab title="Матч" active={$tab === "match" ? true : false}
-      ><Icon src={Cog} size="52" /></Tab
+      ><Icon src={Heart} size="52" /></Tab
     >
   </li>
   <!-- svelte-ignore a11y-click-events-have-key-events -->

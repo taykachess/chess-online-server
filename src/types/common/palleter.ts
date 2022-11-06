@@ -4,4 +4,5 @@ export interface PalleterLi {
   description: string;
   bg: string;
   svg: IconSource;
+  onClick: () => any;
 }

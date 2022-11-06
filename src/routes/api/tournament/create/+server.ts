@@ -9,6 +9,5 @@ export const POST: RequestHandler = async ({ request }) => {
     data,
     select: { id: true },
   });
-  console.log("tournament", tournament);
   return json(tournament.id);
 };

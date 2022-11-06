@@ -1,10 +1,7 @@
 <script lang="ts">
-  import { tab } from "$store/home/tab";
-  import { tournamentTab } from "$store/home/tounamentTab";
-  import type { TournamentTab } from "$types/home/tab";
-
+  export let currentTab: string;
   export let tabs: {
-    active: TournamentTab;
+    active: string;
     title: string;
     load: () => any;
     disabled?: boolean;
@@ -20,7 +17,7 @@
     <button
       on:click={async () => {
         if (tab.disabled) return;
-        $tournamentTab = tab.active;
+        currentTab = tab.active;
         tab.load();
       }}
       id="headlessui-tabs-tab-1"
@@ -28,7 +25,7 @@
       type="button"
       aria-selected="false"
       tabindex="-1"
-      class="relative w-full rounded-lg {$tournamentTab == tab.active
+      class="relative w-full rounded-lg {currentTab == tab.active
         ? 'bg-white text-slate-700 '
         : tab.disabled
         ? ' cursor-not-allowed'

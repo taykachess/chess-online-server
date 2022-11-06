@@ -1,7 +1,7 @@
 <script lang="ts">
   import Dialog from "$components/common/Dialog.svelte";
   import { Icon, type IconSource } from "svelte-hero-icons";
-  import CreateTable from "$components/home/CreateTournament.svelte";
+  import CreateTournament from "$components/home/CreateTournament.svelte";
   export let gridElement: {
     svg: IconSource;
     title: string;
@@ -11,7 +11,7 @@
 </script>
 
 <Dialog bind:isOpen>
-  <CreateTable bind:isOpen />
+  <CreateTournament bind:isOpen />
 </Dialog>
 
 <button
