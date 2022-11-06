@@ -12,7 +12,6 @@ import type { RequestHandler } from "./$types";
 
 export const GET: RequestHandler = async () => {
   const challenges = await redis.json.get("challenges");
-  console.log("Challenge", challenges);
 
-  return json({});
+  return json(challenges);
 };

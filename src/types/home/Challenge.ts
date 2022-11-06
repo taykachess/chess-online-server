@@ -1,3 +1,5 @@
 export interface GetChallenge {
-  player: string;
+  user: string;
+  rating: number;
+  control: string;
 }

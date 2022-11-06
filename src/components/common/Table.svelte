@@ -1,12 +1,14 @@
 <script lang="ts">
   import { goto } from "$app/navigation";
+  import { record } from "zod";
   import Pagination from "./Pagination.svelte";
 
   export let titles: string[];
   export let records: {
-    link: string;
+    link?: string;
     records: string[];
     registered?: boolean;
+    onClick?: () => any;
   }[];
   export let count: number;
   export let onClick: any = () => {};
@@ -38,7 +40,8 @@
               {#each records as record}
                 <tr
                   on:click={() => {
-                    goto(record.link);
+                    if (record.link) return goto(record.link);
+                    if (record.onClick) return onClick();
                   }}
                   class="cursor-pointer hover:bg-slate-50 {record.registered
                     ? ' bg-green-100'

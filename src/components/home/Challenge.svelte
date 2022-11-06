@@ -2,6 +2,7 @@
   import Select from "$components/common/Select.svelte";
   import Table from "$components/common/Table.svelte";
   import Palleter from "$components/common/Palleter.svelte";
+  import type { ChallengeTableRecord } from "$types/home/ChallengeTableRecords";
   import type { PalleterLi } from "$types/common/palleter";
   import { Cog, Code, Library, Database } from "svelte-hero-icons";
   import Tabs from "$components/common/Tabs.svelte";
@@ -10,28 +11,44 @@
   import type { ChallengeTab } from "$types/home/tab";
   import { listOfChallenges } from "$store/home/challenges";
   import { onMount } from "svelte";
+  import { page } from "$app/stores";
   // import { page } from "$app/stores";
 
   let palleterRecords: PalleterLi[] = [
     {
-      title: "Игра ",
-      description: "Ваш друг может будет принять вызов по ссылке или напрямую",
+      title: "1+0",
+      description: "Рейтинг обсчитывается с коэфицентом 1",
       bg: "bg-indigo-500",
       svg: Cog,
-      onClick: createChallenge,
+      onClick: () => createChallenge({ control: "1+0" }),
+      wait: true,
     },
     {
-      title: "Матч",
-      description: "Ваш друг может будет принять вызов по ссылке или напрямую",
+      title: "3+0",
+      description: "Рейтинг обсчитывается с коэфицентом 5",
       bg: "bg-green-500",
       svg: Library,
-      onClick: () => {},
+      onClick: () => createChallenge({ control: "3+0" }),
     },
     {
-      title: "Игра с другом",
-      description: "Ваш друг может будет принять вызов по ссылке или напрямую",
+      title: "3+2",
+      description: "Рейтинг обсчитывается с коэфицентом 10",
+      bg: "bg-green-500",
+      svg: Library,
+      onClick: () => createChallenge({ control: "3+2" }),
+    },
+    {
+      title: "10+5",
+      description: "Рейтинг обсчитывается с коэфицентом 20",
       bg: "bg-indigo-500",
       svg: Code,
+      onClick: () => createChallenge({ control: "10+5" }),
+    },
+    {
+      title: "Произвольный контроль",
+      description: "",
+      bg: "bg-green-500",
+      svg: Database,
       onClick: () => {},
     },
     {
@@ -42,23 +59,23 @@
       onClick: () => {},
     },
   ];
-  const titles = ["Игрок", "Контроль"];
+  const titles = ["Игрок", "Рейтинг", "Контроль"];
 
   const selectCSS =
     "inline-flex items-center rounded text-slate-200 px-1 py-0.5 text-xs font-medium bg-slate-700 ml-1";
-  export let records: { link: string; records: string[] }[] = [
-    {
-      link: "/game/2",
-      records: [
-        `<span>Tayka<span class="${selectCSS}">2459</span></span>`,
-        "3+2",
-      ],
-    },
-    {
-      link: "/game/2",
-      records: ["Tayka", "3+2"],
-    },
-  ];
+  // export let records: { link: string; records: string[] }[] = [
+  //   {
+  //     link: "/game/2",
+  //     records: [
+  //       `<span>Tayka<span class="${selectCSS}">2459</span></span>`,
+  //       "3+2",
+  //     ],
+  //   },
+  //   {
+  //     link: "/game/2",
+  //     records: ["Tayka", "3+2"],
+  //   },
+  // ];
 
   async function getAllChallenges() {
     return fetch(`/api/challenge/getAll`, {
@@ -72,11 +89,11 @@
     });
   }
 
-  async function createChallenge() {
+  async function createChallenge({ control }: { control: string }) {
     console.log("Tournament");
     const response = await fetch("/api/challenge/create", {
       method: "POST",
-      body: JSON.stringify({}),
+      body: JSON.stringify({ control }),
       headers: {
         "content-type": "application/json",
       },
@@ -88,8 +105,13 @@
       getAllChallenges(),
       getCountAllChallenges(),
     ]);
-    const challenges: GetChallenge[] = await challengesData.json();
+    const challengesJSON = await challengesData.json();
     const count: number = await countData.json();
+    const challenges: any[] = [];
+    for (const property in challengesJSON) {
+      challenges.push(challengesJSON[property]);
+    }
+    // console.log(challenges.);
     $listOfChallenges.challenges = challenges;
     $listOfChallenges.count = count;
   }
@@ -107,6 +129,26 @@
       load: getInitialChallenges,
     },
   ];
+
+  function createChallengeRecords(
+    challenge: GetChallenge[] | null
+  ): ChallengeTableRecord[] {
+    const arrayRecords: ChallengeTableRecord[] = [];
+    if (!challenge) return [];
+    challenge.forEach((challenge) => {
+      arrayRecords.push({
+        // link: `/tournament/${challenge.}`,
+        onClick: () => {},
+        registered: challenge.user === $page.data?.user?.username,
+        records: [challenge.user, `${challenge.rating}`, challenge.control],
+      });
+    });
+
+    return arrayRecords;
+  }
+
+  $: records = createChallengeRecords($listOfChallenges.challenges);
+
   onMount(() => {
     getInitialChallenges();
   });
