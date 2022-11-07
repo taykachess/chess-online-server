@@ -18,7 +18,7 @@ export const POST: RequestHandler = async ({ request, url, locals }) => {
     challenge
   );
 
-  emitter.to("challenges").emit("challengeCreated", challenge);
+  emitter.to("challenges").emit("challenge:created", challenge);
 
   // const count = await redis.json.OBJLEN("challenges");
 

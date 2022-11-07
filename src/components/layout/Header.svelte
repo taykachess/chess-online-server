@@ -64,6 +64,7 @@
               await update();
               console.log("Success", $page.form?.success);
               if ($page.form?.success) {
+                localStorage.removeItem("token");
                 isOpen = false;
               }
             };

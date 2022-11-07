@@ -7,11 +7,11 @@ import { sign } from "jsonwebtoken";
 
 import { JWT_SECRET } from "$env/static/private";
 
-export const load: PageServerLoad = async ({ locals }) => {
-  return {
-    user: locals.user,
-  };
-};
+// export const load: PageServerLoad = async ({ locals }) => {
+//   return {
+//     user: locals.user,
+//   };
+// };
 
 export const actions: Actions = {
   register: async ({ request, cookies }) => {
@@ -64,7 +64,7 @@ export const actions: Actions = {
     const token = sign(user, JWT_SECRET);
     cookies.set("token", token);
 
-    return { success: true };
+    return { success: true, token };
   },
 
   login: async ({ request, cookies }) => {
@@ -118,7 +118,7 @@ export const actions: Actions = {
     );
     cookies.set("token", token);
 
-    return { success: true };
+    return { success: true, token };
   },
   logout: async ({ request, cookies }) => {
     cookies.delete("token");

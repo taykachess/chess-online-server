@@ -33,6 +33,7 @@
     return async ({ result, update }) => {
       await update();
       if ($page.form?.success) {
+        localStorage.setItem("token", $page.form.token);
         isOpen = false;
       }
     };

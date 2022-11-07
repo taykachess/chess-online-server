@@ -6,7 +6,7 @@ declare namespace App {
     user: import("$types/hooks/user").DecodedUser;
   }
 
-  interface PageData {
-    user: import("$types/hooks/user").DecodedUser;
-  }
+  // interface PageData {
+  //   user: import("$types/hooks/user").DecodedUser;
+  // }
 }

@@ -12,6 +12,10 @@
   import { listOfChallenges } from "$store/home/challenges";
   import { onMount } from "svelte";
   import { page } from "$app/stores";
+  import {
+    emitCreateChallenge,
+    subscribeOnGettingChallenges,
+  } from "$store/sockets/socket";
   // import { page } from "$app/stores";
 
   let palleterRecords: PalleterLi[] = [
@@ -90,14 +94,7 @@
   }
 
   async function createChallenge({ control }: { control: string }) {
-    console.log("Tournament");
-    const response = await fetch("/api/challenge/create", {
-      method: "POST",
-      body: JSON.stringify({ control }),
-      headers: {
-        "content-type": "application/json",
-      },
-    });
+    emitCreateChallenge({ control });
   }
   async function getInitialChallenges() {
     console.log("Try to load");
@@ -151,6 +148,7 @@
 
   onMount(() => {
     getInitialChallenges();
+    subscribeOnGettingChallenges();
   });
 </script>
 

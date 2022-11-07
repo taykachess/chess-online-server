@@ -15,6 +15,7 @@ model User {
   username       String   @unique
   email          String   @unique
   hashedPassword String
+  rating         Decimal  @default(2000)
   roles          Role[]
   participant    Player[]
   games          Game[]

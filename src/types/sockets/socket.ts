@@ -2,10 +2,12 @@ export interface ServerToClientEvents {
   noArg: () => void;
   basicEmit: (a: number, b: string, c: Buffer) => void;
   withAck: (d: string, callback: (e: number) => void) => void;
+  "challenge:created": (challenge: any) => void;
 }
 
 export interface ClientToServerEvents {
-  hello: () => void;
+  "challenge:subscribe": (cb: any) => void;
+  "challenge:create": (challenge: any) => void;
 }
 
 export interface InterServerEvents {
@@ -13,6 +15,6 @@ export interface InterServerEvents {
 }
 
 export interface SocketData {
-  name: string;
-  age: number;
+  id: string;
+  username: string;
 }
