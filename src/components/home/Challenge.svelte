@@ -12,10 +12,7 @@
   import { listOfChallenges } from "$store/home/challenges";
   import { onMount } from "svelte";
   import { page } from "$app/stores";
-  import {
-    emitCreateChallenge,
-    subscribeOnGettingChallenges,
-  } from "$store/sockets/socket";
+  import { socket } from "$store/sockets/socket";
   // import { page } from "$app/stores";
 
   let palleterRecords: PalleterLi[] = [
@@ -94,7 +91,7 @@
   }
 
   async function createChallenge({ control }: { control: string }) {
-    emitCreateChallenge({ control });
+    $socket.emit("challenge:create", { control });
   }
   async function getInitialChallenges() {
     console.log("Try to load");
@@ -148,7 +145,21 @@
 
   onMount(() => {
     getInitialChallenges();
-    subscribeOnGettingChallenges();
+    $socket.emit("challenge:subscribe", (challenges: any) => {
+      console.log(challenges);
+    });
+
+    $socket.on("challenge:created", (challenge) => {
+      const index = $listOfChallenges.challenges.findIndex(
+        (chal) => chal.user == challenge.user
+      );
+      if (index === -1) {
+        $listOfChallenges.challenges?.push(challenge);
+        $listOfChallenges.challenges = $listOfChallenges.challenges;
+      } else $listOfChallenges.challenges[index] = challenge;
+
+      // $listOfChallenges.challenges = $listOfChallenges.challenges;
+    });
   });
 </script>
 

@@ -3,7 +3,8 @@ import { io, app } from "./global/io";
 import { verify } from "jsonwebtoken";
 
 import * as dotenv from "dotenv";
-import { challengeProvider } from "./providers/challegeProvider";
+import { challengeController } from "./controllers/challengeController";
+import { onDisconnect } from "./providers/base/onDisconnect";
 dotenv.config({ path: "../.env" });
 
 io.use((socket, next) => {
@@ -23,11 +24,9 @@ io.use((socket, next) => {
 });
 
 io.on("connection", async (socket) => {
-  challengeProvider(io, socket);
+  challengeController(io, socket);
 
-  socket.on("disconnect", () => {
-    console.log("socketId", socket.id, "disconnected");
-  });
+  socket.on("disconnect", onDisconnect);
 });
 
 app.listen(3000, (token: any) => {

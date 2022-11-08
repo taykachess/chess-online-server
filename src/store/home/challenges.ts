@@ -3,5 +3,5 @@ import type { GetChallenge } from "$types/home/Challenge";
 
 export const listOfChallenges: Writable<{
   count: number;
-  challenges: GetChallenge[] | null;
-}> = writable({ count: 0, challenges: null });
+  challenges: GetChallenge[];
+}> = writable({ count: 0, challenges: [] });

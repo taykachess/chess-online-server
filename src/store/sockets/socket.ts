@@ -32,19 +32,7 @@ export const subscribeOnGettingChallenges = () => {
 
   socket.subscribe((value) =>
     value.on("challenge:created", (challenge: any) => {
-      let unsubscribe = listOfChallenges.subscribe((val) => {
-        val.challenges?.push(challenge);
-        val.count = val.count + 1;
-      });
-
-      unsubscribe();
-      unsubscribe = listOfChallenges.subscribe((val) => {
-        val.challenges = val.challenges;
-        console.log("val", val);
-      });
-      unsubscribe();
-
-      // listOfChallenges.update(({challenges}) => );
+      listOfChallenges.subscribe((val) => val.challenges?.push(challenge));
       console.log("Got challenge", challenge);
     })
   );
