@@ -6,6 +6,7 @@
   } from "@rgossiaux/svelte-headlessui";
 
   export let title: string = "tayka";
+  export let rating: number = 1758;
   export let records: {
     link: string;
     svg: string;
@@ -29,9 +30,13 @@
 
 <Popover class="relative ">
   <PopoverButton
-    class="group inline-flex items-center rounded-md bg-slate-700 px-4 py-1 font-medium text-white text-opacity-90 hover:text-opacity-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75"
+    class=" group inline-flex items-center rounded-md bg-slate-700 px-4 py-1 font-medium text-white text-opacity-90 hover:text-opacity-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75"
   >
     <span>{title}</span>
+    <span class=" ml-2 mt-px rounded bg-white px-1 text-xs text-slate-700"
+      >{rating}</span
+    >
+
     <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 20 20"

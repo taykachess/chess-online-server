@@ -12,12 +12,12 @@
       console.log("Cool");
     }}
   >
-    <Tab title="Игра" active={$tab === "challenge" ? true : false}
+    <Tab title="Игра / Матч" active={$tab === "challenge" ? true : false}
       ><Icon src={ThumbUp} size="52" /></Tab
     >
   </li>
   <!-- svelte-ignore a11y-click-events-have-key-events -->
-  <li
+  <!-- <li
     on:click={() => {
       $tab = "match";
     }}
@@ -25,7 +25,7 @@
     <Tab title="Матч" active={$tab === "match" ? true : false}
       ><Icon src={Heart} size="52" /></Tab
     >
-  </li>
+  </li> -->
   <!-- svelte-ignore a11y-click-events-have-key-events -->
   <li
     on:click={() => {

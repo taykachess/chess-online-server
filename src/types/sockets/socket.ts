@@ -1,12 +1,12 @@
 export interface ServerToClientEvents {
   "challenge:created": (challenge: any) => void;
-  "challenge:deleted": ({ username }: { username?: string }) => void;
+  "challenge:deleted": ({ socketId }: { socketId?: string }) => void;
 }
 
 export interface ClientToServerEvents {
   "challenge:subscribe": (cb: any) => void;
   "challenge:create": (challenge: any) => void;
-  "challenge:cancel": (challenge: any) => void;
+  "challenge:cancel": () => void;
 }
 
 export interface InterServerEvents {

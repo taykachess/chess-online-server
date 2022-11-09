@@ -11,7 +11,6 @@
     onClick?: () => any;
   }[];
   export let count: number;
-  export let onClick: any = () => {};
   export let onClickPagination: (page: number) => void;
 
   let currentPage = 1;
@@ -40,8 +39,10 @@
               {#each records as record}
                 <tr
                   on:click={() => {
+                    console.log("OnClick Table", record);
+
                     if (record.link) return goto(record.link);
-                    if (record.onClick) return onClick();
+                    if (record.onClick) return record.onClick();
                   }}
                   class="cursor-pointer hover:bg-slate-50 {record.registered
                     ? ' bg-green-100'
@@ -50,7 +51,7 @@
                   {#each record.records as field}
                     <td
                       class="whitespace-nowrap py-2 pl-4 pr-3 text-sm font-medium  text-gray-900 sm:pl-6"
-                      >{@html field}</td
+                      >{field}</td
                     >
                   {/each}
                 </tr>

@@ -5,5 +5,6 @@ export interface PalleterLi {
   bg: string;
   svg: IconSource;
   wait?: boolean;
-  onClick: any;
+  onClick?: any;
+  onDoubleClick?: any;
 }

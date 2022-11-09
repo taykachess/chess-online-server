@@ -8,11 +8,9 @@ export async function onDisconnect(this: SocketType) {
 
   const status = await delJsonRedis({
     index: CHALLENGES,
-    path: `$.${socket.id}`,
+    path: `$.${socket.data.username ? socket.data.username : socket.id}`,
   });
-
+  console.log("onDisconnect", status, socket.id);
   if (status)
-    socket
-      .to("challenges")
-      .emit("challenge:deleted", { username: socket.data.username });
+    socket.to("challenges").emit("challenge:deleted", { socketId: socket.id });
 }
