@@ -3,6 +3,7 @@ import type { UserConfig } from "vite";
 
 const config: UserConfig = {
   plugins: [sveltekit()],
+  // ssr: { noExternal: ["cm-chessboard"] },
 };
 
 export default config;
