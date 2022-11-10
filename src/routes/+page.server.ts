@@ -6,6 +6,7 @@ import { prisma } from "$lib/db/prisma";
 import { sign } from "jsonwebtoken";
 
 import { JWT_SECRET } from "$env/static/private";
+import { filterSchema } from "$lib/validate/filters";
 
 // export const load: PageServerLoad = async ({ locals }) => {
 //   return {
@@ -58,6 +59,7 @@ export const actions: Actions = {
         email,
         username,
         hashedPassword,
+        filters: { min: 500, max: 500 },
       },
       select: { id: true, username: true, roles: { select: { name: true } } },
     });
@@ -122,6 +124,31 @@ export const actions: Actions = {
   },
   logout: async ({ request, cookies }) => {
     cookies.delete("token");
+    return { success: true };
+  },
+  filters: async ({ request, cookies, locals }) => {
+    const formData = Object.fromEntries(await request.formData());
+    const min = +formData["min"];
+    const max = +formData["max"];
+    const filters = { min, max };
+    try {
+      filterSchema.parse(filters);
+    } catch (err) {
+      console.log("err");
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      const { fieldErrors: errors } = err.flatten();
+      console.log(errors);
+      return invalid(400, { errors });
+      // return invalid(400);
+    }
+
+    await prisma.user.update({
+      where: { id: locals.user.id },
+      data: { filters },
+    });
+
+    console.log("Ok", max, min);
     return { success: true };
   },
 };

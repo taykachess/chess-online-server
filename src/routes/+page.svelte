@@ -19,15 +19,17 @@
 <div
   class="mt-10  flex flex-col items-center bg-gradient-to-br from-slate-700 to-slate-800  pb-6"
 >
-  {#if $tab === "challenge"}
-    <Challenge />
-  {:else if $tab === "match"}
-    <Match />
-  {:else if $tab === "tournament"}
-    <div class=" my-4" />
+  <div class=" max-w-7xl">
+    {#if $tab === "challenge"}
+      <Challenge />
+    {:else if $tab === "match"}
+      <Match />
+    {:else if $tab === "tournament"}
+      <div class=" my-4" />
 
-    <Tournament />
-  {:else if $tab === "puzzle"}
-    <div class="" />
-  {/if}
+      <Tournament />
+    {:else if $tab === "puzzle"}
+      <div class="" />
+    {/if}
+  </div>
 </div>

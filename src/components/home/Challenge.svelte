@@ -15,6 +15,8 @@
   import { socket } from "$store/sockets/socket";
   import { goto } from "$app/navigation";
   import { record } from "zod";
+  import Badge from "$components/common/Badge.svelte";
+  import Filters from "./Filters.svelte";
   // import { page } from "$app/stores";
 
   let palleterRecords: PalleterLi[] = [
@@ -240,10 +242,18 @@
     color={{ bg: "bg-yellow-100", text: "text-yellow-800" }}
   />
 </div> -->
+<div class="mt-2">
+  <Filters />
+</div>
 
-<div class=" my-4" />
-<div class=" grid w-full max-w-7xl grid-cols-2 gap-x-4 ">
+<div class=" my-2" />
+<div class=" grid w-full  grid-cols-2 gap-x-4 ">
   <div class=" w-full   ">
+    <!-- <div class=" flex w-40 bg-white">
+      <div class=" ">Нет фильтров</div>
+      <div class="flex items-center justify-center bg-green-100 ">з</div>
+    </div> -->
+
     <Palleter records={palleterRecords} />
   </div>
   <div class=" w-full ">

@@ -6,7 +6,11 @@ declare namespace App {
     user: import("$types/hooks/user").DecodedUser;
   }
 
-  // interface PageData {
-  //   user: import("$types/hooks/user").DecodedUser;
-  // }
+  interface PageData {
+    user?: import("$types/hooks/user").DecodedUser;
+  }
 }
+
+// import Types from '@types/chess.js'
+
+declare module "cm-chessboard";

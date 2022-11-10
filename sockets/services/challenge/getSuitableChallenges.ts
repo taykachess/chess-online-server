@@ -6,10 +6,20 @@ interface Filters {
   max: number;
   control: string;
 }
-export async function getSuitableChallenges(filters: Filters, rating: number) {
+export async function getSuitableChallenges({
+  max,
+  min,
+  control,
+  rating,
+}: {
+  max: number;
+  min: number;
+  control: string;
+  rating: number;
+}) {
   //  @ts-ignore
   const challenges: any[] = await redis.json.get(CHALLENGES, {
-    path: `$.[?((((@.rating>=${filters.min}&&@.rating<=${filters.max})&&@.control=="${filters.control}")&&@.filters.min<=${rating})&&@.filters.max>=${rating})]`,
+    path: `$.[?((((@.rating>=${min}&&@.rating<=${max})&&@.control=="${control}")&&@.filters.min<=${rating})&&@.filters.max>=${rating})]`,
   });
   console.log("Challenges goods ", challenges);
   return challenges;

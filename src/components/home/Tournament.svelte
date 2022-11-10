@@ -114,47 +114,45 @@
 </script>
 
 <!-- {isAdmin ? ' grid grid-cols-2 gap-6 ' : ''}  -->
-<div class="  max-w-7xl   ">
-  <!-- {#if isAdmin}
+<!-- {#if isAdmin}
     <TournamentGrid />
   {/if} -->
-  <div class="">
-    <Tabs
-      bind:currentTab={$tournamentTab}
-      tabs={[
-        { active: "all", title: "Турниры", load: getInitialTournaments },
-        {
-          active: "IRegistered",
-          title: "Зарегестрирован",
-          load: getInitialRegistedTournaments,
-          disabled: $page.data?.user ? false : true,
-        },
-        {
-          active: "ICreated",
-          title: "Созданные",
-          load: () => {},
-          disabled: true,
-        },
-      ]}
+<div class="">
+  <Tabs
+    bind:currentTab={$tournamentTab}
+    tabs={[
+      { active: "all", title: "Турниры", load: getInitialTournaments },
+      {
+        active: "IRegistered",
+        title: "Зарегестрирован",
+        load: getInitialRegistedTournaments,
+        disabled: $page.data?.user ? false : true,
+      },
+      {
+        active: "ICreated",
+        title: "Созданные",
+        load: () => {},
+        disabled: true,
+      },
+    ]}
+  />
+  {#if $tournamentTab === "all"}
+    <Table
+      {titles}
+      {records}
+      {onClickPagination}
+      count={$listOfTournaments.count}
     />
-    {#if $tournamentTab === "all"}
+  {:else if $tournamentTab === "IRegistered"}
+    {#if $page?.data?.user}
       <Table
         {titles}
         {records}
-        {onClickPagination}
+        onClickPagination={onClickPaginationRegisted}
         count={$listOfTournaments.count}
       />
-    {:else if $tournamentTab === "IRegistered"}
-      {#if $page?.data?.user}
-        <Table
-          {titles}
-          {records}
-          onClickPagination={onClickPaginationRegisted}
-          count={$listOfTournaments.count}
-        />
-      {:else}
-        <div class=" w-[40rem] text-white">Зарегестрируйся</div>
-      {/if}
+    {:else}
+      <div class=" w-[40rem] text-white">Зарегестрируйся</div>
     {/if}
-  </div>
+  {/if}
 </div>
