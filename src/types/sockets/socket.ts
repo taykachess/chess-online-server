@@ -1,6 +1,7 @@
 export interface ServerToClientEvents {
   "challenge:created": (challenge: any) => void;
   "challenge:deleted": ({ socketId }: { socketId?: string }) => void;
+  "game:started": ({ gameId }: { gameId?: string }) => void;
 }
 
 export interface ClientToServerEvents {

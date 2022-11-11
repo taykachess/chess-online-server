@@ -1,8 +1,6 @@
 <script lang="ts">
   import Header from "$components/layout/Header.svelte";
   import "../app.postcss";
-  import type { LayoutData } from "./$types";
-  export let data: LayoutData;
 </script>
 
 <svelte:head>

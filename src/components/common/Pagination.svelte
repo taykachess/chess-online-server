@@ -34,6 +34,7 @@
     </p>
   </div>
   <div class="">
+    <!-- svelte-ignore a11y-click-events-have-key-events -->
     <nav
       class="isolate mt-4 inline-flex -space-x-px rounded-md shadow-sm"
       aria-label="Pagination"
@@ -84,7 +85,7 @@
         class="relative inline-flex items-center border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700"
         >...</span -->
 
-      <a
+      <div
         on:click={() => {
           if (currentPage == PAGES) return;
           cb(currentPage + 1);
@@ -107,7 +108,7 @@
             clip-rule="evenodd"
           />
         </svg>
-      </a>
+      </div>
     </nav>
   </div>
 </div>

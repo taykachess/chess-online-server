@@ -6,7 +6,6 @@ import type { SocketType } from "../../types";
 import { io } from "../../global/io";
 
 import { GetChallenge } from "../../../src/types/home/Challenge";
-import { Prisma } from "@prisma/client";
 
 export async function onChallengeCreate(this: SocketType, data: any) {
   try {
@@ -24,6 +23,8 @@ export async function onChallengeCreate(this: SocketType, data: any) {
       rating: +user?.rating,
       control,
       socketId: socket.id,
+      // @ts-ignore
+      filters: user.filters,
     };
 
     let ratingFilter: { min: number; max: number } = {
@@ -38,20 +39,19 @@ export async function onChallengeCreate(this: SocketType, data: any) {
       ratingFilter.max = ratingFilter.max + +user.rating;
       ratingFilter.min = ratingFilter.min + +user.rating;
     }
-    // if(+user.filters.min==500 && +user.filters.max==500) return
-    const existChallenges = await getSuitableChallenges({
+    const existChallenges: GetChallenge[] = await getSuitableChallenges({
       min: ratingFilter.min,
       max: ratingFilter.max,
       control,
       rating: +user?.rating,
     });
-    // console.log({
-    //   min: filters.min,
-    //   max: filters.max,
-    //   control,
-    //   rating: +user?.rating,
-    // });
+
     if (existChallenges?.length) {
+      const choosenChallenge = existChallenges[0];
+      const [socket2] = await io
+        .in(`${choosenChallenge.socketId}`)
+        .fetchSockets();
+
       console.log("Start the game");
       /* ... */
       return;

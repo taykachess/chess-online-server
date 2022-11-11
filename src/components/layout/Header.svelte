@@ -28,6 +28,7 @@
     </div>
     {#if !$page.data?.user}
       <div class=" flex items-center space-x-4 text-sm">
+        <!-- svelte-ignore a11y-click-events-have-key-events -->
         <div
           on:click={() => {
             isOpenLogin = true;
