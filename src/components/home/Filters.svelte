@@ -16,8 +16,8 @@
 
 <Dialog bind:isOpen>
   <FiltersForm
-    low={$page.data.user?.filters.min}
-    high={$page.data.user?.filters.max}
+    low={$page.data.user?.filters?.min}
+    high={$page.data.user?.filters?.max}
     bind:isOpen
   />
 </Dialog>

@@ -5,6 +5,7 @@ import { verify } from "jsonwebtoken";
 import * as dotenv from "dotenv";
 import { challengeController } from "./controllers/challengeController";
 import { onDisconnect } from "./providers/base/onDisconnect";
+import { gameController } from "./controllers/gameController";
 dotenv.config({ path: "../.env" });
 
 io.use((socket, next) => {
@@ -24,7 +25,8 @@ io.use((socket, next) => {
 });
 
 io.on("connection", async (socket) => {
-  challengeController(io, socket);
+  challengeController(socket);
+  gameController(socket);
 
   socket.on("disconnect", onDisconnect);
 });

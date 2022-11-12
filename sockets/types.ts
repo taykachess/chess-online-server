@@ -1,4 +1,4 @@
-import { Server, Socket } from "socket.io";
+import { RemoteSocket, Server, Socket } from "socket.io";
 import type {
   ClientToServerEvents,
   ServerToClientEvents,
@@ -19,3 +19,5 @@ export type SocketType = Socket<
   InterServerEvents,
   SocketData
 >;
+
+export type SocketRemoteType = RemoteSocket<ServerToClientEvents, SocketData>;

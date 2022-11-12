@@ -1,11 +1,12 @@
 import { prisma } from "../../global/prisma";
-import { setJsonRedis } from "../../services/redis/setJsonRedis";
 import { getSuitableChallenges } from "../../services/challenge/getSuitableChallenges";
 import { CHALLENGES } from "../../variables/redisIndex";
 import type { SocketType } from "../../types";
 import { io } from "../../global/io";
 
 import { GetChallenge } from "../../../src/types/home/Challenge";
+import { createGame } from "../../services/game/createGame";
+import { redis } from "../../global/redis";
 
 export async function onChallengeCreate(this: SocketType, data: any) {
   try {
@@ -24,7 +25,12 @@ export async function onChallengeCreate(this: SocketType, data: any) {
       control,
       socketId: socket.id,
       // @ts-ignore
-      filters: user.filters,
+      filters: {
+        // @ts-ignore
+        min: user.filters.min == -500 ? 0 : user.filters.min + +user?.rating,
+        // @ts-ignore
+        max: user.filters.max == 500 ? 5000 : user.filters.max + +user?.rating,
+      },
     };
 
     let ratingFilter: { min: number; max: number } = {
@@ -52,17 +58,25 @@ export async function onChallengeCreate(this: SocketType, data: any) {
         .in(`${choosenChallenge.socketId}`)
         .fetchSockets();
 
-      console.log("Start the game");
+      await createGame({
+        sockets: [socket, socket2],
+        data: {
+          white: { user: socket.data.username, rating: user.rating },
+          black: { user: socket2.data.username, rating: 2000 },
+          control,
+        },
+      });
+      console.log("Start the game", socket.id, socket2.id);
       /* ... */
       return;
     }
     console.log(challenge);
-    // const status = await redis.json.ARRAPPEND(CHALLENGES, "$", challenge);
-    const status = await setJsonRedis({
-      index: CHALLENGES,
-      path: `${socket.data.username}`,
-      data: challenge,
-    });
+
+    const status = await redis.json.set(
+      CHALLENGES,
+      `${socket.data.username}`,
+      challenge
+    );
 
     if (status) io.to("challenges").emit("challenge:created", challenge);
   } catch (error) {

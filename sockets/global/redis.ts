@@ -39,6 +39,7 @@ const redis = createClient();
   };
   //   New object must be created first
   await redis.json.set("challenges", `$`, data);
+  await redis.json.set("games", `$`, {});
 })();
 
 export { redis };

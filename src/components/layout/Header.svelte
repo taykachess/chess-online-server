@@ -1,5 +1,6 @@
 <script lang="ts">
   import { enhance } from "$app/forms";
+  import { goto } from "$app/navigation";
   import { page } from "$app/stores";
   import Dialog from "$components/common/Dialog.svelte";
   import Popover from "$components/common/Popover.svelte";
@@ -20,7 +21,13 @@
 <div class="border-b">
   <div class=" mx-auto flex h-16  max-w-7xl  items-center justify-between   ">
     <!-- <div class=" ml-4">Chess</div> -->
-    <div class=" flex items-center space-x-2">
+    <!-- svelte-ignore a11y-click-events-have-key-events -->
+    <div
+      on:click={() => {
+        goto("/");
+      }}
+      class=" flex cursor-pointer items-center space-x-2"
+    >
       <div class="  h-8 w-8">
         <Logo />
       </div>
