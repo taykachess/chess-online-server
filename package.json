@@ -18,7 +18,7 @@
     "bcrypt": "^5.1.0",
     "chessground": "^8.3.5",
     "cm-chess": "^2.4.2",
-    "cm-chessboard-ts": "^5.2.14",
+    "cm-chessboard-ts": "^5.2.15",
     "date-picker-svelte": "^2.2.1",
     "gchessboard": "^0.3.1",
     "jsonwebtoken": "^8.5.1",

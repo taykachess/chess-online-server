@@ -37,6 +37,7 @@
       return moves.length > 0;
     } else if (event.type === INPUT_EVENT_TYPE.validateMoveInput) {
       const move = { from: event.squareFrom, to: event.squareTo };
+      // @ts-ignore
       const result = $chess.move(move);
       if (result) {
         $board.disableMoveInput();
