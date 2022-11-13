@@ -1,6 +1,7 @@
 import { getGame } from "../../global/games";
 import { SocketType } from "../../types";
 import { GetGame } from "../../../src/types/sockets/socket";
+import { prisma } from "../../global/prisma";
 
 export async function onGameGet(
   this: SocketType,
@@ -13,14 +14,16 @@ export async function onGameGet(
     // console.log("goood", game);
 
     if (!game) {
+      const prismaGame = await prisma.game.findFirst({ where: { id: gameId } });
+      console.log(prismaGame);
       return;
     }
 
     socket.join(`game${gameId}`);
     const pgn = game.chess.pgn();
-    const { white, black, time } = game;
+    const { white, black, time, result } = game;
 
-    cb({ white, black, time, pgn, status: "running" });
+    cb({ white, black, time, pgn, result });
   } catch (error) {
     console.log(error);
   }

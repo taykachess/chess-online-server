@@ -1,24 +1,24 @@
 import type { SocketRemoteType, SocketType } from "../../types";
-import { redis } from "../../global/redis";
-import { GAMES, TIME_TO_CANCEL_GAME } from "../../variables/redisIndex";
+import { TIME_TO_CANCEL_GAME } from "../../variables/redisIndex";
 import { deleteGame, setGame } from "../../global/games";
 import { Chess } from "chess.js";
+import { v4 as uuid } from "uuid";
 
 export async function createGame({
   sockets,
   data,
 }: {
   sockets: [socket1: SocketType, socket2: SocketRemoteType];
-  data: any;
+  data: {
+    white: { username: string; rating: number };
+    black: { username: string; rating: number };
+    control: string;
+  };
 }) {
   if (!sockets[0].data?.username || !sockets[1].data?.username)
     throw Error("User can't be found");
 
-  const generatedId = "game1234";
-  // sockets[0].join(generatedId);
-  // sockets[1].join(generatedId);
-
-  await redis.json.set(GAMES, generatedId, data);
+  const generatedId = uuid();
 
   // Set game inside memory
   const timerId = setInterval(() => {
@@ -26,8 +26,8 @@ export async function createGame({
   }, TIME_TO_CANCEL_GAME);
   setGame(generatedId, {
     chess: new Chess(),
-    white: sockets[0].data.username,
-    black: sockets[1].data.username,
+    white: data.white,
+    black: data.black,
     time: [
       +data.control.split("+")[0] * 60 * 1000,
       +data.control.split("+")[0] * 60 * 1000,
@@ -36,16 +36,12 @@ export async function createGame({
     tsmp: new Date().getTime(),
     increment: +data.control.split("+")[1],
     timerId,
+    result: "*",
+    control: data.control,
   });
 
-  // await setJsonRedis({
-  //   index: "playersInGame",
-  //   path: socketW.data.username,
-  //   data: [generatedId],
-  // });
+  // :TODO Записать в хеш, что идет игра
 
-  // console.log(socketB.data.username, socketB.rooms);
-  // console.log(socketW.data.username, socketW.rooms);
   sockets[0].emit("game:started", { gameId: generatedId });
   sockets[1].emit("game:started", { gameId: generatedId });
 }

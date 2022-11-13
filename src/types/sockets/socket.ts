@@ -1,11 +1,11 @@
 import type { Move } from "cm-chess";
 
 export interface GetGame {
-  white: string;
-  black: string;
+  white: { username: string; rating: number };
+  black: { username: string; rating: number };
   time: [number, number];
   pgn: string;
-  status: string;
+  result: string;
 }
 
 export interface ServerToClientEvents {
@@ -13,12 +13,14 @@ export interface ServerToClientEvents {
   "challenge:deleted": ({ socketId }: { socketId?: string }) => void;
   "game:started": ({ gameId }: { gameId?: string }) => void;
   "game:move": (move: string) => void;
+  "game:end": ({ result }: { result: string }) => void;
 }
 
 export interface ClientToServerEvents {
   "challenge:subscribe": (cb: any) => void;
   "challenge:create": (challenge: any) => void;
   "challenge:cancel": () => void;
+  "challenge:accept": ({ username }: { username: string }) => void;
   "game:move": ({ move, gameId }: { move: string; gameId: string }) => void;
 
   "game:get": (

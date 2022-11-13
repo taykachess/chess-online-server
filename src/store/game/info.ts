@@ -1,9 +1,9 @@
 import { writable, type Writable } from "svelte/store";
 
 interface GameInfo {
-  white: string;
-  black: string;
+  white: { username: string; rating: number };
+  black: { username: string; rating: number };
   time: [number, number];
-  status: string;
+  result: string;
 }
 export const info: Writable<GameInfo> = writable();

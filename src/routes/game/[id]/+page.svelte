@@ -62,12 +62,12 @@
     $socket.emit(
       "game:get",
       { gameId: $page.params.id },
-      ({ white, black, time, pgn, status }: GetGame) => {
+      ({ white, black, time, pgn, result }: GetGame) => {
         $chess = new Chess();
         // @ts-ignore
         $chess.loadPgn(pgn);
         $board = new Chessboard(boardHTML, {
-          orientation: black === $page.data.user?.username ? "b" : "w",
+          orientation: black.username === $page.data.user?.username ? "b" : "w",
           position: $chess.fen(),
           style: {
             borderType: "frame",
@@ -83,18 +83,37 @@
           },
         });
 
-        $info = { black, white, time, status };
+        $info = { black, white, time, result };
 
-        if (status == "running") {
+        if (result == "*") {
           $socket.on("game:move", (move: string) => {
             const result = $chess.move(move);
             if (result) {
               $board.setPosition($chess.fen(), true);
+              const newTurn = $chess.turn();
+              if (
+                white.username === $page.data.user?.username &&
+                newTurn == "w"
+              ) {
+                return $board.enableMoveInput(inputHandler, COLOR.white);
+              }
+
+              if (
+                black.username === $page.data.user?.username &&
+                newTurn == "b"
+              ) {
+                return $board.enableMoveInput(inputHandler, COLOR.black);
+              }
             }
           });
+          const turn = $chess.turn();
 
-          if (white === $page.data.user?.username) {
-            $board.enableMoveInput(inputHandler, COLOR.white);
+          if (white.username === $page.data.user?.username && turn == "w") {
+            return $board.enableMoveInput(inputHandler, COLOR.white);
+          }
+
+          if (black.username === $page.data.user?.username && turn == "b") {
+            return $board.enableMoveInput(inputHandler, COLOR.black);
           }
         }
       }

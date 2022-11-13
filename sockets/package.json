@@ -19,11 +19,14 @@
     "@redis/json": "^1.0.4",
     "@socket.io/redis-adapter": "^7.2.0",
     "@types/chess.js": "^0.13.4",
+    "@types/uuid": "^8.3.4",
     "chess.js": "^1.0.0-alpha.0",
+    "cm-chessboard-ts": "^5.2.14",
     "dotenv": "^16.0.3",
     "jsonwebtoken": "^8.5.1",
     "redis": "^4.4.0",
     "socket.io": "^4.5.3",
+    "uuid": "^9.0.0",
     "uWebSockets.js": "github:uNetworking/uWebSockets.js#v20.15.0"
   }
 }

@@ -1,14 +1,20 @@
 import { Chess } from "chess.js";
 
+interface Player {
+  username: string;
+  rating: number;
+}
 interface Game {
   time: [w: number, b: number];
-  white: string;
-  black: string;
+  white: Player;
+  black: Player;
   chess: Chess;
   timerId: any;
   ply: number;
   tsmp: number;
   increment: number;
+  result: string;
+  control: string;
 }
 interface Games {
   [id: string]: Game;
@@ -25,10 +31,8 @@ export function setGame(gameId: string, game: Game) {
 }
 
 export function deleteGame(gameId: string) {
-  console.log(games[gameId]);
   clearTimeout(games[gameId].timerId);
   delete games[gameId];
-  console.log(games[gameId]);
 }
 
 export function setGameTimeout(gameId: string, fn: any, miliseconds: number) {

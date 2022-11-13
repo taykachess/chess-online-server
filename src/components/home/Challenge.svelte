@@ -131,7 +131,7 @@
       arrayRecords.push({
         // link: `/tournament/${challenge.}`,
         onClick: () => {
-          goto(`/game/${challenge.socketId}`);
+          $socket.emit("challenge:accept", { username: challenge.user });
         },
         registered: challenge.user === $page.data?.user?.username,
         records: [challenge.user, `${challenge.rating}`, challenge.control],
@@ -159,7 +159,7 @@
         $listOfChallenges.challenges = $listOfChallenges.challenges;
         records.push({
           onClick: () => {
-            goto(`/game/${challenge.socketId}`);
+            $socket.emit("challenge:accept", { username: challenge.user });
           },
           registered: challenge.user === $page.data?.user?.username,
           records: [challenge.user, `${challenge.rating}`, challenge.control],
@@ -172,7 +172,8 @@
         );
         records[index2] = {
           onClick: () => {
-            goto(`/game/${challenge.socketId}`);
+            console.log("sended", challenge.user);
+            $socket.emit("challenge:accept", { username: challenge.user });
           },
           registered: challenge.user === $page.data?.user?.username,
           records: [challenge.user, `${challenge.rating}`, challenge.control],
@@ -208,7 +209,6 @@
   });
 
   onDestroy(() => {
-    $socket?.emit("challenge:cancel");
     $socket?.removeListener("challenge:created");
     $socket?.removeListener("challenge:deleted");
 

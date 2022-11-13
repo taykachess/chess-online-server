@@ -8,10 +8,12 @@ import { GetChallenge } from "../../../src/types/home/Challenge";
 import { createGame } from "../../services/game/createGame";
 import { redis } from "../../global/redis";
 
-export async function onChallengeCreate(this: SocketType, data: any) {
+export async function onChallengeCreate(
+  this: SocketType,
+  data: { control: string }
+) {
   try {
     const socket = this;
-
     const { control } = data;
     const user = await prisma.user.findFirst({
       where: { id: socket.data.id },
@@ -58,19 +60,32 @@ export async function onChallengeCreate(this: SocketType, data: any) {
         .in(`${choosenChallenge.socketId}`)
         .fetchSockets();
 
+      if (!socket.data?.username || !socket2.data?.username)
+        throw Error("The both user must have username");
+      const userOpponent = await prisma.user.findFirst({
+        where: { username: socket2.data.username },
+        select: { rating: true },
+      });
+      if (!userOpponent) throw Error("User not found");
+
       await createGame({
         sockets: [socket, socket2],
         data: {
-          white: { user: socket.data.username, rating: user.rating },
-          black: { user: socket2.data.username, rating: 2000 },
+          white: { username: socket.data.username, rating: +user.rating },
+          black: {
+            username: socket2.data.username,
+            rating: +userOpponent?.rating,
+          },
           control,
         },
       });
-      console.log("Start the game", socket.id, socket2.id);
+
+      await redis.json.del(CHALLENGES, `$.${socket.data.username}`);
+      await redis.json.del(CHALLENGES, `$.${socket2.data.username}`);
+
       /* ... */
       return;
     }
-    console.log(challenge);
 
     const status = await redis.json.set(
       CHALLENGES,
