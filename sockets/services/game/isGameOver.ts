@@ -1,6 +1,5 @@
 import { Chess } from "chess.js";
-
-type Result = "1-0" | "0-1" | "0.5-0.5" | "*";
+import type { Result } from "../../global/games";
 export function isGameOver({
   chess,
   turn,

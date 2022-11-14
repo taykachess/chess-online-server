@@ -1,10 +1,14 @@
 import { Chess } from "chess.js";
 
-interface Player {
+export interface Player {
   username: string;
   rating: number;
+  ratingNext?: number;
 }
-interface Game {
+
+export type Result = "1-0" | "0.5-0.5" | "0-1" | "*" | "+-" | "-+";
+
+export interface Game {
   time: [w: number, b: number];
   white: Player;
   black: Player;
@@ -13,7 +17,7 @@ interface Game {
   ply: number;
   tsmp: number;
   increment: number;
-  result: string;
+  result: Result;
   control: string;
 }
 interface Games {

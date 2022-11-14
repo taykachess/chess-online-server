@@ -1,5 +1,4 @@
 import { getGame } from "../../global/games";
-import { io } from "../../global/io";
 import { changeTime } from "../../services/game/changeTime";
 import { isGameOver } from "../../services/game/isGameOver";
 import { onGameOver } from "../../services/game/onGameOver";
@@ -28,12 +27,9 @@ export async function onMove(
     changeTime({
       gameId,
       turn,
-      // time: turn == "b" ? game.time[0] : game.time[1],
       increment: game.increment,
       tsmp: game.tsmp,
     });
-
-    console.log(game.time);
 
     const result = isGameOver({ chess: game.chess, turn });
     if (result != "*") {

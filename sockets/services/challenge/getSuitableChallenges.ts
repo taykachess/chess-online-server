@@ -17,11 +17,9 @@ export async function getSuitableChallenges({
   control: string;
   rating: number;
 }) {
-  console.log(max, min, control, rating);
   //  @ts-ignore
   const challenges: any[] = await redis.json.get(CHALLENGES, {
     path: `$.[?((((@.rating>=${min}&&@.rating<=${max})&&@.control=="${control}")&&@.filters.min<=${rating})&&@.filters.max>=${rating})]`,
   });
-  console.log("Challenges goods ", challenges);
   return challenges;
 }

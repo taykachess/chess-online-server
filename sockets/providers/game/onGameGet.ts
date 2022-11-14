@@ -14,9 +14,19 @@ export async function onGameGet(
     // console.log("goood", game);
 
     if (!game) {
-      const prismaGame = await prisma.game.findFirst({ where: { id: gameId } });
+      const prismaGame = await prisma.game.findFirst({
+        where: { id: gameId },
+        select: {
+          white: true,
+          black: true,
+          time: true,
+          result: true,
+          pgn: true,
+        },
+      });
       console.log(prismaGame);
-      return;
+      // @ts-ignore
+      return cb({ ...prismaGame });
     }
 
     socket.join(`game${gameId}`);
