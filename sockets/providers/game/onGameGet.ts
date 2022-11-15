@@ -33,7 +33,17 @@ export async function onGameGet(
     const pgn = game.chess.pgn();
     const { white, black, time, result } = game;
 
-    cb({ white, black, time, pgn, result });
+    const turn = game.chess.turn();
+    const timeWithDifference: [number, number] = [time[0], time[1]];
+    if (turn == "w") {
+      timeWithDifference[0] =
+        timeWithDifference[0] - (new Date().getTime() - game.tsmp);
+    } else {
+      timeWithDifference[1] =
+        timeWithDifference[1] - (new Date().getTime() - game.tsmp);
+    }
+
+    cb({ white, black, time: timeWithDifference, pgn, result });
   } catch (error) {
     console.log(error);
   }

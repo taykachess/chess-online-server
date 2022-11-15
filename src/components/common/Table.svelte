@@ -16,12 +16,12 @@
   let currentPage = 1;
 </script>
 
-<div class="">
+<div class=" ">
   <div class=" flex flex-col">
-    <div class="-my-2 -mx-4  sm:-mx-6 lg:-mx-8">
-      <div class="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
+    <div class="sm:-mx-6 lg:-mx-8">
+      <div class="inline-block min-w-full  align-middle sm:px-6 lg:px-8">
         <div
-          class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg"
+          class=" overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg"
         >
           <table class="min-w-full divide-y divide-gray-300 text-center ">
             <thead class="bg-gray-50">

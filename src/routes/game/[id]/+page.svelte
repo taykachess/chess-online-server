@@ -1,129 +1,46 @@
 <script lang="ts">
-  import { page } from "$app/stores";
-  import Board from "$components/game/Board.svelte";
-  import { board } from "$store/game/board";
-  import { chess } from "$store/game/chess";
-  import { socket } from "$store/sockets/socket";
-  import type { GetGame } from "$types/sockets/socket";
-  import { Chess } from "cm-chess";
-  import { onMount } from "svelte";
-  import {
-    MARKER_TYPE,
-    INPUT_EVENT_TYPE,
-    Chessboard,
-    COLOR,
-    type ChessBoardInstance,
-    type Color,
-  } from "cm-chessboard-ts";
-  import { info } from "$store/game/info";
-
-  let boardHTML: HTMLElement;
-
-  function inputHandler(event: {
-    chessboard: ChessBoardInstance;
-    type: string;
-    square: string;
-    squareFrom: string;
-    squareTo: string;
-  }) {
-    console.log("event", event);
-    event.chessboard.removeMarkers(MARKER_TYPE.dot);
-    if (event.type === INPUT_EVENT_TYPE.moveInputStarted) {
-      const moves = $chess.moves({ square: event.square, verbose: true });
-      for (const move of moves) {
-        // draw dots on possible squares
-        event.chessboard.addMarker(MARKER_TYPE.dot, move.to);
-      }
-      return moves.length > 0;
-    } else if (event.type === INPUT_EVENT_TYPE.validateMoveInput) {
-      const move = { from: event.squareFrom, to: event.squareTo };
-      // @ts-ignore
-      const result = $chess.move(move);
-      if (result) {
-        $board.disableMoveInput();
-        $board.state.moveInputProcess.then(() => {
-          // wait for the move input process has finished
-          $board.setPosition($chess.fen(), true).then(() => {
-            // update position, maybe castled and wait for animation has finished
-            console.log(result);
-            $socket.emit("game:move", {
-              move: result.san,
-              gameId: $page.params.id,
-            });
-          });
-        });
-      } else {
-        console.warn("invalid move", move);
-      }
-      return result;
-    }
-  }
-
-  onMount(() => {
-    $socket.emit(
-      "game:get",
-      { gameId: $page.params.id },
-      ({ white, black, time, pgn, result }: GetGame) => {
-        $chess = new Chess();
-        // @ts-ignore
-        $chess.loadPgn(pgn);
-        $board = new Chessboard(boardHTML, {
-          orientation: black.username === $page.data.user?.username ? "b" : "w",
-          position: $chess.fen(),
-          style: {
-            borderType: "frame",
-            aspectRatio: 1,
-            cssClass: "blue",
-            moveFromMarker: undefined,
-            moveToMarker: undefined,
-          },
-          sprite: {
-            url: "/assets/images/chessboard-sprite-staunty.svg", // pieces and markers are stored in a sprite file
-            size: 40, // the sprite tiles size, defaults to 40x40px
-            cache: true, // cache the sprite
-          },
-        });
-
-        $info = { black, white, time, result };
-
-        if (result == "*") {
-          $socket.on("game:move", (move: string) => {
-            const result = $chess.move(move);
-            if (result) {
-              $board.setPosition($chess.fen(), true);
-              const newTurn = $chess.turn();
-              if (
-                white.username === $page.data.user?.username &&
-                newTurn == "w"
-              ) {
-                return $board.enableMoveInput(inputHandler, COLOR.white);
-              }
-
-              if (
-                black.username === $page.data.user?.username &&
-                newTurn == "b"
-              ) {
-                return $board.enableMoveInput(inputHandler, COLOR.black);
-              }
-            }
-          });
-          const turn = $chess.turn();
-
-          if (white.username === $page.data.user?.username && turn == "w") {
-            return $board.enableMoveInput(inputHandler, COLOR.white);
-          }
-
-          if (black.username === $page.data.user?.username && turn == "b") {
-            return $board.enableMoveInput(inputHandler, COLOR.black);
-          }
-        }
-      }
-    );
-  });
+  import Chess from "$components/game/Chess.svelte";
 </script>
 
-<div class=" w-[30rem]">
-  <!-- <div class="">{$info?.white}</div> -->
-  <Board bind:boardHTML />
-  <!-- <div class="">{$info?.black}</div> -->
+<div class="chess-bg flex h-screen items-center justify-center  ">
+  <Chess />
+  <div
+    class="absolute inset-x-0 top-[-5rem] -z-10 transform-gpu overflow-hidden blur-3xl  "
+  >
+    <svg
+      class=""
+      viewBox="0 0 1155 678"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        fill="url(#45de2b6b-92d5-4d68-a6a0-9b9b2abad533)"
+        fill-opacity=".3"
+        d="M317.219 518.975L203.852 678 0 438.341l317.219 80.634 204.172-286.402c1.307 132.337 45.083 346.658 209.733 145.248C936.936 126.058 882.053-94.234 1031.02 41.331c119.18 108.451 130.68 295.337 121.53 375.223L855 299l21.173 362.054-558.954-142.079z"
+      />
+      <defs>
+        <linearGradient
+          id="45de2b6b-92d5-4d68-a6a0-9b9b2abad533"
+          x1="1155.49"
+          x2="-78.208"
+          y1=".177"
+          y2="474.645"
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop stop-color="#9089FC" />
+          <stop offset="1" stop-color="#FF80B5" />
+        </linearGradient>
+      </defs>
+    </svg>
+  </div>
 </div>
+
+<style>
+  /* .chess-bg {
+    background: radial-gradient(
+      circle,
+      rgba(30, 41, 59, 1) 0%,
+      rgba(226, 232, 240, 1) 100%
+    );
+  } */
+</style>

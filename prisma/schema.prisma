@@ -97,6 +97,11 @@ model Game {
   id      String  @id @default(cuid())
   pgn     String
   players User[]
+  white   Json
+  black   Json
   Match   Match?  @relation(fields: [matchId], references: [id], onDelete: SetNull)
   matchId String?
+  result  String
+  time    Int[]
+  control String
 }

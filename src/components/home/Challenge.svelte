@@ -52,20 +52,6 @@
       onClick: () => createChallenge({ control: "10+5" }),
       onDoubleClick: () => cancelChallenge(),
     },
-    // {
-    //   title: "Произвольный контроль",
-    //   description: "",
-    //   bg: "bg-green-500",
-    //   svg: Database,
-    //   onClick: () => {},
-    // },
-    // {
-    //   title: "Матч с другом",
-    //   description: "Ваш друг может будет принять вызов по ссылке или напрямую",
-    //   bg: "bg-green-500",
-    //   svg: Database,
-    //   onClick: () => {},
-    // },
   ];
   const titles = ["Игрок", "Рейтинг", "Контроль"];
 
@@ -242,13 +228,13 @@
     color={{ bg: "bg-yellow-100", text: "text-yellow-800" }}
   />
 </div> -->
-<div class="mt-2">
+<div class="mt-2 flex justify-center sm:block">
   <Filters />
 </div>
 
 <div class=" my-2" />
-<div class=" grid w-full  grid-cols-2 gap-x-4 ">
-  <div class=" w-full   ">
+<div class=" grid sm:w-full  sm:grid-cols-2 sm:gap-x-4  ">
+  <div class="    w-full">
     <!-- <div class=" flex w-40 bg-white">
       <div class=" ">Нет фильтров</div>
       <div class="flex items-center justify-center bg-green-100 ">з</div>
@@ -256,7 +242,7 @@
 
     <Palleter records={palleterRecords} />
   </div>
-  <div class=" w-full ">
+  <div class=" mt-2  sm:mt-0">
     <!-- <Tabs currentTab={$challengeTab} {tabs} /> -->
     <Table {titles} {records} onClickPagination={() => {}} count={10} />
   </div>

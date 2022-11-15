@@ -8,7 +8,7 @@
   import Match from "$components/home/Match.svelte";
 </script>
 
-<div class="mx-auto max-w-7xl ">
+<div class="mx-auto max-w-7xl pt-20 ">
   <TitleAndDescription />
 
   <div class="mt-6 flex justify-center">
@@ -17,17 +17,17 @@
 </div>
 
 <div
-  class="mt-10  flex flex-col items-center bg-gradient-to-br from-slate-700 to-slate-800  pb-6"
+  class="mt-10 flex  flex-col items-center bg-gradient-to-br from-slate-700 to-slate-800 px-4 pb-6  sm:px-0"
 >
-  <div class=" max-w-7xl">
+  <div class=" w-full md:max-w-6xl">
     {#if $tab === "challenge"}
       <Challenge />
     {:else if $tab === "match"}
       <Match />
     {:else if $tab === "tournament"}
-      <div class=" my-4" />
-
-      <Tournament />
+      <div class=" mt-4">
+        <Tournament />
+      </div>
     {:else if $tab === "puzzle"}
       <div class="" />
     {/if}

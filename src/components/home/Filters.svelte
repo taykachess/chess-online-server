@@ -25,9 +25,10 @@
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <div
   on:click={() => {
+    if (!$page.data.user) return;
     isOpen = true;
   }}
-  class="isolate  inline-flex self-start rounded-md shadow-sm  "
+  class="relative  isolate inline-flex self-start rounded-md shadow-sm  "
 >
   <button
     type="button"
@@ -52,13 +53,18 @@
     class="relative inline-flex items-center rounded-r-md border border-gray-300 bg-white px-4 py-1 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
   >
     Фильтры
-    <span class=" ml-1">
+    <span class="  ml-1">
       <Badge
-        title={countFilters}
+        title={countFilters ? countFilters : "0"}
         color={{ text: "text-white", bg: "bg-slate-700" }}
       />
     </span>
 
     <span />
   </button>
+  {#if !$page.data.user}
+    <div
+      class=" absolute inset-0 cursor-not-allowed rounded-md bg-slate-200/50"
+    />
+  {/if}
 </div>

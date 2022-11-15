@@ -1,8 +1,8 @@
 import type { Move } from "cm-chess";
 
 export interface GetGame {
-  white: { username: string; rating: number };
-  black: { username: string; rating: number };
+  white: { username: string; rating: number; ratingNext?: number };
+  black: { username: string; rating: number; ratingNext?: number };
   time: [number, number];
   pgn: string;
   result: string;

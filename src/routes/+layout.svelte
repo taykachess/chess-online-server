@@ -21,7 +21,9 @@
   />
 </svelte:head>
 
-<Header />
+<div class=" fixed w-full">
+  <Header />
+</div>
 <main class="  text-slate-500  ">
   <slot />
 </main>

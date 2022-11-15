@@ -117,7 +117,7 @@
 <!-- {#if isAdmin}
     <TournamentGrid />
   {/if} -->
-<div class="">
+<div class=" flex flex-col">
   <Tabs
     bind:currentTab={$tournamentTab}
     tabs={[

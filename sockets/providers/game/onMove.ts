@@ -10,6 +10,8 @@ export async function onMove(
 ) {
   const socket = this;
 
+  console.log(move);
+
   try {
     const game = getGame(gameId);
     if (!game) throw Error("Game not found");

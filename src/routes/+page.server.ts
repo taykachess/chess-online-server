@@ -59,7 +59,7 @@ export const actions: Actions = {
         email,
         username,
         hashedPassword,
-        filters: { min: 500, max: 500 },
+        filters: { min: -500, max: 500 },
       },
       select: { id: true, username: true, roles: { select: { name: true } } },
     });

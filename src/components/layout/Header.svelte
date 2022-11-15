@@ -19,7 +19,9 @@
 </Dialog>
 
 <div class="border-b">
-  <div class=" mx-auto flex h-16  max-w-7xl  items-center justify-between   ">
+  <div
+    class=" mx-4 flex h-16 max-w-7xl  items-center  justify-between sm:mx-auto   "
+  >
     <!-- <div class=" ml-4">Chess</div> -->
     <!-- svelte-ignore a11y-click-events-have-key-events -->
     <div
