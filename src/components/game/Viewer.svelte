@@ -27,9 +27,9 @@
       <div
         use:redraw
         on:click={() => onClickOnMove(move)}
-        class="relative col-span-4 cursor-pointer rounded-lg hover:bg-blue-100 {$tree.currentNode ==
+        class="relative col-span-4 cursor-pointer rounded-lg hover:font-bold hover:text-blue-800 {$tree.currentNode ==
         move
-          ? 'bg-blue-100'
+          ? ' font-bold text-blue-800 '
           : ''} "
       >
         {move.san}

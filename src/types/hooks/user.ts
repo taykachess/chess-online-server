@@ -4,4 +4,5 @@ export interface DecodedUser {
   roles: { name: string }[];
   rating: number;
   filters: { min: number; max: number };
+  title?: "GM" | "IM";
 }

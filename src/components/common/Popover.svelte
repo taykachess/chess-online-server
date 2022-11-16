@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { page } from "$app/stores";
   import {
     Popover,
     PopoverButton,
@@ -6,6 +7,7 @@
   } from "@rgossiaux/svelte-headlessui";
   import { text } from "svelte/internal";
   import Badge from "./Badge.svelte";
+  import BadgeTitle from "./BadgeTitle.svelte";
 
   export let title: string = "tayka";
   export let rating: number = 1758;
@@ -34,10 +36,14 @@
   <PopoverButton
     class=" group inline-flex items-center rounded-md bg-slate-700 px-4 py-1 font-medium text-white text-opacity-90 hover:text-opacity-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75"
   >
+    <span class="mr-1 -mt-px">
+      <BadgeTitle title={$page.data.user?.title} />
+    </span>
+
     <span>{title}</span>
-    <span class=" ml-2">
+    <span class=" ml-2 -mt-px">
       <Badge
-        title={`${rating}`}
+        title={`${Math.round(rating)}`}
         color={{ text: "text-slate-700", bg: "bg-white" }}
       />
     </span>

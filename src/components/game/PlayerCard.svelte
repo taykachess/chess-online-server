@@ -1,5 +1,6 @@
 <script lang="ts">
   import Badge from "$components/common/Badge.svelte";
+  import BadgeTitle from "$components/common/BadgeTitle.svelte";
 </script>
 
 <div class="  py-3 px-6  xl:px-3 xl:text-left">
@@ -12,10 +13,7 @@
     <div class=" mt-2 xl:flex xl:items-center  xl:justify-center">
       <div class="  text-center text-xs font-medium text-slate-800 ">
         <div class="">
-          <Badge
-            title={`GM`}
-            color={{ text: "text-slate-100", bg: "bg-red-800" }}
-          />
+          <BadgeTitle title={`GM`} />
           Tayka
         </div>
         <div class="ml-1 mt-1">

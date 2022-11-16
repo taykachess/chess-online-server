@@ -2,6 +2,7 @@ import { getGame } from "../../global/games";
 import { SocketType } from "../../types";
 import { GetGame } from "../../../src/types/sockets/socket";
 import { prisma } from "../../global/prisma";
+import { GAMEROOM } from "../../variables/redisIndex";
 
 export async function onGameGet(
   this: SocketType,
@@ -29,7 +30,7 @@ export async function onGameGet(
       return cb({ ...prismaGame });
     }
 
-    socket.join(`game${gameId}`);
+    socket.join(GAMEROOM(gameId));
     const pgn = game.chess.pgn();
     const { white, black, time, result } = game;
 
@@ -43,7 +44,15 @@ export async function onGameGet(
         timeWithDifference[1] - (new Date().getTime() - game.tsmp);
     }
 
-    cb({ white, black, time: timeWithDifference, pgn, result });
+    cb({
+      white,
+      black,
+      time: timeWithDifference,
+      pgn,
+      result,
+      inc: game.increment,
+      lastOfferDraw: game.lastOfferDraw,
+    });
   } catch (error) {
     console.log(error);
   }

@@ -3,16 +3,15 @@ import { onGameOver } from "./onGameOver";
 
 export function changeTime({
   gameId,
-  turn,
   increment,
   tsmp,
 }: {
   gameId: string;
   increment: number;
   tsmp: number;
-  turn: "w" | "b";
 }) {
   const game = getGame(gameId);
+  const turn = game.chess.turn();
   const time = turn == "b" ? game.time[0] : game.time[1];
   const now = new Date().getTime();
   const diff = now - tsmp;

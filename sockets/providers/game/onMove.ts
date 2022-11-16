@@ -1,8 +1,9 @@
-import { getGame } from "../../global/games";
+import { getGame, increasePly } from "../../global/games";
 import { changeTime } from "../../services/game/changeTime";
 import { isGameOver } from "../../services/game/isGameOver";
 import { onGameOver } from "../../services/game/onGameOver";
 import { SocketType } from "../../types";
+import { GAMEROOM } from "../../variables/redisIndex";
 
 export async function onMove(
   this: SocketType,
@@ -15,30 +16,37 @@ export async function onMove(
   try {
     const game = getGame(gameId);
     if (!game) throw Error("Game not found");
-    if (
-      !(
-        game.white.username == socket.data.username ||
-        game.black.username == socket.data.username
-      )
-    )
-      throw Error("You have no access to move");
+
+    const turn = game.chess.turn();
+
+    if (turn == "w" && game.white.username != socket.data.username)
+      throw Error("You have no access to resign");
+    if (turn == "b" && game.black.username != socket.data.username)
+      throw Error("You have no access to resign");
+    // if (
+    //   !(
+    //     game.white.username == socket.data.username ||
+    //     game.black.username == socket.data.username
+    //   )
+    // )
+    //   throw Error("You have no access to move");
     const resultMove = game.chess.move(move);
 
     if (!resultMove) throw Error("Move is incorrect");
-    const turn = game.chess.turn();
     changeTime({
       gameId,
-      turn,
       increment: game.increment,
       tsmp: game.tsmp,
     });
 
-    const result = isGameOver({ chess: game.chess, turn });
+    const result = isGameOver({ chess: game.chess });
     if (result != "*") {
       await onGameOver({ gameId, result });
     }
 
-    socket.to(`game${gameId}`).emit("game:move", move);
+    increasePly(gameId);
+
+    socket.to(GAMEROOM(gameId)).emit("game:move", move);
   } catch (error) {
     console.log(error);
   }

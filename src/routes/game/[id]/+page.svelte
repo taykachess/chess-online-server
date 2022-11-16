@@ -1,5 +1,11 @@
 <script lang="ts">
+  import { beforeNavigate } from "$app/navigation";
   import Chess from "$components/game/Chess.svelte";
+  import { info } from "$store/game/info";
+
+  beforeNavigate(() => {
+    window.cancelAnimationFrame($info.requestId);
+  });
 </script>
 
 <div class="chess-bg flex h-screen items-center justify-center  ">

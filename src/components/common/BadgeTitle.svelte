@@ -1,0 +1,28 @@
+<script lang="ts">
+  import Badge from "./Badge.svelte";
+  export let title: "GM" | "IM" | undefined;
+
+  function badgeColor(title?: "GM" | "IM") {
+    switch (title) {
+      case "GM": {
+        return { text: "text-slate-100", bg: "bg-red-800" };
+      }
+      case "IM": {
+        return { text: "text-slate-100", bg: "bg-green-600" };
+      }
+      default:
+        return { text: "text-slate-100", bg: "bg-green-800" };
+    }
+    //   title
+    //     ? title == "GM" ? { text: "text-slate-100", bg: "bg-red-800" }
+    //     : title == "IM"
+    //     ? { text: "text-slate-100", bg: "bg-green-800" }
+    //     : { text: "text-slate-100", bg: "bg-green-800" }
+  }
+
+  $: color = badgeColor(title);
+</script>
+
+{#if title}
+  <Badge {title} {color} />
+{/if}

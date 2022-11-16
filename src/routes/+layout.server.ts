@@ -5,7 +5,7 @@ export const load: LayoutServerLoad = async ({ locals, cookies }) => {
   if (!locals.user) return {};
   const user = await prisma.user.findUnique({
     where: { username: locals.user?.username },
-    select: { rating: true, filters: true },
+    select: { rating: true, filters: true, title: true },
   });
 
   return {
@@ -13,6 +13,7 @@ export const load: LayoutServerLoad = async ({ locals, cookies }) => {
       ...locals.user,
       rating: Number(user?.rating),
       filters: user?.filters,
+      title: user?.title,
     },
   };
 };

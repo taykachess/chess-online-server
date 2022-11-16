@@ -5,7 +5,9 @@ export interface GetGame {
   black: { username: string; rating: number; ratingNext?: number };
   time: [number, number];
   pgn: string;
-  result: string;
+  result: "1-0" | "0.5-0.5" | "0-1" | "*" | "+-" | "-+";
+  inc: number;
+  lastOfferDraw?: { username: string; ply: number };
 }
 
 export interface ServerToClientEvents {
@@ -13,7 +15,18 @@ export interface ServerToClientEvents {
   "challenge:deleted": ({ socketId }: { socketId?: string }) => void;
   "game:started": ({ gameId }: { gameId?: string }) => void;
   "game:move": (move: string) => void;
-  "game:end": ({ result }: { result: string }) => void;
+  "game:end": ({
+    result,
+  }: {
+    result: "1-0" | "0.5-0.5" | "0-1" | "*" | "+-" | "-+";
+  }) => void;
+  "game:offerDraw": ({
+    username,
+    ply,
+  }: {
+    username: string;
+    ply: number;
+  }) => void;
 }
 
 export interface ClientToServerEvents {
@@ -22,6 +35,9 @@ export interface ClientToServerEvents {
   "challenge:cancel": () => void;
   "challenge:accept": ({ username }: { username: string }) => void;
   "game:move": ({ move, gameId }: { move: string; gameId: string }) => void;
+  "game:resign": ({ gameId }: { gameId: string }) => void;
+  "game:drawOffer": ({ gameId }: { gameId: string }) => void;
+  "game:drawAccept": ({ gameId }: { gameId: string }) => void;
 
   "game:get": (
     { gameId }: { gameId: string },

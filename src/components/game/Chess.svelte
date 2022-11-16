@@ -22,8 +22,14 @@
   import Viewer from "./Viewer.svelte";
   import { browser } from "$app/environment";
   import { tree } from "$store/game/tree";
+  import GameManager from "./GameManager.svelte";
 
   let lastTime: number;
+  let boardHTML: HTMLElement;
+  if (browser) {
+    getGame();
+  }
+
   function playClock(time: number) {
     // console.log(time);
     if (lastTime) {
@@ -46,56 +52,10 @@
     window.cancelAnimationFrame($info.requestId);
   }
 
-  if (browser) {
-    // console.log(window);
-    console.log($socket);
-  }
-  let boardHTML: HTMLElement;
-
-  function setSocketListeners() {
-    $socket.on("game:move", (move: string) => {
-      console.log("Got move", move, $chess.fen(), $chess.moves());
-      const result = $chess.move(move);
-      if (result) {
-        console.log("add");
-        $tree.history = $tree.history;
-        $tree.liveNode = $tree.history[$tree.history.length - 1];
-        $tree.currentNode = $tree.history[$tree.history.length - 1];
-
-        // $tree.history = $tree.history;
-
-        // $tree.history[$tree.history.length - 1] = {
-        //   san: result.san,
-        //   ply: result.ply,
-        //   fen: $chess.fen(),
-        //   next: undefined,
-        //   previous: $tree.history[$tree.history.length - 1],
-        // };
-        $board.setPosition($chess.fen(), true);
-        const newTurn = $chess.turn();
-        if (
-          $info.white.username === $page.data.user?.username &&
-          newTurn == "w"
-        ) {
-          return $board.enableMoveInput(inputHandler, COLOR.white);
-        }
-
-        if (
-          $info.black.username === $page.data.user?.username &&
-          newTurn == "b"
-        ) {
-          return $board.enableMoveInput(inputHandler, COLOR.black);
-        }
-      } else {
-        console.warn("invalid move", move, $chess.fen());
-      }
-    });
-
-    $socket.on("game:end", ({ result }) => {
-      stopClock();
-      $info.result = result;
-      $board.disableMoveInput();
-    });
+  function increamentTimer(newTurn: "w" | "b") {
+    if (!$info.inc) return;
+    if (newTurn == "w") $info.time[1] = $info.time[1] + $info.inc * 1000;
+    else $info.time[0] = $info.time[0] + $info.inc * 1000;
   }
 
   function setChessBoardToDOM() {
@@ -121,6 +81,42 @@
     };
     $board = new Chessboard(boardHTML, config);
   }
+  function setSocketListeners() {
+    $socket.on("game:move", (move: string) => {
+      const result = $chess.move(move);
+      if (result) {
+        $tree.history = $tree.history;
+        $tree.liveNode = $tree.history[$tree.history.length - 1];
+        $tree.currentNode = $tree.history[$tree.history.length - 1];
+        $info.ply = $info.ply + 1;
+
+        $board.setPosition($chess.fen(), true);
+        const newTurn = $chess.turn();
+        increamentTimer(newTurn);
+        if (
+          $info.white.username === $page.data.user?.username &&
+          newTurn == "w"
+        ) {
+          return $board.enableMoveInput(inputHandler, COLOR.white);
+        }
+
+        if (
+          $info.black.username === $page.data.user?.username &&
+          newTurn == "b"
+        ) {
+          return $board.enableMoveInput(inputHandler, COLOR.black);
+        }
+      } else {
+        console.warn("invalid move", move, $chess.fen());
+      }
+    });
+
+    $socket.on("game:end", ({ result }) => {
+      stopClock();
+      $info.result = result;
+      $board.disableMoveInput();
+    });
+  }
 
   function inputHandler(event: {
     chessboard: ChessBoardInstance;
@@ -138,39 +134,30 @@
       }
       return moves.length > 0;
     } else if (event.type === INPUT_EVENT_TYPE.validateMoveInput) {
-      console.log($chess.fen());
       const move = { from: event.squareFrom, to: event.squareTo };
       // @ts-ignore
       const result = $chess.move(move);
 
-      console.log("result", $chess.fen(), result);
       if (result) {
         $board.disableMoveInput();
         $board.state.moveInputProcess.then(() => {
           // wait for the move input process has finished
           $board.setPosition($chess.fen(), false).then(() => {
             // update position, maybe castled and wait for animation has finished
-            console.log(result);
+
             $socket.emit("game:move", {
               move: result.san,
               gameId: $page.params.id,
             });
 
-            console.log("Tree", $tree.history);
-            // console.log("Isequal", $chess.history() === $tree.history);
+            $info.ply = $info.ply + 1;
+
             $tree.history = $tree.history;
             $tree.liveNode = $tree.history[$tree.history.length - 1];
             $tree.currentNode = $tree.history[$tree.history.length - 1];
 
-            // $tree.history[$tree.history.length - 1] = {
-            //   san: result.san,
-            //   ply: 2,
-            //   fen: $chess.fen(),
-            //   next: undefined,
-            //   previous: $tree.history[$tree.history.length - 1],
-            // };
-
-            console.log("result", result);
+            const newTurn = $chess.turn();
+            increamentTimer(newTurn);
           });
         });
       } else {
@@ -180,18 +167,35 @@
     }
   }
 
-  onMount(() => {
+  function getGame() {
     $socket.emit(
       "game:get",
       { gameId: $page.params.id },
-      ({ white, black, time, pgn, result }: GetGame) => {
+      ({ white, black, time, pgn, result, inc, lastOfferDraw }: GetGame) => {
         $chess = new Chess();
         // @ts-ignore
         $chess.loadPgn(pgn);
 
-        $info = { black, white, time, result, pgn };
-
         const tmpHistory = $chess.history();
+        $info = {
+          black,
+          white,
+          time,
+          result,
+          pgn,
+          inc,
+          role:
+            black.username === $page.data.user?.username
+              ? "b"
+              : white.username === $page.data.user?.username
+              ? "w"
+              : undefined,
+          lastOfferDraw,
+          ply: tmpHistory[tmpHistory.length - 1]
+            ? // @ts-ignore
+              tmpHistory[tmpHistory.length - 1].ply
+            : 0,
+        };
         // @ts-ignore
         $tree
           ? // @ts-ignore
@@ -222,7 +226,7 @@
         }
       }
     );
-  });
+  }
 </script>
 
 <div class=" flex ">
@@ -230,7 +234,7 @@
     <PlayerCard />
     <PlayerCard />
   </div>
-  <div class=" relative    ">
+  <div class=" relative w-[20rem]    ">
     <Board bind:boardHTML />
   </div>
   <div
@@ -239,7 +243,12 @@
       : 'flex-col-reverse'} justify-between"
   >
     <Timer time={$info?.time[1]} />
-    <Viewer />
+    <div class=" ">
+      <div class=" h-40 overflow-y-scroll border border-slate-600/20">
+        <Viewer />
+      </div>
+      <GameManager />
+    </div>
     <Timer time={$info?.time[0]} />
   </div>
 </div>

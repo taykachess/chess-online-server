@@ -37,7 +37,10 @@ export function calculateRating({
   const newEloWhite = +eloWhite + K * (actualPointWhite - expectedPointWhite);
   const newEloBlack = +eloBlack + K * (actualPointBlack - expectedPointBlack);
 
-  return { newEloWhite, newEloBlack };
+  return {
+    newEloWhite: Math.round(newEloWhite * 100) / 100,
+    newEloBlack: Math.round(newEloBlack * 100) / 100,
+  };
 }
 
 function calculateK(control: string): number {

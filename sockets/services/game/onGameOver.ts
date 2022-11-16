@@ -1,6 +1,7 @@
 import { deleteGame, getGame, Result } from "../../global/games";
 import { io } from "../../global/io";
 import { prisma } from "../../global/prisma";
+import { GAMEROOM } from "../../variables/redisIndex";
 import { calculateRating } from "./calculateRating";
 
 export async function onGameOver({
@@ -22,7 +23,7 @@ export async function onGameOver({
   game.white.ratingNext = newEloWhite;
   game.black.ratingNext = newEloBlack;
 
-  await prisma.game.create({
+  const createGame = prisma.game.create({
     data: {
       id: gameId,
       pgn: game.chess.pgn(),
@@ -41,8 +42,21 @@ export async function onGameOver({
       control: game.control,
     },
   });
-  io.to(`game${gameId}`).emit("game:end", { result });
-  io.socketsLeave(`game${gameId}`);
+
+  const updateRatingWhite = prisma.user.update({
+    where: { username: game.white.username },
+    data: { rating: newEloWhite },
+  });
+
+  const updateRatingBlack = prisma.user.update({
+    where: { username: game.black.username },
+    data: { rating: newEloBlack },
+  });
+
+  await prisma.$transaction([createGame, updateRatingWhite, updateRatingBlack]);
+
+  io.to(GAMEROOM(gameId)).emit("game:end", { result });
+  io.socketsLeave(GAMEROOM(gameId));
   deleteGame(gameId);
   return;
 }
