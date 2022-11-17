@@ -1,29 +1,27 @@
 <script lang="ts">
   import Badge from "$components/common/Badge.svelte";
   import BadgeTitle from "$components/common/BadgeTitle.svelte";
+
+  export let player: any;
+
+  $: difference = Math.ceil(player.ratingNext - player.rating);
 </script>
 
-<div class="  py-3 px-6  xl:px-3 xl:text-left">
+<div class="flex items-baseline text-xs font-medium text-slate-800 ">
   <div class="">
-    <img
-      class="mx-auto h-10 w-10 rounded-full xl:h-20 xl:w-20"
-      src="https://images.unsplash.com/photo-1519345182560-3f2917c472ef?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=8&w=1024&h=1024&q=80"
-      alt=""
-    />
-    <div class=" mt-2 xl:flex xl:items-center  xl:justify-center">
-      <div class="  text-center text-xs font-medium text-slate-800 ">
-        <div class="">
-          <BadgeTitle title={`GM`} />
-          Tayka
-        </div>
-        <div class="ml-1 mt-1">
-          <Badge
-            title={`2000`}
-            color={{ text: "text-slate-100", bg: "bg-slate-800" }}
-          />
-        </div>
-        <!-- <p class="text-indigo-400">Vadim Moiseenko</p> -->
-      </div>
-    </div>
+    <BadgeTitle title={player.title} />
   </div>
+  <div class=" ml-1 text-base">{player.username}</div>
+  <div class="ml-3 mt-1">
+    <Badge
+      title={`${Math.trunc(player.rating)}`}
+      color={{ text: "text-slate-100", bg: "bg-slate-800" }}
+    />
+    {difference > 0
+      ? `+${difference}`
+      : difference < 0
+      ? `-${difference}`
+      : "0"}
+  </div>
+  <!-- <p class="text-indigo-400">Vadim Moiseenko</p> -->
 </div>

@@ -1,10 +1,17 @@
 <script lang="ts">
   import { beforeNavigate } from "$app/navigation";
   import Chess from "$components/game/Chess.svelte";
+  import { board } from "$store/game/board";
   import { info } from "$store/game/info";
 
-  beforeNavigate(() => {
+  beforeNavigate(({ willUnload, type }) => {
+    console.log("type", type);
+    if (willUnload) {
+      confirm("unload");
+      console.log("Unload", willUnload);
+    }
     window.cancelAnimationFrame($info.requestId);
+    console.log("Unload", willUnload);
   });
 </script>
 

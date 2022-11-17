@@ -25,7 +25,6 @@ export async function onGameGet(
           pgn: true,
         },
       });
-      console.log(prismaGame);
       // @ts-ignore
       return cb({ ...prismaGame });
     }

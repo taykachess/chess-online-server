@@ -1,39 +1,40 @@
 <script lang="ts">
   import { board } from "$store/game/board";
   import { info } from "$store/game/info";
-  import { tree } from "$store/game/tree";
 
   function onClickOnMove(move: any) {
-    $tree.currentNode = move;
+    $info.tree.currentNode = move;
     $board.setPosition(move.fen);
   }
-  function redraw(node: HTMLElement) {
-    console.log("redraw", node);
-  }
+  // function redraw(node: HTMLElement) {}
 </script>
 
-{#if $tree?.history}
-  <div class=" grid w-60    grid-cols-10  text-center text-slate-700">
-    {#each $tree?.history as move}
+{#if $info?.tree?.history}
+  <div
+    class=" grid w-60 grid-cols-10    overflow-hidden rounded-l-lg border border-slate-600 text-center text-slate-700"
+  >
+    {#each $info.tree?.history as move}
       {#if move.ply % 2 != 0}
         <!-- {(move.ply - 1) % 4 == 0
             ? 'bg-pink-50'
             : ''} -->
-        <div class=" col-span-2  rounded-lg   ">
+        <div class=" col-span-2  border-r border-slate-600  ">
           {Math.ceil(move.ply / 2)}
         </div>
       {/if}
       <!-- svelte-ignore a11y-click-events-have-key-events -->
+      <!-- use:redraw -->
       <div
-        use:redraw
         on:click={() => onClickOnMove(move)}
-        class="relative col-span-4 cursor-pointer rounded-lg hover:font-bold hover:text-blue-800 {$tree.currentNode ==
+        class="relative col-span-4 cursor-pointer {move.ply % 2 != 0
+          ? 'border-r border-slate-600'
+          : ' '}  hover:font-bold hover:text-blue-800 {$info.tree.currentNode ==
         move
-          ? ' font-bold text-blue-800 '
+          ? ' font-bold text-blue-800 bg-blue-100 '
           : ''} "
       >
         {move.san}
-        {#if $tree.liveNode == move && $tree.currentNode != $tree.liveNode && $info.result == "*"}
+        {#if $info.tree.liveNode == move && $info.tree.currentNode != $info.tree.liveNode && $info.result == "*"}
           <div class=" absolute top-0 right-0">
             <span class=" relative flex h-3 w-3">
               <span

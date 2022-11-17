@@ -17,7 +17,7 @@ export async function onChallengeCreate(
     const { control } = data;
     const user = await prisma.user.findFirst({
       where: { id: socket.data.id },
-      select: { rating: true, filters: true },
+      select: { rating: true, filters: true, title: true },
     });
     if (!user) throw Error("User not found");
 
@@ -64,17 +64,22 @@ export async function onChallengeCreate(
         throw Error("The both user must have username");
       const userOpponent = await prisma.user.findFirst({
         where: { username: socket2.data.username },
-        select: { rating: true },
+        select: { rating: true, title: true },
       });
       if (!userOpponent) throw Error("User not found");
 
       await createGame({
         sockets: [socket, socket2],
         data: {
-          white: { username: socket.data.username, rating: +user.rating },
+          white: {
+            username: socket.data.username,
+            rating: +user.rating,
+            title: user.title,
+          },
           black: {
             username: socket2.data.username,
             rating: +userOpponent?.rating,
+            title: userOpponent.title,
           },
           control,
         },

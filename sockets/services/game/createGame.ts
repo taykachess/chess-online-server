@@ -10,8 +10,8 @@ export async function createGame({
 }: {
   sockets: [socket1: SocketType, socket2: SocketRemoteType];
   data: {
-    white: { username: string; rating: number };
-    black: { username: string; rating: number };
+    white: { username: string; rating: number; title: string | null };
+    black: { username: string; rating: number; title: string | null };
     control: string;
   };
 }) {

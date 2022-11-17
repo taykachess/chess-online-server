@@ -281,7 +281,7 @@
       fill: #b58863; }
 
 .cm-chessboard.black-and-white .board .square.white {
-  fill: #ffffff; }
+  fill: #ffffff7a; }
 
 .cm-chessboard.black-and-white .board .square.black {
   fill: #9c9c9c; }
@@ -289,7 +289,7 @@
 .cm-chessboard.black-and-white.border-type-thin .board .border {
   stroke: #9c9c9c;
   stroke-width: 0.7%;
-  fill: #ffffff; }
+  fill: #ffffff00; }
 
 .cm-chessboard.black-and-white.border-type-none .board .border {
   stroke: #9c9c9c;
