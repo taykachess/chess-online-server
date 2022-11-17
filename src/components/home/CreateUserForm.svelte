@@ -1,6 +1,7 @@
 <script lang="ts">
   import { enhance } from "$app/forms";
   import { page } from "$app/stores";
+  import { socket } from "$store/sockets/socket";
   // import type { ActionData } from "./$types";
 
   export let isOpen: boolean;
@@ -34,6 +35,9 @@
       await update();
       if ($page.form?.success) {
         localStorage.setItem("token", $page.form.token);
+        // @ts-ignore
+        $socket.auth.token = $page.form.token;
+        $socket.disconnect().connect();
         isOpen = false;
       }
     };
