@@ -21,7 +21,7 @@ export interface Game {
   increment: number;
   result: Result;
   control: string;
-  lastOfferDraw?: { username: string; ply: number };
+  lastOfferDraw?: { username: string; ply: number; status?: "declined" };
 }
 interface Games {
   [id: string]: Game;

@@ -25,6 +25,7 @@
   let lastTime: number;
   let boardHTML: HTMLElement;
   if (browser) {
+    console.log("Get game");
     getGame();
   }
 
@@ -111,9 +112,16 @@
       }
     });
 
-    $socket.on("game:end", ({ result }) => {
+    $socket.on("game:end", ({ result, newEloBlack, newEloWhite }) => {
+      console.log("game over", newEloBlack, newEloWhite);
       stopClock();
       $info.result = result;
+
+      $info.white.ratingNext = newEloWhite;
+      $info.black.ratingNext = newEloBlack;
+      // $info.white = $info.white;
+      // $info.black = $info.black;
+      // $info = $info;
       $board.disableMoveInput();
     });
   }
@@ -207,6 +215,8 @@
             : 0,
         };
 
+        $info = $info;
+
         // @ts-ignore
         // $info.tree
         //   ? // @ts-ignore
@@ -258,7 +268,7 @@
       <div
         class=" flex {orientation == 'w' ? 'flex-col' : 'flex-col-reverse'} "
       >
-        <PlayerCard player={$info.black} />
+        <PlayerCard bind:player={$info.black} />
         <Timer time={$info?.time[1]} />
       </div>
 
@@ -269,7 +279,7 @@
         <GameManager />
       </div>
       <div class="flex {orientation == 'w' ? 'flex-col-reverse' : 'flex-col'}">
-        <PlayerCard player={$info.white} />
+        <PlayerCard bind:player={$info.white} />
         <Timer time={$info?.time[0]} />
       </div>
     </div>

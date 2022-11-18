@@ -1,6 +1,4 @@
-import { writable, type Writable } from "svelte/store";
 import type { ChessInstance } from "cm-chess";
-// import type { ChessBoardInstance } from "cm-chessboard-ts";
 
 interface Node {
   san: string;
@@ -11,7 +9,7 @@ interface Node {
   next: Node | undefined;
 }
 
-interface GameInfo {
+export interface GameInfo {
   white: {
     username: string;
     rating: number;
@@ -29,7 +27,7 @@ interface GameInfo {
   pgn: string;
   requestId?: any;
   inc: number;
-  lastOfferDraw?: { username: string; ply: number; status?: "declined" };
+  lastOfferDraw?: { username: string; ply: number };
   ply: number;
   role?: "w" | "b";
   tree: {
@@ -39,4 +37,3 @@ interface GameInfo {
   };
   chess: ChessInstance;
 }
-export const info: Writable<GameInfo> = writable();

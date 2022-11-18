@@ -55,7 +55,11 @@ export async function onGameOver({
 
   await prisma.$transaction([createGame, updateRatingWhite, updateRatingBlack]);
 
-  io.to(GAMEROOM(gameId)).emit("game:end", { result });
+  io.to(GAMEROOM(gameId)).emit("game:end", {
+    result,
+    newEloWhite,
+    newEloBlack,
+  });
   io.socketsLeave(GAMEROOM(gameId));
   deleteGame(gameId);
   return;

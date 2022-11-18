@@ -4,11 +4,17 @@
   import { info } from "$store/game/info";
   import { socket } from "$store/sockets/socket";
 
-  let offeredDraw: string;
   if (browser) {
     $socket.on("game:offerDraw", ({ username, ply }) => {
       console.log("draw offered", { username, ply });
+      console.log("info", $info.chess.pgn);
       $info.lastOfferDraw = { username, ply };
+    });
+
+    $socket.on("game:declineDraw", () => {
+      if (!$info.lastOfferDraw) return;
+      $info.lastOfferDraw.status = "declined";
+      console.log("draw declined");
     });
   }
 
@@ -18,6 +24,10 @@
 
   function acceptDraw() {
     $socket.emit("game:drawAccept", { gameId: $page.params.id });
+  }
+
+  function declineDraw() {
+    $socket.emit("game:drawDecline", { gameId: $page.params.id });
   }
 
   function resign() {
@@ -36,7 +46,18 @@
       }
     }
   }
-  //   $: textResult =
+
+  $: onlyPlayers = $info.role;
+  $: isPossibleAcceptDraw =
+    $info.lastOfferDraw &&
+    $info.lastOfferDraw.ply > $info.ply - 2 &&
+    $info.lastOfferDraw.username != $page.data.user?.username &&
+    !$info.lastOfferDraw.status;
+
+  $: isPossibleOfferDraw =
+    !$info.lastOfferDraw ||
+    ($info.lastOfferDraw.username != $page.data.user?.username &&
+      $info.lastOfferDraw.status == "declined");
 </script>
 
 <div class=" mt-2 flex flex-col space-y-2 text-center text-slate-800 ">
@@ -46,12 +67,13 @@
     </div>
   {:else}
     <!-- svelte-ignore a11y-click-events-have-key-events -->
-    {#if $info.role}
-      {#if $info.lastOfferDraw && $info.lastOfferDraw.ply > $info.ply - 2 && $info.lastOfferDraw.username != $page.data.user?.username}
+    {#if onlyPlayers}
+      {#if isPossibleAcceptDraw}
         <div class=" flex flex-col">
           <div class=" border border-slate-800">Принять ничью</div>
           <div class=" grid grid-cols-2">
             <div
+              on:click={declineDraw}
               class=" flex cursor-pointer justify-center border-l border-b border-slate-800 bg-red-100 hover:bg-red-200 hover:text-red-600 "
             >
               <!-- prettier-ignore -->
@@ -71,7 +93,7 @@
             </div>
           </div>
         </div>
-      {:else if !$info.lastOfferDraw || $info.lastOfferDraw.username != $page.data.user?.username}
+      {:else if isPossibleOfferDraw}
         <div
           on:click={offerDraw}
           class=" cursor-pointer border border-slate-800 hover:bg-slate-200 hover:text-slate-600"
@@ -79,17 +101,17 @@
           Предложить ничью
         </div>
       {/if}
+      <div
+        on:click={resign}
+        class=" flex cursor-pointer items-center justify-center  space-x-2 border border-slate-800 hover:bg-pink-200 hover:text-pink-600"
+      >
+        <div class="">Сдаться</div>
+        <!-- prettier-ignore -->
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 6L9 12.75l4.286-4.286a11.948 11.948 0 014.306 6.43l.776 2.898m0 0l3.182-5.511m-3.182 5.51l-5.511-3.181" />
+        </svg>
+      </div>
     {/if}
     <!-- svelte-ignore a11y-click-events-have-key-events -->
-    <div
-      on:click={resign}
-      class=" flex cursor-pointer items-center justify-center  space-x-2 border border-slate-800 hover:bg-pink-200 hover:text-pink-600"
-    >
-      <div class="">Сдаться</div>
-      <!-- prettier-ignore -->
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 6L9 12.75l4.286-4.286a11.948 11.948 0 014.306 6.43l.776 2.898m0 0l3.182-5.511m-3.182 5.51l-5.511-3.181" />
-      </svg>
-    </div>
   {/if}
 </div>

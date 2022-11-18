@@ -8,7 +8,8 @@
   }
 </script>
 
-<div class="  relative w-full  max-w-xl flex-none ">
+<!-- 40rem is standart, so if make w-full is going to be problem -->
+<div class="  relative w-[36rem]   flex-none ">
   <div bind:this={boardHTML} class="  w-full  " />
   <!-- <div
     on:click={onDrag}

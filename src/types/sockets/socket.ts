@@ -25,18 +25,11 @@ export interface ServerToClientEvents {
   "challenge:deleted": ({ socketId }: { socketId?: string }) => void;
   "game:started": ({ gameId }: { gameId?: string }) => void;
   "game:move": (move: string) => void;
-  "game:end": ({
-    result,
-  }: {
-    result: "1-0" | "0.5-0.5" | "0-1" | "*" | "+-" | "-+";
-  }) => void;
-  "game:offerDraw": ({
-    username,
-    ply,
-  }: {
-    username: string;
-    ply: number;
-  }) => void;
+  // prettier-ignore
+  "game:end": ({result,newEloWhite,newEloBlack}: {result: "1-0" | "0.5-0.5" | "0-1" | "*" | "+-" | "-+"; newEloWhite:number; newEloBlack:number}) => void;
+  // prettier-ignore
+  "game:offerDraw": ({username, ply}: {username: string; ply: number;}) => void;
+  "game:declineDraw": () => void;
 }
 
 export interface ClientToServerEvents {
@@ -48,6 +41,7 @@ export interface ClientToServerEvents {
   "game:resign": ({ gameId }: { gameId: string }) => void;
   "game:drawOffer": ({ gameId }: { gameId: string }) => void;
   "game:drawAccept": ({ gameId }: { gameId: string }) => void;
+  "game:drawDecline": ({ gameId }: { gameId: string }) => void;
 
   "game:get": (
     { gameId }: { gameId: string },
