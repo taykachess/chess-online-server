@@ -113,12 +113,20 @@
     });
 
     $socket.on("game:end", ({ result, newEloBlack, newEloWhite }) => {
-      console.log("game over", newEloBlack, newEloWhite);
+      console.log("game over", newEloBlack, newEloWhite, $info.role);
       stopClock();
       $info.result = result;
 
       $info.white.ratingNext = newEloWhite;
       $info.black.ratingNext = newEloBlack;
+
+      // prettier-ignore
+      // $page.data.user.rating = 5555
+      // page.subscribe((val)=>{
+      //     if(val.data.user)
+      //     val.data.user.rating = 4001
+      //     // $info.role == 'w'? newEloWhite : $info.role == 'b'?newEloBlack: val.data.user.rating
+      //   })
       // $info.white = $info.white;
       // $info.black = $info.black;
       // $info = $info;
@@ -268,19 +276,24 @@
       <div
         class=" flex {orientation == 'w' ? 'flex-col' : 'flex-col-reverse'} "
       >
+        <!-- TODO: Get rid of bind -->
+
         <PlayerCard bind:player={$info.black} />
-        <Timer time={$info?.time[1]} />
+        <Timer time={$info?.time[1]} side="b" />
       </div>
 
       <div class=" ">
-        <div class=" max-h-40 overflow-y-scroll ">
+        <div
+          class=" max-h-40 overflow-y-scroll rounded-l-lg border-y border-slate-600"
+        >
           <Viewer />
         </div>
         <GameManager />
       </div>
       <div class="flex {orientation == 'w' ? 'flex-col-reverse' : 'flex-col'}">
+        <!-- TODO: Get rid of bind -->
         <PlayerCard bind:player={$info.white} />
-        <Timer time={$info?.time[0]} />
+        <Timer time={$info?.time[0]} side="w" />
       </div>
     </div>
   {/if}

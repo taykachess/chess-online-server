@@ -56,10 +56,7 @@
         </button>
       </div>
     {:else}
-      <Popover
-        title={$page.data?.user?.username}
-        rating={$page.data?.user?.rating}
-      >
+      <Popover title={$page.data?.user?.username}>
         <form
           on:keydown={(event) => {
             if (event.key === "Enter") {

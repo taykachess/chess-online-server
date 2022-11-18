@@ -1,4 +1,9 @@
 <script lang="ts">
+  import Logo from "$components/icons/Logo.svelte";
+  import { info } from "$store/game/info";
+
+  export let side: "w" | "b";
+
   export let time: number;
   function formatTime(timestamp: number): string {
     if (timestamp <= 0) {
@@ -12,6 +17,11 @@
   }
 </script>
 
-<div class="  p-2 text-2xl font-bold tracking-tighter   text-slate-800 ">
-  {formatTime(time)}
+<div
+  class="  flex items-center p-2 text-2xl   font-bold tracking-tighter text-slate-800 "
+>
+  <div class=" w-20">{formatTime(time)}</div>
+  {#if $info.chess.turn() == side}
+    <div class=" -mt-1 h-8 w-8"><Logo /></div>
+  {/if}
 </div>

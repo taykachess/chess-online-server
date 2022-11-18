@@ -10,7 +10,7 @@
   import BadgeTitle from "./BadgeTitle.svelte";
 
   export let title: string = "tayka";
-  export let rating: number = 1758;
+  $: rating = $page.data.user ? Math.trunc($page.data.user?.rating) : "";
   export let records: {
     link: string;
     svg: string;
@@ -43,7 +43,7 @@
     <span>{title}</span>
     <span class=" ml-2 -mt-px">
       <Badge
-        title={`${Math.round(rating)}`}
+        title={`${rating}`}
         color={{ text: "text-slate-700", bg: "bg-white" }}
       />
     </span>

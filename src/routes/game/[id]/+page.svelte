@@ -30,8 +30,8 @@
 </script>
 
 <!-- {} -->
-{JSON.stringify($info?.white)}
-{JSON.stringify($info?.black)}
+<!-- {JSON.stringify($info?.white)}
+{JSON.stringify($info?.black)} -->
 <div class="chess-bg flex h-screen items-center justify-center  ">
   <Chess />
   <div

@@ -11,7 +11,7 @@
 
 {#if $info?.tree?.history}
   <div
-    class=" grid w-60 grid-cols-10    overflow-hidden rounded-l-lg border border-slate-600 text-center text-slate-700"
+    class=" grid w-60 grid-cols-10    overflow-hidden rounded-l-lg border-x border-slate-600 text-center text-slate-700"
   >
     {#each $info.tree?.history as move}
       {#if move.ply % 2 != 0}
