@@ -39,6 +39,7 @@
       class="isolate mt-4 inline-flex -space-x-px rounded-md shadow-sm"
       aria-label="Pagination"
     >
+      <!-- svelte-ignore a11y-missing-attribute -->
       <a
         on:click={() => {
           if (currentPage == 1) return;

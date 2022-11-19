@@ -1,11 +1,7 @@
 import { redis } from "../../global/redis";
+
 import { CHALLENGES } from "../../variables/redisIndex";
 
-interface Filters {
-  min: number;
-  max: number;
-  control: string;
-}
 export async function getSuitableChallenges({
   max,
   min,

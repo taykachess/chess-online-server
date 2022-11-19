@@ -1,12 +1,15 @@
 <script lang="ts">
   import { enhance } from "$app/forms";
   import { goto } from "$app/navigation";
+
   import { page } from "$app/stores";
+
   import Dialog from "$components/common/Dialog.svelte";
   import Popover from "$components/common/Popover.svelte";
   import CreateUserForm from "$components/home/CreateUserForm.svelte";
   import LoginForm from "$components/home/LoginForm.svelte";
   import Logo from "$components/icons/Logo.svelte";
+
   let isOpen = false;
   let isOpenLogin = false;
 </script>

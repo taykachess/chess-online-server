@@ -1,4 +1,4 @@
-import type { Result } from "../../global/games";
+import type { Result } from "../../types/game";
 
 export function calculateRating({
   eloWhite,

@@ -1,8 +1,9 @@
-import { CHALLENGES } from "../../variables/redisIndex";
 import { io } from "../../global/io";
-
-import type { SocketType } from "../../types";
 import { redis } from "../../global/redis";
+
+import { CHALLENGES } from "../../variables/redisIndex";
+
+import type { SocketType } from "../../types/sockets";
 
 export async function onChallengeDelete(this: SocketType) {
   const socket = this;

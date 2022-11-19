@@ -1,4 +1,4 @@
-export interface getTournament {
+export interface GetTournament {
   id: string;
   name: string;
   _count: {
@@ -10,3 +10,9 @@ export interface getTournament {
   players: { id: string }[];
   startTime: Date;
 }
+
+export type TournamentTableRecord = {
+  link: string;
+  records: string[];
+  registered: boolean;
+};

@@ -1,8 +1,12 @@
-import type { SocketRemoteType, SocketType } from "../../types";
-import { TIME_TO_CANCEL_GAME } from "../../variables/redisIndex";
-import { deleteGame, setGame } from "../../global/games";
 import { Chess } from "chess.js";
 import { v4 as uuid } from "uuid";
+
+import { deleteGame, setGame } from "../../global/games";
+
+import { TIME_TO_CANCEL_GAME } from "../../variables/redisIndex";
+
+import type { Player } from "../../types/game";
+import type { SocketRemoteType, SocketType } from "../../types/sockets";
 
 export async function createGame({
   sockets,
@@ -10,8 +14,8 @@ export async function createGame({
 }: {
   sockets: [socket1: SocketType, socket2: SocketRemoteType];
   data: {
-    white: { username: string; rating: number; title: string | null };
-    black: { username: string; rating: number; title: string | null };
+    white: Player;
+    black: Player;
     control: string;
   };
 }) {

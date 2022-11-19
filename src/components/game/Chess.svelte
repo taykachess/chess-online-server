@@ -3,9 +3,8 @@
 
   import { page } from "$app/stores";
   import { socket } from "$store/sockets/socket";
-  import type { GetGame } from "$types/sockets/socket";
+  import type { GetGame } from "$types/game";
   import { Chess } from "cm-chess";
-  import { onMount } from "svelte";
   import {
     MARKER_TYPE,
     INPUT_EVENT_TYPE,

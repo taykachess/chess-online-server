@@ -1,17 +1,19 @@
 <script lang="ts">
-  import Select from "$components/common/Select.svelte";
-  import Table from "$components/common/Table.svelte";
-  import Palleter from "$components/common/Palleter.svelte";
-  import type { PalleterLi } from "$types/common/palleter";
   import { Cog, Code } from "svelte-hero-icons";
 
-  const titles = ["Игрок", "Рейтинг", "Партий"];
-  export let records: { link: string; records: string[] }[] = [
-    {
-      link: "",
-      records: ["<span class='text-green-500'>Taykas</span>", "2459", "12"],
-    },
-  ];
+  import Select from "$components/common/Select.svelte";
+  // import Table from "$components/common/Table.svelte";
+  import Palleter from "$components/common/Palleter.svelte";
+
+  import type { PalleterLi } from "$types/frontend";
+
+  // const titles = ["Игрок", "Рейтинг", "Партий"];
+  // export let records: { link: string; records: string[] }[] = [
+  //   {
+  //     link: "",
+  //     records: ["<span class='text-green-500'>Taykas</span>", "2459", "12"],
+  //   },
+  // ];
 
   let palleterRecords: PalleterLi[] = [
     {

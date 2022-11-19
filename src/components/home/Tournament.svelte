@@ -1,13 +1,15 @@
 <script lang="ts">
-  import TournamentGrid from "$components/home/TournamentGrid.svelte";
-  import type { TournamentTab } from "$types/home/tab";
+  // import TournamentGrid from "$components/home/TournamentGrid.svelte";
+  // import type { TournamentTab } from "$types/frontend";
+
   import Table from "$components/common/Table.svelte";
   import { page } from "$app/stores";
   import Tabs from "$components/common/Tabs.svelte";
-  import type { getTournament } from "$types/home/tournament";
   import { listOfTournaments } from "$store/home/tournaments";
   import { tournamentTab } from "$store/home/tounamentTab";
-  import type { TournamentTableRecord } from "$types/home/TournamentTableRecord";
+
+  import type { TournamentTableRecord } from "$types/tournament";
+  import type { GetTournament } from "$types/tournament";
 
   function formatDate(datePar: Date): string {
     const now = new Date();
@@ -44,13 +46,13 @@
 
   async function onClickPagination(page: number) {
     const response = await getAllTournaments({ page });
-    const tournaments: getTournament[] = await response.json();
+    const tournaments: GetTournament[] = await response.json();
     $listOfTournaments.tournaments = tournaments;
   }
 
   async function onClickPaginationRegisted(page: number) {
     const response = await getAllTournaments({ page, register: "yes" });
-    const tournaments: getTournament[] = await response.json();
+    const tournaments: GetTournament[] = await response.json();
     $listOfTournaments.tournaments = tournaments;
   }
 
@@ -59,7 +61,7 @@
       getAllTournaments({ page: 1 }),
       getCountAllTournaments({}),
     ]);
-    const tournaments: getTournament[] = await tournamentsData.json();
+    const tournaments: GetTournament[] = await tournamentsData.json();
     const count: number = await countData.json();
     $listOfTournaments.tournaments = tournaments;
     $listOfTournaments.count = count;
@@ -70,14 +72,14 @@
       getAllTournaments({ page: 1, register: "yes" }),
       getCountAllTournaments({ register: "yes" }),
     ]);
-    const tournaments: getTournament[] = await tournamentsData.json();
+    const tournaments: GetTournament[] = await tournamentsData.json();
     const count: number = await countData.json();
     $listOfTournaments.tournaments = tournaments;
     $listOfTournaments.count = count;
   }
 
   function createTournamentRecords(
-    tournaments: getTournament[] | null
+    tournaments: GetTournament[] | null
   ): TournamentTableRecord[] {
     const arrayRecords: TournamentTableRecord[] = [];
     if (!tournaments) return [];

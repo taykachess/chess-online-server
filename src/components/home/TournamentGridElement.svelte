@@ -1,12 +1,15 @@
 <script lang="ts">
-  import Dialog from "$components/common/Dialog.svelte";
   import { Icon, type IconSource } from "svelte-hero-icons";
+
+  import Dialog from "$components/common/Dialog.svelte";
   import CreateTournament from "$components/home/CreateTournament.svelte";
+
   export let gridElement: {
     svg: IconSource;
     title: string;
     description: string;
   };
+
   let isOpen = false;
 </script>
 

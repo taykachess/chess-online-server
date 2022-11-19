@@ -1,7 +1,7 @@
 <script lang="ts">
   import Tab from "$components/common/TabWithSVG.svelte";
   import { tab } from "$store/home/tab";
-  import { Icon, Cog, ThumbUp, Heart } from "svelte-hero-icons";
+  import { Icon, ThumbUp } from "svelte-hero-icons";
 </script>
 
 <ul class="flex space-x-10">

@@ -1,7 +1,7 @@
 import { writable, type Writable } from "svelte/store";
-import type { getTournament } from "$types/home/tournament";
+import type { GetTournament } from "$types/tournament";
 
 export const listOfTournaments: Writable<{
   count: number;
-  tournaments: getTournament[] | null;
+  tournaments: GetTournament[] | null;
 }> = writable({ count: 0, tournaments: null });

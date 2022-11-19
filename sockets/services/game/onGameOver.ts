@@ -1,8 +1,12 @@
-import { deleteGame, getGame, Result } from "../../global/games";
+import { deleteGame, getGame } from "../../global/games";
 import { io } from "../../global/io";
 import { prisma } from "../../global/prisma";
-import { GAMEROOM } from "../../variables/redisIndex";
+
 import { calculateRating } from "./calculateRating";
+
+import { GAMEROOM } from "../../variables/redisIndex";
+
+import type { Result } from "../../types/game";
 
 export async function onGameOver({
   gameId,

@@ -1,23 +1,19 @@
 <script lang="ts">
-  import Select from "$components/common/Select.svelte";
-  import Table from "$components/common/Table.svelte";
-  import Palleter from "$components/common/Palleter.svelte";
-  import type { ChallengeTableRecord } from "$types/home/ChallengeTableRecords";
-  import type { PalleterLi } from "$types/common/palleter";
-  import { Cog, Code, Library, Database } from "svelte-hero-icons";
-  import Tabs from "$components/common/Tabs.svelte";
-  import { challengeTab } from "$store/home/challengeTab";
-  import type { GetChallenge } from "$types/home/Challenge";
-  import type { ChallengeTab } from "$types/home/tab";
-  import { listOfChallenges } from "$store/home/challenges";
+  import { Cog, Code, Library } from "svelte-hero-icons";
   import { onDestroy, onMount } from "svelte";
+
   import { page } from "$app/stores";
   import { socket } from "$store/sockets/socket";
-  import { goto } from "$app/navigation";
-  import { record } from "zod";
-  import Badge from "$components/common/Badge.svelte";
+  import { listOfChallenges } from "$store/home/challenges";
+
+  import Table from "$components/common/Table.svelte";
+  import Palleter from "$components/common/Palleter.svelte";
   import Filters from "./Filters.svelte";
-  // import { page } from "$app/stores";
+
+  import type { GetChallenge } from "$types/challenge";
+  import type { ChallengeTab } from "$types/frontend";
+  import type { ChallengeTableRecord } from "$types/challenge";
+  import type { PalleterLi } from "$types/frontend";
 
   let palleterRecords: PalleterLi[] = [
     {

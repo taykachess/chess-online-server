@@ -1,5 +1,7 @@
 import { Chess } from "chess.js";
-import type { Result } from "../../global/games";
+
+import type { Result } from "../../types/game";
+
 export function isGameOver({ chess }: { chess: Chess }): Result {
   if (chess.isCheckmate()) {
     const turn = chess.turn();

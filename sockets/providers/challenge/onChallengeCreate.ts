@@ -1,12 +1,14 @@
 import { prisma } from "../../global/prisma";
-import { getSuitableChallenges } from "../../services/challenge/getSuitableChallenges";
-import { CHALLENGES } from "../../variables/redisIndex";
-import type { SocketType } from "../../types";
 import { io } from "../../global/io";
-
-import { GetChallenge } from "../../../src/types/home/Challenge";
-import { createGame } from "../../services/game/createGame";
 import { redis } from "../../global/redis";
+
+import { getSuitableChallenges } from "../../services/challenge/getSuitableChallenges";
+import { createGame } from "../../services/game/createGame";
+
+import { CHALLENGES } from "../../variables/redisIndex";
+
+import type { GetChallenge } from "../../types/challenge";
+import type { SocketType } from "../../types/sockets";
 
 export async function onChallengeCreate(
   this: SocketType,

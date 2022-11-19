@@ -1,6 +1,8 @@
 import { getGame } from "../../global/games";
 import { io } from "../../global/io";
-import { SocketType } from "../../types";
+
+import type { SocketType } from "../../types/sockets";
+
 import { GAMEROOM } from "../../variables/redisIndex";
 
 export async function onDrawDecline(

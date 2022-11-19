@@ -1,5 +1,5 @@
 import { writable, type Writable } from "svelte/store";
-import type { GetChallenge } from "$types/home/Challenge";
+import type { GetChallenge } from "$types/challenge";
 
 export const listOfChallenges: Writable<{
   count: number;

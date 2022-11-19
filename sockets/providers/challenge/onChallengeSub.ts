@@ -1,4 +1,4 @@
-import type { SocketType } from "../../types";
+import type { SocketType } from "../../types/sockets";
 
 export function onChallengeSub(this: SocketType) {
   const socket = this;

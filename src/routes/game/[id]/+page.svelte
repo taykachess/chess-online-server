@@ -1,6 +1,8 @@
 <script lang="ts">
   import { afterNavigate, beforeNavigate } from "$app/navigation";
+
   import Chess from "$components/game/Chess.svelte";
+
   import { info } from "$store/game/info";
   import { socket } from "$store/sockets/socket";
 
@@ -16,7 +18,7 @@
     if (willUnload) {
       console.log("Unload", willUnload);
     }
-    window.cancelAnimationFrame($info.requestId);
+    window.cancelAnimationFrame($info?.requestId);
     removeSocketListerners();
 
     console.log("before nav");

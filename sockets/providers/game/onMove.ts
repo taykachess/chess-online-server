@@ -1,9 +1,12 @@
 import { getGame, increasePly } from "../../global/games";
+
 import { changeTime } from "../../services/game/changeTime";
 import { isGameOver } from "../../services/game/isGameOver";
 import { onGameOver } from "../../services/game/onGameOver";
-import { SocketType } from "../../types";
+
 import { GAMEROOM } from "../../variables/redisIndex";
+
+import type { SocketType } from "../../types/sockets";
 
 export async function onMove(
   this: SocketType,

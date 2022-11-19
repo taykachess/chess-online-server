@@ -1,6 +1,5 @@
 <script lang="ts">
   import { goto } from "$app/navigation";
-  import { record } from "zod";
   import Pagination from "./Pagination.svelte";
 
   export let titles: string[];

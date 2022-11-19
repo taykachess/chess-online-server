@@ -17,10 +17,15 @@ model User {
   hashedPassword String
   rating         Decimal  @default(2000)
   filters        Json?
-  title          String?
+  title          Title?
   roles          Role[]
   participant    Player[]
   games          Game[]
+}
+
+enum Title {
+  GM
+  IM
 }
 
 model Role {

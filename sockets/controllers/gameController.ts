@@ -1,4 +1,4 @@
-import { SocketType } from "../types";
+import { SocketType } from "../types/sockets";
 import { onGameGet } from "../providers/game/onGameGet";
 import { onMove } from "../providers/game/onMove";
 import { onResign } from "../providers/game/onResign";

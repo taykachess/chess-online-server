@@ -1,6 +1,7 @@
 <script lang="ts">
+  import type { Title } from "$types/game";
   import Badge from "./Badge.svelte";
-  export let title: "GM" | "IM" | undefined;
+  export let title: Title;
 
   function badgeColor(title?: "GM" | "IM") {
     switch (title) {

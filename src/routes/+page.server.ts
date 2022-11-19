@@ -1,12 +1,14 @@
-import type { PageServerLoad, Actions } from "./$types";
-import { loginSchema, registerSchema } from "$lib/validate/registerUser";
-import { invalid } from "@sveltejs/kit";
 import { compare, hash } from "bcrypt";
-import { prisma } from "$lib/db/prisma";
 import { sign } from "jsonwebtoken";
+import { invalid } from "@sveltejs/kit";
+
+import { loginSchema, registerSchema } from "$lib/validate/registerUser";
+import { prisma } from "$lib/db/prisma";
 
 import { JWT_SECRET } from "$env/static/private";
 import { filterSchema } from "$lib/validate/filters";
+
+import type { PageServerLoad, Actions } from "./$types";
 
 // export const load: PageServerLoad = async ({ locals }) => {
 //   return {

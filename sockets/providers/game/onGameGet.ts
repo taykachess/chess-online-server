@@ -1,8 +1,10 @@
 import { getGame } from "../../global/games";
-import { SocketType } from "../../types";
-import { GetGame } from "../../../src/types/sockets/socket";
 import { prisma } from "../../global/prisma";
+
 import { GAMEROOM } from "../../variables/redisIndex";
+
+import type { SocketType } from "../../types/sockets";
+import type { GetGame } from "../../types/game";
 
 export async function onGameGet(
   this: SocketType,

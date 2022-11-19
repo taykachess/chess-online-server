@@ -1,6 +1,7 @@
 import { getGame } from "../../global/games";
 import { onGameOver } from "../../services/game/onGameOver";
-import { SocketType } from "../../types";
+
+import type { SocketType } from "../../types/sockets";
 
 export async function onDrawAccept(
   this: SocketType,

@@ -1,6 +1,8 @@
 <script lang="ts">
-  import type { PalleterLi } from "$types/common/palleter";
-  import { Icon, ArrowCircleDown } from "svelte-hero-icons";
+  import { Icon } from "svelte-hero-icons";
+
+  import type { PalleterLi } from "$types/frontend";
+
   export let records: PalleterLi[];
 </script>
 

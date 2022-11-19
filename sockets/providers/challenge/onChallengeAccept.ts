@@ -1,10 +1,13 @@
 import { io } from "../../global/io";
 import { redis } from "../../global/redis";
-import type { SocketType } from "../../types";
-import { CHALLENGES } from "../../variables/redisIndex";
-import { GetChallenge } from "../../../src/types/home/Challenge";
 import { prisma } from "../../global/prisma";
+
 import { createGame } from "../../services/game/createGame";
+
+import { CHALLENGES } from "../../variables/redisIndex";
+
+import type { GetChallenge } from "../../types/challenge";
+import type { SocketType } from "../../types/sockets";
 
 export async function onChallengeAccept(
   this: SocketType,

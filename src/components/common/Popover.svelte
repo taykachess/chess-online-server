@@ -5,7 +5,6 @@
     PopoverButton,
     PopoverPanel,
   } from "@rgossiaux/svelte-headlessui";
-  import { text } from "svelte/internal";
   import Badge from "./Badge.svelte";
   import BadgeTitle from "./BadgeTitle.svelte";
 

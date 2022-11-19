@@ -1,8 +1,8 @@
 <script lang="ts">
   import { enhance } from "$app/forms";
+
   import { page } from "$app/stores";
   import { socket } from "$store/sockets/socket";
-  // import type { ActionData } from "./$types";
 
   export let isOpen: boolean;
 

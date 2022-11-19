@@ -1,11 +1,15 @@
 <script lang="ts">
-  import Select from "$components/common/Select.svelte";
-  import Switch from "$components/common/Switch.svelte";
   import { DateInput } from "date-picker-svelte";
 
-  export let isOpen: boolean;
+  import Select from "$components/common/Select.svelte";
+  import Switch from "$components/common/Switch.svelte";
+
   import type { Prisma } from "@prisma/client";
+
+  export let isOpen: boolean;
+
   import { goto } from "$app/navigation";
+
   let formData: Prisma.TournamentCreateInput = {
     name: "",
     description: "",

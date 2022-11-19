@@ -1,5 +1,5 @@
 import { prisma } from "$lib/db/prisma";
-import type { getTournament } from "$types/home/tournament";
+import type { GetTournament } from "$types/tournament";
 import { json } from "@sveltejs/kit";
 import type { RequestHandler } from "./$types";
 
@@ -19,7 +19,7 @@ export const GET: RequestHandler = async ({ request, locals, url }) => {
   }
 
   const take = 10;
-  const tournaments: getTournament[] = await prisma.tournament.findMany({
+  const tournaments: GetTournament[] = await prisma.tournament.findMany({
     take,
     skip: take * (+page - 1),
     where: {

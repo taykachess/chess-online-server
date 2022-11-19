@@ -1,7 +1,7 @@
 import { JWT_SECRET } from "$env/static/private";
 import type { Handle } from "@sveltejs/kit";
 import { verify } from "jsonwebtoken";
-import type { DecodedUser } from "$types/hooks/user";
+import type { DecodedUser } from "$types/user";
 export const handle: Handle = async ({ event, resolve }) => {
   const token = event.cookies.get("token");
   if (!token) {

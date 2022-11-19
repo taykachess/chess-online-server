@@ -1,7 +1,8 @@
+import { redis } from "../../global/redis";
+
 import { CHALLENGES } from "../../variables/redisIndex";
 
-import type { SocketType } from "../../types";
-import { redis } from "../../global/redis";
+import type { SocketType } from "../../types/sockets";
 
 export async function onDisconnect(this: SocketType) {
   const socket = this;

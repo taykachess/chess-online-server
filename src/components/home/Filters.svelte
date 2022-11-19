@@ -1,9 +1,12 @@
 <script lang="ts">
   import { page } from "$app/stores";
+
   import Badge from "$components/common/Badge.svelte";
   import Dialog from "$components/common/Dialog.svelte";
   import FiltersForm from "./FiltersForm.svelte";
+
   let isOpen = false;
+
   function summa(filters: { min: number; max: number } | undefined) {
     let sum = 0;
     if (!filters) return ``;
@@ -11,6 +14,7 @@
 
     return `${sum}`;
   }
+
   $: countFilters = summa($page.data.user?.filters);
 </script>
 

@@ -1,8 +1,11 @@
 <script lang="ts">
-  import { goto } from "$app/navigation";
-  import Header from "$components/layout/Header.svelte";
-  import { socket } from "$store/sockets/socket";
   import { onMount } from "svelte";
+  import { goto } from "$app/navigation";
+
+  import Header from "$components/layout/Header.svelte";
+
+  import { socket } from "$store/sockets/socket";
+
   import "../app.postcss";
 
   onMount(() => {

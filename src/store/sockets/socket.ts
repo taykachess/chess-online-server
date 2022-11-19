@@ -4,7 +4,7 @@ import { io } from "socket.io-client";
 import type {
   ServerToClientEvents,
   ClientToServerEvents,
-} from "$types/sockets/socket";
+} from "$types/sockets";
 import { writable, type Writable } from "svelte/store";
 import { browser } from "$app/environment";
 import { listOfChallenges } from "$store/home/challenges";
