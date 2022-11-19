@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Logo from "$components/icons/Logo.svelte";
+  import ChessClockSVG from "$components/icons/ChessClockSVG.svelte";
   import { info } from "$store/game/info";
 
   export let side: "w" | "b";
@@ -22,6 +22,6 @@
 >
   <div class=" w-20">{formatTime(time)}</div>
   {#if $info.chess.turn() == side}
-    <div class=" -mt-1 h-8 w-8"><Logo /></div>
+    <div class=" -mt-1 h-8 w-8"><ChessClockSVG /></div>
   {/if}
 </div>

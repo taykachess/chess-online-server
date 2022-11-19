@@ -1,14 +1,11 @@
 <script lang="ts">
   import { goto } from "$app/navigation";
+
   import Pagination from "./Pagination.svelte";
 
+  import type { ChallengeTableRecord } from "$types/challenge";
   export let titles: string[];
-  export let records: {
-    link?: string;
-    records: string[];
-    registered?: boolean;
-    onClick?: () => any;
-  }[];
+  export let records: ChallengeTableRecord[];
   export let count: number;
   export let onClickPagination: (page: number) => void;
 

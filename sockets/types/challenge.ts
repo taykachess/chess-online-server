@@ -7,7 +7,13 @@ export interface GetChallenge {
 }
 
 export type ChallengeTableRecord = {
+  link?: string;
   records: string[];
-  registered: boolean;
-  onClick: () => any;
+  registered?: boolean;
+  onClick?: () => any;
 };
+
+// link?: string;
+//     records: string[];
+//     registered?: boolean;
+//     onClick?: () => any;

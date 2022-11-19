@@ -35,9 +35,11 @@
   <PopoverButton
     class=" group inline-flex items-center rounded-md bg-slate-700 px-4 py-1 font-medium text-white text-opacity-90 hover:text-opacity-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75"
   >
-    <span class="mr-1 -mt-px">
-      <BadgeTitle title={$page.data.user?.title} />
-    </span>
+    {#if $page.data.user?.title}
+      <span class="mr-1 -mt-px">
+        <BadgeTitle title={$page.data.user?.title} />
+      </span>
+    {/if}
 
     <span>{title}</span>
     <span class=" ml-2 -mt-px">

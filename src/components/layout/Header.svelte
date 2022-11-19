@@ -8,7 +8,7 @@
   import Popover from "$components/common/Popover.svelte";
   import CreateUserForm from "$components/home/CreateUserForm.svelte";
   import LoginForm from "$components/home/LoginForm.svelte";
-  import Logo from "$components/icons/Logo.svelte";
+  import ChessClockSVG from "$components/icons/ChessClockSVG.svelte";
 
   let isOpen = false;
   let isOpenLogin = false;
@@ -23,7 +23,7 @@
 
 <div class="border-b">
   <div
-    class=" mx-4 flex h-16 max-w-7xl  items-center  justify-between sm:mx-auto   "
+    class="  flex h-16 max-w-6xl  items-center  justify-between sm:mx-auto   "
   >
     <!-- <div class=" ml-4">Chess</div> -->
     <!-- svelte-ignore a11y-click-events-have-key-events -->
@@ -34,7 +34,7 @@
       class=" flex cursor-pointer items-center space-x-2"
     >
       <div class="  h-8 w-8">
-        <Logo />
+        <ChessClockSVG />
       </div>
       <div class=" text-lg font-bold ">chessmate.com</div>
     </div>

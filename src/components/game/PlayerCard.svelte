@@ -2,15 +2,18 @@
   import Badge from "$components/common/Badge.svelte";
   import BadgeTitle from "$components/common/BadgeTitle.svelte";
 
-  export let player: any;
+  import type { Player } from "$types/game";
+  export let player: Player;
 
-  $: difference = player.ratingNext - player.rating;
+  $: difference = player.ratingNext ? player.ratingNext - player.rating : 0;
 </script>
 
 <div class="flex items-baseline text-xs font-medium text-slate-800 ">
-  <div class="">
-    <BadgeTitle title={player.title} />
-  </div>
+  {#if player.title}
+    <div class="">
+      <BadgeTitle title={player.title} />
+    </div>
+  {/if}
   <div class=" ml-1 text-base">{player.username}</div>
   <div class="relative ml-3 ">
     <Badge

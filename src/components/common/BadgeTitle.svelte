@@ -3,7 +3,7 @@
   import Badge from "./Badge.svelte";
   export let title: Title;
 
-  function badgeColor(title?: "GM" | "IM") {
+  function badgeColor(title?: Title) {
     switch (title) {
       case "GM": {
         return { text: "text-slate-100", bg: "bg-red-800" };
@@ -24,6 +24,4 @@
   $: color = badgeColor(title);
 </script>
 
-{#if title}
-  <Badge {title} {color} />
-{/if}
+<Badge {title} {color} />
