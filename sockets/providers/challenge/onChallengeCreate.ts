@@ -56,7 +56,10 @@ export async function onChallengeCreate(
       rating: +user?.rating,
     });
 
-    if (existChallenges?.length) {
+    if (
+      existChallenges?.length &&
+      existChallenges[0].user != socket.data.username
+    ) {
       const choosenChallenge = existChallenges[0];
       const [socket2] = await io
         .in(`${choosenChallenge.socketId}`)

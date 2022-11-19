@@ -8,11 +8,13 @@
   import Match from "$components/home/Match.svelte";
 </script>
 
-<div class="mx-auto max-w-7xl pt-20 ">
-  <TitleAndDescription />
+<div class="mx-auto max-w-6xl pt-20 ">
+  <div class=" md:w-1/2">
+    <TitleAndDescription />
 
-  <div class="mt-6 flex justify-center">
-    <Tabs />
+    <div class="mt-6 ">
+      <Tabs />
+    </div>
   </div>
 </div>
 

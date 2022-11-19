@@ -4,9 +4,10 @@ import { prisma } from "../../global/prisma";
 
 import { calculateRating } from "./calculateRating";
 
-import { GAMEROOM } from "../../variables/redisIndex";
+import { GAMEROOM, PLAYERINGAME } from "../../variables/redisIndex";
 
 import type { Result } from "../../types/game";
+import { redis } from "../../global/redis";
 
 export async function onGameOver({
   gameId,
@@ -65,6 +66,11 @@ export async function onGameOver({
     newEloBlack,
   });
   io.socketsLeave(GAMEROOM(gameId));
+
   deleteGame(gameId);
-  return;
+
+  // await Promise.all([
+  redis.SREM(PLAYERINGAME(game.white.username), gameId);
+  redis.SREM(PLAYERINGAME(game.black.username), gameId);
+  // ]);
 }

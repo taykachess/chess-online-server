@@ -7,12 +7,12 @@ const redis = createClient();
   await redis.connect();
 })();
 
-// if (process.env.NODE_ENV == "dev") {
-//   console.log("Redis cleared");
-//   (async () => {
-//     await redis.flushAll();
-//   })();
-// }
+if (process.env.NODE_ENV == "dev") {
+  console.log("Redis cleared");
+  (async () => {
+    await redis.flushAll();
+  })();
+}
 
 (async () => {
   const data = {};

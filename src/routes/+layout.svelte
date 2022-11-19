@@ -8,6 +8,10 @@
 
   import "../app.postcss";
 
+  import type { LayoutData } from "./$types";
+
+  export let data: LayoutData;
+
   onMount(() => {
     $socket.on("game:started", ({ gameId }) => {
       goto(`/game/${gameId}`);
@@ -25,7 +29,7 @@
 </svelte:head>
 
 <div class=" w-full">
-  <Header />
+  <Header games={data.gameIds} />
 </div>
 <main class="  text-slate-500  ">
   <slot />

@@ -3,10 +3,11 @@ import { v4 as uuid } from "uuid";
 
 import { deleteGame, setGame } from "../../global/games";
 
-import { TIME_TO_CANCEL_GAME } from "../../variables/redisIndex";
+import { PLAYERINGAME, TIME_TO_CANCEL_GAME } from "../../variables/redisIndex";
 
 import type { Player } from "../../types/game";
 import type { SocketRemoteType, SocketType } from "../../types/sockets";
+import { redis } from "../../global/redis";
 
 export async function createGame({
   sockets,
@@ -44,8 +45,11 @@ export async function createGame({
     control: data.control,
   });
 
-  // :TODO Записать в хеш, что идет игра
-
   sockets[0].emit("game:started", { gameId: generatedId });
   sockets[1].emit("game:started", { gameId: generatedId });
+
+  // await Promise.all([
+  redis.SADD(PLAYERINGAME(data.white.username), generatedId);
+  redis.SADD(PLAYERINGAME(data.black.username), generatedId);
+  // ]);
 }

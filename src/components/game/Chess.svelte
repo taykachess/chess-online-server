@@ -20,6 +20,7 @@
   import { browser } from "$app/environment";
   import GameManager from "./GameManager.svelte";
   import { board } from "$store/game/board";
+  import { afterNavigate } from "$app/navigation";
 
   let lastTime: number;
   let boardHTML: HTMLElement;
@@ -43,6 +44,7 @@
   }
 
   function startClock() {
+    console.log("Start clock", $info.chess.turn());
     $info.requestId = window.requestAnimationFrame(playClock);
   }
 
@@ -188,10 +190,18 @@
     $socket.emit(
       "game:get",
       { gameId: $page.params.id },
-      ({ white, black, time, pgn, result, inc, lastOfferDraw }: GetGame) => {
+      async ({
+        white,
+        black,
+        time,
+        pgn,
+        result,
+        inc,
+        lastOfferDraw,
+      }: GetGame) => {
         const chess = new Chess();
         // @ts-ignore
-        chess.loadPgn(pgn);
+        await chess.loadPgn(pgn);
         const tmpHistory = chess.history();
         $info = {
           chess,
@@ -223,21 +233,15 @@
         };
 
         $info = $info;
-
-        // @ts-ignore
-        // $info.tree
-        //   ? // @ts-ignore
-        //     ($info.tree.history = tmpHistory)
-        //   : ($info.tree = {
-        //       // @ts-ignore
-        //       history: tmpHistory,
-        //       // @ts-ignore
-        //       currentNode: tmpHistory[tmpHistory.length - 1],
-        //       // @ts-ignore
-        //       liveNode: tmpHistory[tmpHistory.length - 1],
-        //     });
-        // console.log($info.time);
-        setChessBoardToDOM();
+        console.log($board, "board!!!!!!!!");
+        console.log($board);
+        if (!$board) setChessBoardToDOM();
+        else {
+          $board.setPosition(chess.fen());
+          $board.setOrientation(
+            $info.black.username === $page.data.user?.username ? "b" : "w"
+          );
+        }
 
         if (result == "*") {
           startClock();
@@ -256,7 +260,14 @@
     );
   }
 
-  $: orientation = $board?.getOrientation();
+  afterNavigate(({ willUnload, from, to }) => {
+    if (to?.route.id == from?.route.id && to?.params?.id != from?.params?.id) {
+      getGame();
+    } else $board = undefined;
+  });
+
+  $: orientation =
+    $info?.black?.username === $page.data.user?.username ? "b" : "w";
 </script>
 
 <!-- <div class="">
@@ -278,7 +289,7 @@
         <!-- TODO: Get rid of bind -->
 
         <PlayerCard bind:player={$info.black} />
-        <Timer time={$info?.time[1]} side="b" />
+        <Timer bind:time={$info.time[1]} side="b" />
       </div>
 
       <div class=" ">
@@ -292,7 +303,7 @@
       <div class="flex {orientation == 'w' ? 'flex-col-reverse' : 'flex-col'}">
         <!-- TODO: Get rid of bind -->
         <PlayerCard bind:player={$info.white} />
-        <Timer time={$info?.time[0]} side="w" />
+        <Timer bind:time={$info.time[0]} side="w" />
       </div>
     </div>
   {/if}

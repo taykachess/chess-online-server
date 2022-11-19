@@ -6,6 +6,15 @@
   export let records: PalleterLi[];
 </script>
 
+<!-- prettier-ignore -->
+<div class=" grid grid-cols-3 gap-2">
+  {#each Array(9) as control }
+    <div class=" flex aspect-square items-center justify-center rounded-lg bg-slate-800 text-2xl">
+      1+0
+    </div>
+  {/each}
+</div>
+
 <div
   class=" w-full transform divide-y divide-gray-100 overflow-hidden bg-white ring-1 ring-black ring-opacity-5 transition-all sm:rounded-xl sm:shadow-2xl"
 >

@@ -6,9 +6,12 @@
 
   import Dialog from "$components/common/Dialog.svelte";
   import Popover from "$components/common/Popover.svelte";
+  import PulseAnimatedElement from "$components/common/PulseAnimatedElement.svelte";
   import CreateUserForm from "$components/home/CreateUserForm.svelte";
   import LoginForm from "$components/home/LoginForm.svelte";
   import ChessClockSVG from "$components/icons/ChessClockSVG.svelte";
+
+  export let games: string[] | undefined;
 
   let isOpen = false;
   let isOpenLogin = false;
@@ -38,6 +41,23 @@
       </div>
       <div class=" text-lg font-bold ">chessmate.com</div>
     </div>
+    {#if games}
+      <div class=" ml-auto mr-4 flex space-x-2">
+        {#each games as gameId}
+          <!-- svelte-ignore a11y-click-events-have-key-events -->
+          <!-- prettier-ignore -->
+          {#if gameId != $page.params.id }
+        <div on:click={()=>goto(`/game/${gameId}`)} class=" relative rounded-lg border px-8 py-1 text-sm text-sky-500 shadow-md cursor-pointer hover:bg-sky-100 ">
+          Текущая игра
+          <div class=" absolute -top-1 -right-1">
+            <PulseAnimatedElement></PulseAnimatedElement>
+          </div>
+        </div>
+          
+        {/if}
+        {/each}
+      </div>
+    {/if}
     {#if !$page.data?.user}
       <div class=" flex items-center space-x-4 text-sm">
         <!-- svelte-ignore a11y-click-events-have-key-events -->

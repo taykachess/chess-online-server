@@ -1,10 +1,13 @@
 <script lang="ts">
   import { afterNavigate, beforeNavigate } from "$app/navigation";
+  import { page } from "$app/stores";
 
   import Chess from "$components/game/Chess.svelte";
+  import { board } from "$store/game/board";
 
   import { info } from "$store/game/info";
   import { socket } from "$store/sockets/socket";
+  import { set } from "zod";
 
   function removeSocketListerners() {
     $socket.removeListener("game:end");
@@ -13,20 +16,28 @@
     $socket.removeListener("game:declineDraw");
   }
 
-  beforeNavigate(({ willUnload, type }) => {
-    console.log("type", type);
+  beforeNavigate(({ willUnload, type, to, from }) => {
     if (willUnload) {
       console.log("Unload", willUnload);
     }
     window.cancelAnimationFrame($info?.requestId);
     removeSocketListerners();
+    // console.log(to, from);
 
-    console.log("before nav");
+    // if (to?.route.id == from?.route.id && to?.params?.id != from?.params?.id) {
+    //   $board.setPosition($info.chess.fen());
+    // }
+
     // $info.chess = null;
-    console.log("Unload", willUnload);
   });
 
-  afterNavigate(({ willUnload }) => {
+  afterNavigate(({ willUnload, from, to }) => {
+    // if (to?.route.id == from?.route.id && to?.params?.id != from?.params?.id) {
+    //   console.log("after nav", $info.chess.fen());
+    //   setTimeout(() => {
+    //     $board.setPosition($info.chess.fen());
+    //   }, 2000);
+    // }
     console.log("load", willUnload);
   });
 </script>
