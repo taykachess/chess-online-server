@@ -36,8 +36,9 @@ export async function createGame({
     player1: data.white.username,
     player2: data.black.username,
     rounds: data.rounds,
-    result: [],
+    games: [],
     armageddon: false,
+    score: [0, 0, 0],
   };
   setMatch(matchId, match);
   const gameId = uuid();
@@ -46,6 +47,7 @@ export async function createGame({
   const timerId = setInterval(() => {
     deleteGame(gameId);
   }, TIME_TO_CANCEL_GAME);
+
   setGame(gameId, {
     chess: new Chess(),
     white: data.white,
@@ -63,11 +65,11 @@ export async function createGame({
     matchId: matchId,
   });
 
-  //   sockets[0].emit("game:started", { gameId: generatedId });
-  //   sockets[1].emit("game:started", { gameId: generatedId });
+  sockets[0].emit("game:started", { gameId: gameId });
+  sockets[1].emit("game:started", { gameId: gameId });
 
-  // await Promise.all([
-  //   redis.SADD(PLAYERINGAME(data.white.username), generatedId);
-  //   redis.SADD(PLAYERINGAME(data.black.username), generatedId);
-  // ]);
+  //   await Promise.all([
+  redis.SADD(PLAYERINGAME(data.white.username), gameId);
+  redis.SADD(PLAYERINGAME(data.black.username), gameId);
+  //   ]);
 }

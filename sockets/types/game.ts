@@ -30,7 +30,7 @@ export interface Game {
   matchId?: string;
 }
 export interface Games {
-  [id: string]: Pick<Game, "chess" | "timerId">;
+  [id: string]: Game;
 }
 
 // Frontend and Backend
