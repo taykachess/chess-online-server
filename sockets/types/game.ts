@@ -27,9 +27,10 @@ export interface Game {
   result: Result;
   control: string;
   lastOfferDraw?: OfferedDrawPlayer;
+  matchId?: string;
 }
 export interface Games {
-  [id: string]: Game;
+  [id: string]: Pick<Game, "chess" | "timerId">;
 }
 
 // Frontend and Backend

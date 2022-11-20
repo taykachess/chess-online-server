@@ -1,6 +1,7 @@
 // Paths in redis
 export const CHALLENGES = "challenges";
-export const GAMES = "games";
+// export const GAMES = "games";
+export const MATCHES = "matches";
 export const PLAYERINGAME = (username: string) => `playerInGame${username}`;
 
 // Const
