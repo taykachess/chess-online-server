@@ -7,19 +7,21 @@ import { createGame } from "../../services/game/createGame";
 
 import { CHALLENGES } from "../../variables/redisIndex";
 
-import type { GetChallenge } from "../../types/challenge";
+import type { Filters, GetChallenge } from "../../types/challenge";
 import type { SocketType } from "../../types/sockets";
 
 export async function onChallengeCreate(
   this: SocketType,
-  data: { control: string }
+  data: { control: string; filters: Filters }
 ) {
   try {
     const socket = this;
-    const { control } = data;
+    const { control, filters } = data;
+
+    console.log("Challenge filters", filters);
     const user = await prisma.user.findFirst({
       where: { id: socket.data.id },
-      select: { rating: true, filters: true, title: true },
+      select: { rating: true, title: true },
     });
     if (!user) throw Error("User not found");
 
@@ -28,20 +30,12 @@ export async function onChallengeCreate(
       rating: +user?.rating,
       control,
       socketId: socket.id,
-      // @ts-ignore
-      filters: {
-        // @ts-ignore
-        min: user.filters.min == -500 ? 0 : user.filters.min + +user?.rating,
-        // @ts-ignore
-        max: user.filters.max == 500 ? 5000 : user.filters.max + +user?.rating,
-      },
+      filters,
     };
 
     let ratingFilter: { min: number; max: number } = {
-      // @ts-ignore
-      min: user.filters.min,
-      // @ts-ignore
-      max: user.filters.max,
+      min: filters.rating[0],
+      max: filters.rating[0],
     };
     if (ratingFilter.max == 500 && ratingFilter.min == -500)
       ratingFilter = { min: 0, max: 5000 };
@@ -96,12 +90,9 @@ export async function onChallengeCreate(
       /* ... */
       return;
     }
-
-    const status = await redis.json.set(
-      CHALLENGES,
-      `${socket.data.username}`,
-      challenge
-    );
+    // prettier-ignore
+    // @ts-ignore
+    const status = await redis.json.set(CHALLENGES,`${socket.data.username}`,challenge);
 
     if (status) io.to("challenges").emit("challenge:created", challenge);
   } catch (error) {

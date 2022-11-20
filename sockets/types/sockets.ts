@@ -1,4 +1,5 @@
-import { RemoteSocket, Server, Socket } from "socket.io";
+import type { RemoteSocket, Server, Socket } from "socket.io";
+import type { Filters } from "./challenge";
 import type { GetGame, Result } from "./game";
 
 export type SocketServer = Server<
@@ -32,7 +33,8 @@ export interface ServerToClientEvents {
 
 export interface ClientToServerEvents {
   "challenge:subscribe": (cb: any) => void;
-  "challenge:create": (challenge: any) => void;
+  // prettier-ignore
+  "challenge:create": ({ control }: { control: string, filters: Filters}) => void;
   "challenge:cancel": () => void;
   "challenge:accept": ({ username }: { username: string }) => void;
 

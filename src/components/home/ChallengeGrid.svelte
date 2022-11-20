@@ -1,14 +1,24 @@
 <script lang="ts">
   import PulseAnimatedElement from "$components/common/PulseAnimatedElement.svelte";
+
+  import { filters } from "$store/home/challenges";
   import { socket } from "$store/sockets/socket";
+
+  import type { Filters } from "$types/challenge";
 
   // prettier-ignore
   const controls = ["1+0", "1+1", "1+2", "3+0", "3+2", "5+3", "10+0", "10+5"];
   let currentControl: string = "";
-  function createChallenge({ control }: { control: string }) {
+  function createChallenge({
+    control,
+    filters,
+  }: {
+    control: string;
+    filters: Filters;
+  }) {
     if (currentControl === control) return cancelChallenge();
     currentControl = control;
-    $socket.emit("challenge:create", { control });
+    $socket.emit("challenge:create", { control, filters });
   }
 
   function cancelChallenge() {
@@ -21,7 +31,7 @@
   {#each controls as control}
     <!-- svelte-ignore a11y-click-events-have-key-events -->
     <div
-      on:click={() => createChallenge({ control })}
+      on:click={() => createChallenge({ control, filters: $filters })}
       class=" relative flex aspect-square cursor-pointer items-center justify-center rounded-lg {currentControl ==
       control
         ? ' bg-slate-900'

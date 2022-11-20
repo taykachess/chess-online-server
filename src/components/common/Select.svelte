@@ -19,6 +19,7 @@
   let selectedOption: { name: string; value: any } | undefined = options.find(
     (opt) => opt.value === value
   );
+
   // function resetAll() {
   //   selectedOption = options[0];
   //   value = options[0].value;

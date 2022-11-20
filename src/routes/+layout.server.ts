@@ -10,14 +10,13 @@ export const load: LayoutServerLoad = async ({ locals, cookies }) => {
   const gameIds = await redis.SMEMBERS(PLAYERINGAME(locals.user.username));
   const user = await prisma.user.findUnique({
     where: { username: locals.user?.username },
-    select: { rating: true, filters: true, title: true },
+    select: { rating: true, title: true },
   });
 
   return {
     user: {
       ...locals.user,
       rating: Number(user?.rating),
-      filters: user?.filters,
       title: user?.title,
     },
     gameIds,

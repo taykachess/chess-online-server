@@ -3,7 +3,7 @@
 
   import { page } from "$app/stores";
   import { socket } from "$store/sockets/socket";
-  import { listOfChallenges } from "$store/home/challenges";
+  import { filters, listOfChallenges } from "$store/home/challenges";
 
   import Table from "$components/common/Table.svelte";
   import Select from "$components/common/Select.svelte";
@@ -12,6 +12,8 @@
   import type { GetChallenge } from "$types/challenge";
   import type { ChallengeTab } from "$types/frontend";
   import type { ChallengeTableRecord } from "$types/challenge";
+  import { browser } from "$app/environment";
+  import Badge from "$components/common/Badge.svelte";
 
   const titles = ["Игрок", "Рейтинг", "Контроль"];
 
@@ -128,19 +130,54 @@
 
     $listOfChallenges = { count: 0, challenges: [] };
   });
+  let count = 0;
+  $: {
+    if (browser) {
+      count = count + 1;
+      if (count == 1) {
+      } else {
+        console.log($filters);
+        localStorage.setItem("challengeFilters", JSON.stringify($filters));
+      }
+    }
+  }
 </script>
 
-<div class=" my-4 flex items-center space-x-2">
-  <Select
-    options={[
-      { name: "<span> Любой рейтинг</span>", value: [-500, 500] },
-      { name: "<span> &#177; 100 рейтинг</span>", value: [-100, 100] },
-      { name: "<span> &#177; 200 рейтинг</span>", value: [-200, 200] },
-      { name: "<span> &#177; 300 рейтинг</span>", value: [-300, 300] },
-      { name: "<span> &#177; 400 рейтинг</span>", value: [-400, 400] },
-    ]}
-    color={{ bg: "bg-green-100", text: "text-green-800" }}
-  />
+<div class=" my-4 flex items-end ">
+  {#if $filters}
+    <Select
+      bind:value={$filters.rating[0]}
+      options={[
+        { name: "-ထ", value: -500 },
+        { name: "-100 ", value: -100 },
+        { name: "-200", value: -200 },
+        { name: "-300", value: -300 },
+        { name: "-400", value: -400 },
+      ]}
+      color={{
+        bg: "bg-pink-100 rounded-none rounded-l",
+        text: "text-pink-800",
+      }}
+    />
+    <Badge
+      title={`Ваш рейтинг`}
+      color={{ text: "text-slate-700 py-0.5 rounded-none", bg: "bg-white" }}
+    />
+    <Select
+      bind:value={$filters.rating[1]}
+      options={[
+        { name: "+ထ", value: 500 },
+        { name: "+100", value: 100 },
+        { name: "+200", value: 200 },
+        { name: "+300", value: 300 },
+        { name: "+400", value: 400 },
+      ]}
+      color={{
+        bg: "bg-green-100 rounded-none rounded-r",
+        text: "text-green-800",
+      }}
+    />
+  {/if}
 </div>
 
 <div class=" my-2" />

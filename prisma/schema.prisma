@@ -16,7 +16,6 @@ model User {
   email          String   @unique
   hashedPassword String
   rating         Decimal  @default(2000)
-  filters        Json?
   title          Title?
   roles          Role[]
   participant    Player[]

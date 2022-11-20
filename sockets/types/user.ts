@@ -5,6 +5,5 @@ export interface DecodedUser {
   username: string;
   roles: { name: string }[];
   rating: number;
-  filters: { min: number; max: number };
   title?: Title;
 }
