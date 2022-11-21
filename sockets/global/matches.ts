@@ -1,15 +1,15 @@
-import type { Match, Matches, MatchGame } from "../types/match";
-import { MATCHES } from "../variables/redisIndex";
+import type { Match, MatchGame } from "../types/match";
+import { MATCHES_IN_PROGRESS_REDIS } from "../variables/redisIndex";
 import { redis } from "./redis";
 
 export function getMatch(matchId: string): Promise<Match> {
   // @ts-ignore
-  return redis.json.get(MATCHES, { path: matchId });
+  return redis.json.get(MATCHES_IN_PROGRESS_REDIS, { path: matchId });
 }
 
 export function setMatch(matchId: string, match: Match) {
   // @ts-ignore
-  return redis.json.set(MATCHES, matchId, match);
+  return redis.json.set(MATCHES_IN_PROGRESS_REDIS, matchId, match);
 }
 
 export function addGame(matchId: string, game: MatchGame) {
@@ -24,7 +24,11 @@ export function addGame(matchId: string, game: MatchGame) {
 
   if (resultIndex == -1) throw Error("result is wrong");
   return Promise.all([
-    redis.json.ARRAPPEND(MATCHES, `$.${matchId}.games`, game),
-    redis.json.numIncrBy(MATCHES, `$.${matchId}.result[${resultIndex}]`, 1),
+    redis.json.ARRAPPEND(MATCHES_IN_PROGRESS_REDIS, `$.${matchId}.games`, game),
+    redis.json.numIncrBy(
+      MATCHES_IN_PROGRESS_REDIS,
+      `$.${matchId}.result[${resultIndex}]`,
+      1
+    ),
   ]);
 }

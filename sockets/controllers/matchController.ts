@@ -1,21 +1,22 @@
-// import { SocketType } from "../types/sockets";
-// import { onChallengeCreate } from "../providers/challenge/onChallengeCreate";
-// import { onChallengeSub } from "../providers/challenge/onChallengeSub";
-// import { onChallengeDelete } from "../providers/challenge/onChallengeDelete";
-// import { onChallengeAccept } from "../providers/challenge/onChallengeAccept";
+import { onMatchSub } from "../providers/match/onMatchSub";
+import { onMatchCreate } from "../providers/match/onMatchCreate";
+import { onMatchDelete } from "../providers/match/onMatchDelete";
+import { onMatchAccept } from "../providers/match/onMatchAccept";
 
-// export function challengeController(socket: SocketType) {
-//   try {
-//     socket.on("challenge:subscribe", onChallengeSub);
+import type { SocketType } from "../types/sockets";
 
-//     // Auth only
-//     if (!socket.data?.id) return console.log("Next auth is required");
-//     socket.on("challenge:create", onChallengeCreate);
-//     socket.on("challenge:cancel", onChallengeDelete);
-//     socket.on("challenge:accept", onChallengeAccept);
+export function matchController(socket: SocketType) {
+  try {
+    socket.on("match:subscribe", onMatchSub);
 
-//     // Only for room challenges
-//   } catch (error) {
-//     console.log(error);
-//   }
-// }
+    // Auth only
+    if (!socket.data?.id) return console.log("Next auth is required");
+    socket.on("match:create", onMatchCreate);
+    socket.on("match:cancel", onMatchDelete);
+    socket.on("match:accept", onMatchAccept);
+
+    // Only for room challenges
+  } catch (error) {
+    console.log(error);
+  }
+}

@@ -24,9 +24,10 @@
     removeSocketListerners();
     // console.log(to, from);
 
-    // if (to?.route.id == from?.route.id && to?.params?.id != from?.params?.id) {
-    //   $board.setPosition($info.chess.fen());
-    // }
+    if (to?.route.id == from?.route.id && to?.params?.id != from?.params?.id) {
+      // $socket.removeListener("game:offerDraw");
+      // $socket.removeListener("game:declineDraw");
+    }
 
     // $info.chess = null;
   });

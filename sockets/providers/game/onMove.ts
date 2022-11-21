@@ -4,7 +4,7 @@ import { changeTime } from "../../services/game/changeTime";
 import { isGameOver } from "../../services/game/isGameOver";
 import { onGameOver } from "../../services/game/onGameOver";
 
-import { GAMEROOM } from "../../variables/redisIndex";
+import { GAME_ROOM } from "../../variables/redisIndex";
 
 import type { SocketType } from "../../types/sockets";
 
@@ -49,7 +49,7 @@ export async function onMove(
 
     increasePly(gameId);
 
-    socket.to(GAMEROOM(gameId)).emit("game:move", move);
+    socket.to(GAME_ROOM(gameId)).emit("game:move", move);
   } catch (error) {
     console.log(error);
   }

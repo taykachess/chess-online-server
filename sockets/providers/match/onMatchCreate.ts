@@ -2,26 +2,30 @@ import { prisma } from "../../global/prisma";
 import { io } from "../../global/io";
 import { redis } from "../../global/redis";
 
-import { getSuitableChallenges } from "../../services/challenge/getSuitableChallenges";
 import { createGame } from "../../services/game/createGame";
 
 import {
-  CHALLENGES_REDIS,
-  CHALLENGES_ROOM,
+  MATCHES_REDIS,
+  MATCHES_ROOM,
   PLAYER_IN_GAME_REDIS,
 } from "../../variables/redisIndex";
 
-import type { ChallengeFilters, GetChallenge } from "../../types/challenge";
+import type { GetMatch, MatchFilters } from "../../types/match";
+// import type { Filters, GetChallenge } from "../../types/challenge";
 import type { SocketType } from "../../types/sockets";
+import { getSuitableMatch } from "../../services/match/getSuitableMatch";
+import { createMatch } from "../../services/match/createMatch";
 
-export async function onChallengeCreate(
+export async function onMatchCreate(
   this: SocketType,
-  data: { control: string; filters: ChallengeFilters }
+  data: { control: string; rounds: number; filters: MatchFilters }
 ) {
   try {
+    console.log("onMatchCreate", data);
     const socket = this;
-    const { control, filters } = data;
     if (!socket.data.username) throw Error("User not found");
+
+    const { control, rounds, filters } = data;
 
     console.log("Challenge filters", filters);
     const user = await prisma.user.findFirst({
@@ -40,7 +44,7 @@ export async function onChallengeCreate(
     if (ratingFilter.min == -500) ratingFilter.min = 0;
     else ratingFilter.min = ratingFilter.min + +user.rating;
 
-    const challenge: GetChallenge = {
+    const match: GetMatch = {
       user: socket.data.username,
       rating: +user?.rating,
       control,
@@ -48,25 +52,20 @@ export async function onChallengeCreate(
       filters: {
         rating: [ratingFilter.min, ratingFilter.max],
       },
+      rounds,
     };
 
-    const existChallenges: GetChallenge[] = await getSuitableChallenges({
+    const existMatch: GetMatch[] = await getSuitableMatch({
       min: ratingFilter.min,
       max: ratingFilter.max,
       control,
       rating: +user?.rating,
+      rounds,
     });
 
-    console.log(existChallenges);
-
-    if (
-      existChallenges?.length &&
-      existChallenges[0].user != socket.data.username
-    ) {
-      const choosenChallenge = existChallenges[0];
-      const [socket2] = await io
-        .in(`${choosenChallenge.socketId}`)
-        .fetchSockets();
+    if (existMatch?.length && existMatch[0].user != socket.data.username) {
+      const chosenMatch = existMatch[0];
+      const [socket2] = await io.in(`${chosenMatch.socketId}`).fetchSockets();
 
       if (!socket.data?.username || !socket2.data?.username)
         throw Error("The both user must have username");
@@ -75,20 +74,28 @@ export async function onChallengeCreate(
         select: { rating: true, title: true },
       });
       if (!userOpponent) throw Error("User not found");
+      const white = {
+        username: socket.data.username,
+        rating: +user.rating,
+        title: user.title,
+      };
+
+      const black = {
+        username: socket2.data.username,
+        rating: +userOpponent?.rating,
+        title: userOpponent.title,
+      };
+
+      const matchId = await createMatch({
+        createMatchDto: { white, black, control, rounds, armageddon: false },
+      });
 
       const gameId = await createGame({
         data: {
-          white: {
-            username: socket.data.username,
-            rating: +user.rating,
-            title: user.title,
-          },
-          black: {
-            username: socket2.data.username,
-            rating: +userOpponent?.rating,
-            title: userOpponent.title,
-          },
+          white,
+          black,
           control,
+          matchId,
         },
       });
 
@@ -98,15 +105,15 @@ export async function onChallengeCreate(
       return Promise.all([
         redis.SADD(PLAYER_IN_GAME_REDIS(socket.data.username), gameId),
         redis.SADD(PLAYER_IN_GAME_REDIS(socket2.data.username), gameId),
-        redis.json.del(CHALLENGES_REDIS, `$.${socket.data.username}`),
-        redis.json.del(CHALLENGES_REDIS, `$.${socket2.data.username}`),
+        redis.json.del(MATCHES_REDIS, `$.${socket.data.username}`),
+        redis.json.del(MATCHES_REDIS, `$.${socket2.data.username}`),
       ]);
     }
     // prettier-ignore
     // @ts-ignore
-    const status = await redis.json.set(CHALLENGES_REDIS,`${socket.data.username}`,challenge);
+    const status = await redis.json.set(MATCHES_REDIS,`${socket.data.username}`,match);
 
-    if (status) io.to(CHALLENGES_ROOM).emit("challenge:created", challenge);
+    if (status) io.to(MATCHES_ROOM).emit("match:created", match);
   } catch (error) {
     console.log(error);
   }

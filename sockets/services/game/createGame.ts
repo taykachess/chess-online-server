@@ -5,7 +5,7 @@ import { deleteGame, setGame } from "../../global/games";
 
 import { TIME_TO_CANCEL_GAME } from "../../variables/redisIndex";
 
-import type { Player } from "../../types/game";
+import type { Game, Player } from "../../types/game";
 
 export async function createGame({
   data,
@@ -23,7 +23,8 @@ export async function createGame({
   const timerId = setInterval(() => {
     deleteGame(gameId);
   }, TIME_TO_CANCEL_GAME);
-  setGame(gameId, {
+
+  const game: Game = {
     chess: new Chess(),
     white: data.white,
     black: data.black,
@@ -37,7 +38,10 @@ export async function createGame({
     timerId,
     result: "*",
     control: data.control,
-  });
+  };
+
+  if (data.matchId) game.matchId = data.matchId;
+  setGame(gameId, game);
 
   return gameId;
 }

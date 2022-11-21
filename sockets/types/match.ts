@@ -1,5 +1,9 @@
 import type { Result } from "./game";
 
+import type { ChallengeFilters } from "./challenge";
+
+export type MatchFilters = ChallengeFilters;
+
 export type MatchGame = {
   white: string;
   black: string;
@@ -22,4 +26,13 @@ export interface Match {
 
 export interface Matches {
   [id: string]: Match;
+}
+
+export interface GetMatch {
+  user: string;
+  rating: number;
+  control: string;
+  socketId: string;
+  filters: MatchFilters;
+  rounds: number;
 }

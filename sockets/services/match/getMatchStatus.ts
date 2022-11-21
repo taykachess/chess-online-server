@@ -8,7 +8,7 @@ export function getMatchStatus(match: Match): MatchStatus {
   if (whiteScore > scoresForDraw || blackScore > scoresForDraw) {
     return "finished";
   }
-  if (whiteScore == scoresForDraw && whiteScore == scoresForDraw) {
+  if (whiteScore == scoresForDraw && blackScore == scoresForDraw) {
     if (match.armageddon) return "armageddon";
     else return "finished";
   }

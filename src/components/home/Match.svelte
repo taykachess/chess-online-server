@@ -3,7 +3,6 @@
 
   import { page } from "$app/stores";
   import { socket } from "$store/sockets/socket";
-  import { listOfChallenges } from "$store/home/challenges";
 
   import Table from "$components/common/Table.svelte";
   import Select from "$components/common/Select.svelte";
@@ -11,45 +10,54 @@
 
   import type { GetChallenge } from "$types/challenge";
   import type { ChallengeTableRecord } from "$types/challenge";
+  import type { GetMatch } from "$types/match";
+  import { listOfMatches } from "$store/home/match";
+  import MatchGrid from "./MatchGrid.svelte";
 
   const titles = ["Игрок", "Рейтинг", "Контроль", "Партий"];
 
-  async function getAllChallenges() {
-    return fetch(`/api/challenge/getAll`);
+  async function getAllMatches() {
+    return fetch(`/api/match/getAll`);
   }
 
-  async function getCountAllChallenges() {
-    return fetch(`/api/challenge/count`);
+  async function getCountAllMatches() {
+    return fetch(`/api/match/count`);
   }
 
-  async function getInitialChallenges() {
-    const [challengesData, countData] = await Promise.all([
-      getAllChallenges(),
-      getCountAllChallenges(),
+  async function getInitialMatches() {
+    const [matchesData, countData] = await Promise.all([
+      getAllMatches(),
+      getCountAllMatches(),
     ]);
-    const challengesJSON = await challengesData.json();
+    const matchesJSON = await matchesData.json();
     const count: number = await countData.json();
-    const challenges: any[] = [];
-    for (const property in challengesJSON) {
-      challenges.push(challengesJSON[property]);
+    const matches: any[] = [];
+    for (const property in matchesJSON) {
+      matches.push(matchesJSON[property]);
     }
-    $listOfChallenges.challenges = challenges;
-    $listOfChallenges.count = count;
+    console.log("matches", matches);
+    $listOfMatches.matches = matches;
+    $listOfMatches.count = count;
   }
 
-  function createChallengeRecords(
-    challenge: GetChallenge[] | null
+  function createMatchesRecords(
+    match: GetMatch[] | null
   ): ChallengeTableRecord[] {
     const arrayRecords: ChallengeTableRecord[] = [];
-    if (!challenge) return [];
-    challenge.forEach((challenge) => {
+    if (!match) return [];
+    match.forEach((match) => {
       arrayRecords.push({
         // link: `/tournament/${challenge.}`,
         onClick: () => {
-          $socket.emit("challenge:accept", { username: challenge.user });
+          $socket.emit("match:accept", { username: match.user });
         },
-        registered: challenge.user === $page.data?.user?.username,
-        records: [challenge.user, `${challenge.rating}`, challenge.control],
+        registered: match.user === $page.data?.user?.username,
+        records: [
+          match.user,
+          `${match.rating}`,
+          match.control,
+          `${match.rounds}`,
+        ],
       });
     });
 
@@ -59,69 +67,77 @@
   let records: ChallengeTableRecord[] = [];
 
   onMount(async () => {
-    await getInitialChallenges();
-    $socket.emit("challenge:subscribe", (challenges: any) => {
-      console.log(challenges);
+    await getInitialMatches();
+    $socket.emit("match:subscribe", (matches: any) => {
+      console.log(matches);
     });
-    records = createChallengeRecords($listOfChallenges.challenges);
+    records = createMatchesRecords($listOfMatches.matches);
 
-    $socket.on("challenge:created", (challenge) => {
-      const index = $listOfChallenges.challenges.findIndex(
-        (chal) => chal.user == challenge.user
+    $socket.on("match:created", (match) => {
+      const index = $listOfMatches.matches.findIndex(
+        (chal) => chal.user == match.user
       );
       if (index === -1) {
-        $listOfChallenges.challenges?.push(challenge);
-        $listOfChallenges.challenges = $listOfChallenges.challenges;
+        $listOfMatches.matches?.push(match);
+        $listOfMatches.matches = $listOfMatches.matches;
         records.push({
           onClick: () => {
-            $socket.emit("challenge:accept", { username: challenge.user });
+            $socket.emit("challenge:accept", { username: match.user });
           },
-          registered: challenge.user === $page.data?.user?.username,
-          records: [challenge.user, `${challenge.rating}`, challenge.control],
+          registered: match.user === $page.data?.user?.username,
+          records: [
+            match.user,
+            `${match.rating}`,
+            match.control,
+            `${match.rounds}`,
+          ],
         });
         records = records;
       } else {
         const index2 = records.findIndex(
-          (record) =>
-            record.records[0] == $listOfChallenges.challenges[index]?.user
+          (record) => record.records[0] == $listOfMatches.matches[index]?.user
         );
         records[index2] = {
           onClick: () => {
-            $socket.emit("challenge:accept", { username: challenge.user });
+            $socket.emit("match:accept", { username: match.user });
           },
-          registered: challenge.user === $page.data?.user?.username,
-          records: [challenge.user, `${challenge.rating}`, challenge.control],
+          registered: match.user === $page.data?.user?.username,
+          records: [
+            match.user,
+            `${match.rating}`,
+            match.control,
+            `${match.rounds}`,
+          ],
         };
-        $listOfChallenges.challenges[index] = challenge;
+        $listOfMatches.matches[index] = match;
       }
     });
 
-    $socket.on("challenge:deleted", ({ socketId }) => {
-      const index = $listOfChallenges.challenges.findIndex(
+    $socket.on("match:deleted", ({ socketId }) => {
+      const index = $listOfMatches.matches.findIndex(
         (chal) => chal.socketId == socketId
       );
       if (index !== -1) {
         const index2 = records.findIndex(
-          (record) =>
-            record.records[0] == $listOfChallenges.challenges[index]?.user
+          (record) => record.records[0] == $listOfMatches.matches[index]?.user
         );
         if (index2 !== -1) {
           records.splice(index2, 1);
           records = records;
           console.log(records);
         }
-        $listOfChallenges.challenges.splice(index, 1);
+        $listOfMatches.matches.splice(index, 1);
       }
 
-      $listOfChallenges.challenges = $listOfChallenges.challenges;
+      $listOfMatches.matches = $listOfMatches.matches;
     });
   });
 
   onDestroy(() => {
-    $socket?.removeListener("challenge:created");
-    $socket?.removeListener("challenge:deleted");
+    $socket?.removeListener("match:created");
+    $socket?.removeListener("match:deleted");
 
-    $listOfChallenges = { count: 0, challenges: [] };
+    $listOfMatches = { count: 0, matches: [] };
   });
 </script>
 
@@ -152,7 +168,7 @@
 <div class=" my-2" />
 <div class=" grid sm:w-full  sm:grid-cols-6 sm:gap-x-4  ">
   <div class="w-full sm:col-span-2 ">
-    <ChallengeGrid />
+    <MatchGrid />
   </div>
   <div class=" mt-2  sm:col-span-4 sm:mt-0 ">
     <Table {titles} {records} onClickPagination={() => {}} count={10} />

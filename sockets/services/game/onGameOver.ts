@@ -4,7 +4,7 @@ import { prisma } from "../../global/prisma";
 
 import { calculateRating } from "./calculateRating";
 
-import { GAMEROOM, PLAYERINGAME } from "../../variables/redisIndex";
+import { GAME_ROOM, PLAYER_IN_GAME_REDIS } from "../../variables/redisIndex";
 
 import type { Result } from "../../types/game";
 import { redis } from "../../global/redis";
@@ -63,12 +63,12 @@ export async function onGameOver({
 
   await prisma.$transaction([createGame, updateRatingWhite, updateRatingBlack]);
 
-  io.to(GAMEROOM(gameId)).emit("game:end", {
+  io.to(GAME_ROOM(gameId)).emit("game:end", {
     result,
     newEloWhite,
     newEloBlack,
   });
-  io.socketsLeave(GAMEROOM(gameId));
+  io.socketsLeave(GAME_ROOM(gameId));
 
   if (game.matchId) {
     const matchGame: MatchGame = {
@@ -78,12 +78,13 @@ export async function onGameOver({
       gameId,
     };
     await addGame(game.matchId, matchGame);
-    runNextGameInMatch({ matchId: game.matchId });
+    await runNextGameInMatch({ matchId: game.matchId });
   }
+
   deleteGame(gameId);
 
   // await Promise.all([
-  redis.SREM(PLAYERINGAME(game.white.username), gameId);
-  redis.SREM(PLAYERINGAME(game.black.username), gameId);
+  redis.SREM(PLAYER_IN_GAME_REDIS(game.white.username), gameId);
+  redis.SREM(PLAYER_IN_GAME_REDIS(game.black.username), gameId);
   // ]);
 }

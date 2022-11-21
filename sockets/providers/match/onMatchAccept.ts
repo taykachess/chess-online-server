@@ -5,14 +5,15 @@ import { prisma } from "../../global/prisma";
 import { createGame } from "../../services/game/createGame";
 
 import {
-  CHALLENGES_REDIS,
+  MATCHES_REDIS,
   PLAYER_IN_GAME_REDIS,
 } from "../../variables/redisIndex";
 
-import type { GetChallenge } from "../../types/challenge";
+import type { GetMatch } from "../../types/match";
 import type { SocketType } from "../../types/sockets";
+import { createMatch } from "../../services/match/createMatch";
 
-export async function onChallengeAccept(
+export async function onMatchAccept(
   this: SocketType,
   { username }: { username: string }
 ) {
@@ -20,16 +21,16 @@ export async function onChallengeAccept(
 
   try {
     //   @ts-ignore
-    const challenge: GetChallenge = await redis.json.get(CHALLENGES_REDIS, {
+    const match: GetMatch = await redis.json.get(MATCHES_REDIS, {
       path: username,
     });
 
-    if (!challenge) throw Error("Challenge not found");
+    if (!match) throw Error("Match not found");
 
-    if (challenge.socketId == socket.id)
-      throw Error("You can't accept your own challenge");
+    if (match.socketId == socket.id)
+      throw Error("You can't accept your own match");
 
-    const [socket2] = await io.in(`${challenge.socketId}`).fetchSockets();
+    const [socket2] = await io.in(`${match.socketId}`).fetchSockets();
 
     if (!socket.data?.username || !socket2.data?.username)
       throw Error("The both user must have username");
@@ -44,19 +45,34 @@ export async function onChallengeAccept(
     });
     if (!userOpponent || !user) throw Error("User not found");
 
+    const white = {
+      username: socket.data.username,
+      rating: +user.rating,
+      title: user.title,
+    };
+
+    const black = {
+      username: socket2.data.username,
+      rating: +userOpponent?.rating,
+      title: userOpponent.title,
+    };
+
+    const matchId = await createMatch({
+      createMatchDto: {
+        white,
+        black,
+        control: match.control,
+        rounds: match.rounds,
+        armageddon: false,
+      },
+    });
+
     const gameId = await createGame({
       data: {
-        white: {
-          username: socket.data.username,
-          rating: +user.rating,
-          title: user.title,
-        },
-        black: {
-          username: socket2.data.username,
-          rating: +userOpponent?.rating,
-          title: userOpponent.title,
-        },
-        control: challenge.control,
+        white,
+        black,
+        control: match.control,
+        matchId,
       },
     });
 
@@ -66,8 +82,8 @@ export async function onChallengeAccept(
     Promise.all([
       redis.SADD(PLAYER_IN_GAME_REDIS(socket.data.username), gameId),
       redis.SADD(PLAYER_IN_GAME_REDIS(socket2.data.username), gameId),
-      redis.json.del(CHALLENGES_REDIS, `$.${socket.data.username}`),
-      redis.json.del(CHALLENGES_REDIS, `$.${socket2.data.username}`),
+      redis.json.del(MATCHES_REDIS, `$.${socket.data.username}`),
+      redis.json.del(MATCHES_REDIS, `$.${socket2.data.username}`),
     ]);
   } catch (error) {
     console.error(error);

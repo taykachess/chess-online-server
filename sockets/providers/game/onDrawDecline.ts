@@ -3,7 +3,7 @@ import { io } from "../../global/io";
 
 import type { SocketType } from "../../types/sockets";
 
-import { GAMEROOM } from "../../variables/redisIndex";
+import { GAME_ROOM } from "../../variables/redisIndex";
 
 export async function onDrawDecline(
   this: SocketType,
@@ -27,7 +27,7 @@ export async function onDrawDecline(
 
     game.lastOfferDraw.status = "declined";
 
-    io.to(GAMEROOM(gameId)).emit("game:declineDraw");
+    io.to(GAME_ROOM(gameId)).emit("game:declineDraw");
     // await onGameOver({ gameId, result: "0.5-0.5" });
 
     // await onGameOver({ gameId, result });

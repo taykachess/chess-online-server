@@ -1,4 +1,4 @@
-export interface Filters {
+export interface ChallengeFilters {
   rating: [number, number];
 }
 
@@ -7,7 +7,7 @@ export interface GetChallenge {
   rating: number;
   control: string;
   socketId: string;
-  filters: Filters;
+  filters: ChallengeFilters;
 }
 
 export type ChallengeTableRecord = {

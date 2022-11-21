@@ -4,26 +4,28 @@
   import { filters } from "$store/home/challenges";
   import { socket } from "$store/sockets/socket";
 
-  import type { ChallengeFilters } from "$types/challenge";
+  import type { MatchFilters } from "$types/match";
 
   // prettier-ignore
   const controls = ["1+0", "1+1", "1+2", "3+0", "3+2", "5+3", "10+0", "10+5"];
   let currentControl: string = "";
-  function createChallenge({
+  function createMatch({
     control,
     filters,
+    rounds,
   }: {
     control: string;
-    filters: ChallengeFilters;
+    filters: MatchFilters;
+    rounds: number;
   }) {
-    if (currentControl === control) return cancelChallenge();
+    if (currentControl === control) return cancelMatch();
     currentControl = control;
-    $socket.emit("challenge:create", { control, filters });
+    $socket.emit("match:create", { control, filters, rounds });
   }
 
-  function cancelChallenge() {
+  function cancelMatch() {
     currentControl = "";
-    $socket.emit("challenge:cancel");
+    $socket.emit("match:cancel");
   }
 </script>
 
@@ -31,7 +33,7 @@
   {#each controls as control}
     <!-- svelte-ignore a11y-click-events-have-key-events -->
     <div
-      on:click={() => createChallenge({ control, filters: $filters })}
+      on:click={() => createMatch({ control, filters: $filters, rounds: 6 })}
       class=" relative flex aspect-square cursor-pointer items-center justify-center rounded-lg {currentControl ==
       control
         ? ' bg-slate-900'

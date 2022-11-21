@@ -6,6 +6,7 @@ import * as dotenv from "dotenv";
 import { challengeController } from "./controllers/challengeController";
 import { onDisconnect } from "./providers/base/onDisconnect";
 import { gameController } from "./controllers/gameController";
+import { matchController } from "./controllers/matchController";
 dotenv.config({ path: "../.env" });
 
 io.use((socket, next) => {
@@ -27,6 +28,7 @@ io.use((socket, next) => {
 io.on("connection", async (socket) => {
   challengeController(socket);
   gameController(socket);
+  matchController(socket);
 
   socket.on("disconnect", onDisconnect);
 });

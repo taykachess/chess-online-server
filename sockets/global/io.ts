@@ -5,7 +5,7 @@ import type {
   ServerToClientEvents,
   InterServerEvents,
   SocketData,
-} from "../../src/types/sockets/socket";
+} from "../types/sockets";
 const io = new Server<
   ClientToServerEvents,
   ServerToClientEvents,

@@ -3,7 +3,7 @@ import { io } from "../../global/io";
 
 import type { SocketType } from "../../types/sockets";
 
-import { GAMEROOM } from "../../variables/redisIndex";
+import { GAME_ROOM } from "../../variables/redisIndex";
 
 export async function onDrawOffer(
   this: SocketType,
@@ -23,7 +23,7 @@ export async function onDrawOffer(
     const lastOfferDraw = game.lastOfferDraw;
     if (!lastOfferDraw) {
       game.lastOfferDraw = { username: socket.data.username, ply: game.ply };
-      return io.to(GAMEROOM(gameId)).emit("game:offerDraw", {
+      return io.to(GAME_ROOM(gameId)).emit("game:offerDraw", {
         username: socket.data.username,
         ply: game.ply,
       });
@@ -32,7 +32,7 @@ export async function onDrawOffer(
     } else {
       game.lastOfferDraw = { username: socket.data.username, ply: game.ply };
 
-      return io.to(GAMEROOM(gameId)).emit("game:offerDraw", {
+      return io.to(GAME_ROOM(gameId)).emit("game:offerDraw", {
         username: socket.data.username,
         ply: game.ply,
       });

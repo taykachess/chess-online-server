@@ -1,5 +1,5 @@
 import { createClient } from "redis";
-
+import { MATCHES_IN_PROGRESS_REDIS } from "../variables/redisIndex";
 const redis = createClient();
 
 (async () => {
@@ -19,6 +19,8 @@ if (process.env.NODE_ENV == "dev") {
   //   New object must be created first
   await redis.json.set("challenges", `$`, data);
   await redis.json.set("games", `$`, {});
+  await redis.json.set("matches", `$`, {});
+  await redis.json.set("matchesinprogress", `$`, {});
 })();
 
 export { redis };

@@ -16,7 +16,8 @@ const config = {
     alias: {
       $components: "src/components",
       $types: "sockets/types",
-      $store: "src/store"
+      $store: "src/store",
+      $sockets: "sockets/"
     },
     env:{
       dir:'./'

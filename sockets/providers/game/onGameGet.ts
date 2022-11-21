@@ -1,7 +1,7 @@
 import { getGame } from "../../global/games";
 import { prisma } from "../../global/prisma";
 
-import { GAMEROOM } from "../../variables/redisIndex";
+import { GAME_ROOM, MATCH_ROOM } from "../../variables/redisIndex";
 
 import type { SocketType } from "../../types/sockets";
 import type { GetGame } from "../../types/game";
@@ -31,7 +31,10 @@ export async function onGameGet(
       return cb({ ...prismaGame });
     }
 
-    socket.join(GAMEROOM(gameId));
+    socket.join(GAME_ROOM(gameId));
+    // ОЧень опасное место возможно стоит это делать на клиенте!
+    //
+    if (game.matchId) socket.join(MATCH_ROOM(game.matchId));
     const pgn = game.chess.pgn();
     const { white, black, time, result } = game;
 

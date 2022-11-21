@@ -2,6 +2,10 @@ import { getMatch } from "../../global/matches";
 import { createGame } from "../game/createGame";
 import { getMatchStatus } from "./getMatchStatus";
 import { prisma } from "../../global/prisma";
+import { io } from "../../global/io";
+import { redis } from "../../global/redis";
+import { MATCH_ROOM, PLAYER_IN_GAME_REDIS } from "../../variables/redisIndex";
+
 export async function runNextGameInMatch({ matchId }: { matchId: string }) {
   const match = await getMatch(matchId);
   const status = getMatchStatus(match);
@@ -18,7 +22,15 @@ export async function runNextGameInMatch({ matchId }: { matchId: string }) {
   });
   if (!black) throw Error("User not found");
 
+  console.log(status);
   if (status == "running") {
+    // const sockets = await io.fetchSockets();
+    // const socket1 = sockets.find((socket) => {
+    //   socket.data.username == match.player1;
+    // });
+    // const socket2 = sockets.find((socket) => {
+    //   socket.data.username == match.player2;
+    // });
     const gameId = await createGame({
       data: {
         white: { ...white, rating: Number(white.rating) },
@@ -27,6 +39,13 @@ export async function runNextGameInMatch({ matchId }: { matchId: string }) {
         matchId: matchId,
       },
     });
+
+    io.to(MATCH_ROOM(matchId)).emit("game:started", { gameId });
+
+    Promise.all([
+      redis.SADD(PLAYER_IN_GAME_REDIS(match.player1), gameId),
+      redis.SADD(PLAYER_IN_GAME_REDIS(match.player2), gameId),
+    ]);
   }
 
   if (status == "finished") {

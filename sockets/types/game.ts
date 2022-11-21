@@ -29,6 +29,7 @@ export interface Game {
   lastOfferDraw?: OfferedDrawPlayer;
   matchId?: string;
 }
+
 export interface Games {
   [id: string]: Game;
 }
