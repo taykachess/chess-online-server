@@ -3,33 +3,27 @@ import { v4 as uuid } from "uuid";
 
 import { deleteGame, setGame } from "../../global/games";
 
-import { PLAYERINGAME, TIME_TO_CANCEL_GAME } from "../../variables/redisIndex";
+import { TIME_TO_CANCEL_GAME } from "../../variables/redisIndex";
 
 import type { Player } from "../../types/game";
-import type { SocketRemoteType, SocketType } from "../../types/sockets";
-import { redis } from "../../global/redis";
 
 export async function createGame({
-  sockets,
   data,
 }: {
-  sockets: [socket1: SocketType, socket2: SocketRemoteType];
   data: {
     white: Player;
     black: Player;
     control: string;
+    matchId?: string;
   };
 }) {
-  if (!sockets[0].data?.username || !sockets[1].data?.username)
-    throw Error("User can't be found");
-
-  const generatedId = uuid();
+  const gameId = uuid();
 
   // Set game inside memory
   const timerId = setInterval(() => {
-    deleteGame(generatedId);
+    deleteGame(gameId);
   }, TIME_TO_CANCEL_GAME);
-  setGame(generatedId, {
+  setGame(gameId, {
     chess: new Chess(),
     white: data.white,
     black: data.black,
@@ -45,11 +39,5 @@ export async function createGame({
     control: data.control,
   });
 
-  sockets[0].emit("game:started", { gameId: generatedId });
-  sockets[1].emit("game:started", { gameId: generatedId });
-
-  // await Promise.all([
-  redis.SADD(PLAYERINGAME(data.white.username), generatedId);
-  redis.SADD(PLAYERINGAME(data.black.username), generatedId);
-  // ]);
+  return gameId;
 }

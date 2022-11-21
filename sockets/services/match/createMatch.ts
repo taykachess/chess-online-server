@@ -10,17 +10,19 @@ import type { SocketRemoteType, SocketType } from "../../types/sockets";
 import { redis } from "../../global/redis";
 import { setMatch } from "../../global/matches";
 import { Match } from "../../types/match";
+import { createGame } from "../game/createGame";
 
-export async function createGame({
+export async function createMatch({
   sockets,
-  data,
+  createMatchDto,
 }: {
   sockets: [socket1: SocketType, socket2: SocketRemoteType];
-  data: {
+  createMatchDto: {
     white: Player;
     black: Player;
     control: string;
     rounds: number;
+    armageddon: boolean;
   };
 }) {
   if (!sockets[0].data?.username || !sockets[1].data?.username)
@@ -33,43 +35,24 @@ export async function createGame({
   //   result: { white: string; black: string; result: Result; gameId: string }[];
   //   armageddon: boolean;
   const match: Match = {
-    player1: data.white.username,
-    player2: data.black.username,
-    rounds: data.rounds,
+    player1: createMatchDto.white.username,
+    player2: createMatchDto.black.username,
+    rounds: createMatchDto.rounds,
     games: [],
-    armageddon: false,
-    score: [0, 0, 0],
+    armageddon: createMatchDto.armageddon,
+    result: [0, 0, 0],
+    status: "running",
+    control: createMatchDto.control,
   };
   setMatch(matchId, match);
-  const gameId = uuid();
 
-  //   Set game inside memory
-  const timerId = setInterval(() => {
-    deleteGame(gameId);
-  }, TIME_TO_CANCEL_GAME);
-
-  setGame(gameId, {
-    chess: new Chess(),
-    white: data.white,
-    black: data.black,
-    time: [
-      +data.control.split("+")[0] * 60 * 1000,
-      +data.control.split("+")[0] * 60 * 1000,
-    ],
-    ply: 0,
-    tsmp: new Date().getTime(),
-    increment: +data.control.split("+")[1],
-    timerId,
-    result: "*",
-    control: data.control,
-    matchId: matchId,
+  await createGame({
+    sockets,
+    data: {
+      white: createMatchDto.white,
+      black: createMatchDto.black,
+      control: createMatchDto.control,
+      matchId: matchId,
+    },
   });
-
-  sockets[0].emit("game:started", { gameId: gameId });
-  sockets[1].emit("game:started", { gameId: gameId });
-
-  //   await Promise.all([
-  redis.SADD(PLAYERINGAME(data.white.username), gameId);
-  redis.SADD(PLAYERINGAME(data.black.username), gameId);
-  //   ]);
 }

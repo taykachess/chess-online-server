@@ -12,7 +12,7 @@ export function setMatch(matchId: string, match: Match) {
   return redis.json.set(MATCHES, matchId, match);
 }
 
-export function addResult(matchId: string, game: MatchGame) {
+export function addGame(matchId: string, game: MatchGame) {
   const resultIndex =
     game.result == "1-0"
       ? 0
@@ -25,6 +25,6 @@ export function addResult(matchId: string, game: MatchGame) {
   if (resultIndex == -1) throw Error("result is wrong");
   return Promise.all([
     redis.json.ARRAPPEND(MATCHES, `$.${matchId}.games`, game),
-    redis.json.numIncrBy(MATCHES, `$.${matchId}.score[${resultIndex}]`, 1),
+    redis.json.numIncrBy(MATCHES, `$.${matchId}.result[${resultIndex}]`, 1),
   ]);
 }

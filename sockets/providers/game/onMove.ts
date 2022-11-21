@@ -17,7 +17,7 @@ export async function onMove(
   console.log(move);
 
   try {
-    const game = getGame(gameId);
+    const game = await getGame(gameId);
     if (!game) throw Error("Game not found");
 
     const turn = game.chess.turn();

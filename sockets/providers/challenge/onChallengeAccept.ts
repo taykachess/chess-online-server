@@ -8,6 +8,7 @@ import { CHALLENGES } from "../../variables/redisIndex";
 
 import type { GetChallenge } from "../../types/challenge";
 import type { SocketType } from "../../types/sockets";
+import { afterCreateGame } from "../../services/game/afterCreatedGame";
 
 export async function onChallengeAccept(
   this: SocketType,
@@ -41,8 +42,7 @@ export async function onChallengeAccept(
     });
     if (!userOpponent || !user) throw Error("User not found");
 
-    await createGame({
-      sockets: [socket, socket2],
+    const gameId = await createGame({
       data: {
         white: {
           username: socket.data.username,
@@ -58,8 +58,11 @@ export async function onChallengeAccept(
       },
     });
 
-    await redis.json.del(CHALLENGES, `$.${socket.data.username}`);
-    await redis.json.del(CHALLENGES, `$.${socket2.data.username}`);
+    Promise.all([
+      afterCreateGame({ socket, socket2, gameId }),
+      redis.json.del(CHALLENGES, `$.${socket.data.username}`),
+      redis.json.del(CHALLENGES, `$.${socket2.data.username}`),
+    ]);
   } catch (error) {
     console.error(error);
   }

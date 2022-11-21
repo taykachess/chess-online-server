@@ -8,8 +8,9 @@ import { GAMEROOM, PLAYERINGAME } from "../../variables/redisIndex";
 
 import type { Result } from "../../types/game";
 import { redis } from "../../global/redis";
-import { addResult, getMatch } from "../../global/matches";
+import { addGame, getMatch } from "../../global/matches";
 import { MatchGame } from "../../types/match";
+import { runNextGameInMatch } from "../match/runNextGameInMatch";
 
 export async function onGameOver({
   gameId,
@@ -70,14 +71,14 @@ export async function onGameOver({
   io.socketsLeave(GAMEROOM(gameId));
 
   if (game.matchId) {
-    const matchResult: MatchGame = {
+    const matchGame: MatchGame = {
       white: game.white.username,
       black: game.black.username,
       result,
       gameId,
     };
-    await addResult(game.matchId, matchResult);
-    const match = await getMatch(game.matchId);
+    await addGame(game.matchId, matchGame);
+    runNextGameInMatch({ matchId: game.matchId });
   }
   deleteGame(gameId);
 

@@ -80,22 +80,45 @@ model Player {
   tiebreakers  Json
 }
 
+// player1: string;
+//   player2: string;
+//   rounds: number;
+//   games: MatchGame[];
+//   armageddon: boolean;
+//   result: [number, number, number];
+//   active: Boolean;
+//   tournamentId String
+
+//  round: Number,
+//     match: Number,
+//     player1: String | Number | null,
+//     player2: String | Number | null,
+//     // the following objects are only present in elimination pairings
+//     win?: {
+//         round: Number,
+//         match: Number
+//     },
+//     loss?: {
+//         round: Number,
+//         match: Number
+//     }
 model Match {
-  id           String      @unique
-  Tournament   Tournament? @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+  id         String  @unique
+  player1    String?
+  player2    String?
+  rounds     Int
+  result     Json?
+  status     String  @default("created")
+  armageddon Boolean @default(false)
+  games      Game[]
+
+  // Use in tournaments only
+  round        Int?
+  match        Int?
+  win          Json?
+  loss         Json?
+  Tournament   Tournament? @relation(fields: [tournamentId], references: [id])
   tournamentId String?
-  round        Int
-  match        Int
-  // userOne      Player     @relation(fields: [playerOne], references: [id], name: "w")
-  playerOne    String
-  // userTwo      Player     @relation(fields: [playerTwo], references: [id], name: "b")
-  playerTwo    String
-  result       Json?
-  active       Boolean?
-  winnersPath  String?
-  losersPath   String?
-  userId       Int?
-  games        Game[]
 }
 
 model Game {

@@ -5,10 +5,11 @@ import { redis } from "../../global/redis";
 import { getSuitableChallenges } from "../../services/challenge/getSuitableChallenges";
 import { createGame } from "../../services/game/createGame";
 
-import { CHALLENGES } from "../../variables/redisIndex";
+import { CHALLENGES, PLAYERINGAME } from "../../variables/redisIndex";
 
 import type { Filters, GetChallenge } from "../../types/challenge";
 import type { SocketType } from "../../types/sockets";
+import { afterCreateGame } from "../../services/game/afterCreatedGame";
 
 export async function onChallengeCreate(
   this: SocketType,
@@ -25,17 +26,9 @@ export async function onChallengeCreate(
     });
     if (!user) throw Error("User not found");
 
-    const challenge: Partial<GetChallenge> = {
-      user: socket.data.username,
-      rating: +user?.rating,
-      control,
-      socketId: socket.id,
-      filters,
-    };
-
     let ratingFilter: { min: number; max: number } = {
       min: filters.rating[0],
-      max: filters.rating[0],
+      max: filters.rating[1],
     };
     if (ratingFilter.max == 500 && ratingFilter.min == -500)
       ratingFilter = { min: 0, max: 5000 };
@@ -43,12 +36,24 @@ export async function onChallengeCreate(
       ratingFilter.max = ratingFilter.max + +user.rating;
       ratingFilter.min = ratingFilter.min + +user.rating;
     }
+    const challenge: Partial<GetChallenge> = {
+      user: socket.data.username,
+      rating: +user?.rating,
+      control,
+      socketId: socket.id,
+      filters: {
+        rating: [ratingFilter.min, ratingFilter.max],
+      },
+    };
+
     const existChallenges: GetChallenge[] = await getSuitableChallenges({
       min: ratingFilter.min,
       max: ratingFilter.max,
       control,
       rating: +user?.rating,
     });
+
+    console.log(existChallenges);
 
     if (
       existChallenges?.length &&
@@ -67,8 +72,7 @@ export async function onChallengeCreate(
       });
       if (!userOpponent) throw Error("User not found");
 
-      await createGame({
-        sockets: [socket, socket2],
+      const gameId = await createGame({
         data: {
           white: {
             username: socket.data.username,
@@ -84,11 +88,11 @@ export async function onChallengeCreate(
         },
       });
 
-      await redis.json.del(CHALLENGES, `$.${socket.data.username}`);
-      await redis.json.del(CHALLENGES, `$.${socket2.data.username}`);
-
-      /* ... */
-      return;
+      return Promise.all([
+        afterCreateGame({ socket, socket2, gameId }),
+        redis.json.del(CHALLENGES, `$.${socket.data.username}`),
+        redis.json.del(CHALLENGES, `$.${socket2.data.username}`),
+      ]);
     }
     // prettier-ignore
     // @ts-ignore

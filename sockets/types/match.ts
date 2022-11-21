@@ -7,13 +7,17 @@ export type MatchGame = {
   gameId: string;
 };
 
+export type MatchStatus = "created" | "running" | "armageddon" | "finished";
+
 export interface Match {
   player1: string;
   player2: string;
   rounds: number;
   games: MatchGame[];
   armageddon: boolean;
-  score: [number, number, number];
+  result: [number, number, number];
+  status: MatchStatus;
+  control: string;
 }
 
 export interface Matches {
