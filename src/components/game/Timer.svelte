@@ -20,8 +20,8 @@
 <div
   class="  flex items-center p-2 text-2xl   font-bold tracking-tighter text-slate-800 "
 >
-  <div class=" w-20">{formatTime(time)}</div>
+  <div class=" ">{formatTime(time)}</div>
   {#if $info.chess.turn() == side}
-    <div class=" -mt-1 h-8 w-8"><ChessClockSVG /></div>
+    <div class=" ml-5 -mt-1 h-8 w-8"><ChessClockSVG /></div>
   {/if}
 </div>

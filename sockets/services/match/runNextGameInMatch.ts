@@ -5,36 +5,48 @@ import { prisma } from "../../global/prisma";
 import { io } from "../../global/io";
 import { redis } from "../../global/redis";
 import { MATCH_ROOM, PLAYER_IN_GAME_REDIS } from "../../variables/redisIndex";
+import { Match } from "../../types/match";
 
-export async function runNextGameInMatch({ matchId }: { matchId: string }) {
-  const match = await getMatch(matchId);
+export async function runNextGameInMatch({
+  matchId,
+  match,
+}: {
+  matchId: string;
+  match: Match;
+}) {
   const status = getMatchStatus(match);
 
-  const white = await prisma.user.findUnique({
+  const player1 = await prisma.user.findUnique({
     where: { username: match.player1 },
     select: { rating: true, username: true, title: true },
   });
-  if (!white) throw Error("User not found");
+  if (!player1) throw Error("User not found");
 
-  const black = await prisma.user.findUnique({
+  const player2 = await prisma.user.findUnique({
     where: { username: match.player2 },
     select: { rating: true, username: true, title: true },
   });
-  if (!black) throw Error("User not found");
+  if (!player2) throw Error("User not found");
 
   console.log(status);
   if (status == "running") {
-    // const sockets = await io.fetchSockets();
-    // const socket1 = sockets.find((socket) => {
-    //   socket.data.username == match.player1;
-    // });
-    // const socket2 = sockets.find((socket) => {
-    //   socket.data.username == match.player2;
-    // });
+    let pairing;
+    if (match.games[match.games.length - 1].white == player1.username) {
+      pairing = {
+        black: { ...player1, rating: Number(player1.rating) },
+        white: { ...player2, rating: Number(player2.rating) },
+      };
+    } else {
+      pairing = {
+        white: { ...player1, rating: Number(player1.rating) },
+        black: { ...player2, rating: Number(player2.rating) },
+      };
+    }
+
+    // reverse color two players
     const gameId = await createGame({
       data: {
-        white: { ...white, rating: Number(white.rating) },
-        black: { ...black, rating: Number(black.rating) },
+        ...pairing,
         control: match.control,
         matchId: matchId,
       },

@@ -21,6 +21,9 @@
   import GameManager from "./GameManager.svelte";
   import { board } from "$store/game/board";
   import { afterNavigate } from "$app/navigation";
+  import MatchResults from "./MatchResults.svelte";
+  import Badge from "$components/common/Badge.svelte";
+  import { match } from "$store/game/match";
 
   let lastTime: number;
   let boardHTML: HTMLElement;
@@ -53,9 +56,9 @@
   }
 
   function increamentTimer(newTurn: "w" | "b") {
-    if (!$info.inc) return;
-    if (newTurn == "w") $info.time[1] = $info.time[1] + $info.inc * 1000;
-    else $info.time[0] = $info.time[0] + $info.inc * 1000;
+    if (!$info.increment) return;
+    if (newTurn == "w") $info.time[1] = $info.time[1] + $info.increment * 1000;
+    else $info.time[0] = $info.time[0] + $info.increment * 1000;
   }
 
   function setChessBoardToDOM() {
@@ -120,6 +123,27 @@
 
       $info.white.ratingNext = newEloWhite;
       $info.black.ratingNext = newEloBlack;
+
+      $match.games.push({
+        white: $info.white.username,
+        black: $info.black.username,
+        result,
+        gameId: $page.params.id,
+      });
+
+      $match.games = $match.games;
+
+      if ($match.player1 == $info.white.username) {
+        if (result == "1-0") $match.result[0] = $match.result[0] + 1;
+        else if (result == "0-1") $match.result[1] = $match.result[1] + 1;
+        else if (result == "0.5-0.5") $match.result[2] = $match.result[2] + 1;
+      } else if ($match.player1 == $info.black.username) {
+        if (result == "1-0") $match.result[1] = $match.result[1] + 1;
+        else if (result == "0-1") $match.result[0] = $match.result[0] + 1;
+        else if (result == "0.5-0.5") $match.result[2] = $match.result[2] + 1;
+      }
+      console.log("fsdf");
+      // $match.games = $match.games;
 
       // prettier-ignore
       // $page.data.user.rating = 5555
@@ -196,8 +220,9 @@
         time,
         pgn,
         result,
-        inc,
+        increment,
         lastOfferDraw,
+        matchId,
       }: GetGame) => {
         const chess = new Chess();
         // @ts-ignore
@@ -218,7 +243,8 @@
           time,
           result,
           pgn,
-          inc,
+          matchId,
+          increment,
           role:
             black.username === $page.data.user?.username
               ? "b"
@@ -263,6 +289,7 @@
   afterNavigate(({ willUnload, from, to }) => {
     if (to?.route.id == from?.route.id && to?.params?.id != from?.params?.id) {
       getGame();
+      // @ts-ignore
     } else $board = undefined;
   });
 
@@ -274,12 +301,14 @@
   <div class="text-3xl text-slate-900">♕ ♔ ♗ ♘ ♖ ♙</div>
   <div class="text-3xl text-slate-900">♛ ♚ ♝ ♞ ♜ ♟︎ ♟︎</div>
 </div> -->
-<div class=" flex ">
-  <Board bind:boardHTML />
+<div class=" grid w-full max-w-4xl md:grid-cols-7 ">
+  <div class=" col-span-5">
+    <Board bind:boardHTML />
+  </div>
 
   {#if $info}
     <div
-      class="ml-3 flex  {orientation == 'w'
+      class="col-span-2 ml-3 flex  {orientation == 'w'
         ? 'flex-col'
         : 'flex-col-reverse'} justify-between"
     >
@@ -306,5 +335,10 @@
         <Timer bind:time={$info.time[0]} side="w" />
       </div>
     </div>
+    {#if $info.matchId}
+      <div class="  col-span-5  mt-4 flex items-center justify-center  ">
+        <MatchResults matchId={$info.matchId} />
+      </div>
+    {/if}
   {/if}
 </div>

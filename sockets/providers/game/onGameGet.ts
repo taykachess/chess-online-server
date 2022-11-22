@@ -48,15 +48,19 @@ export async function onGameGet(
         timeWithDifference[1] - (new Date().getTime() - game.tsmp);
     }
 
-    cb({
+    const callbackData: GetGame = {
       white,
       black,
       time: timeWithDifference,
       pgn,
       result,
-      inc: game.increment,
+      increment: game.increment,
       lastOfferDraw: game.lastOfferDraw,
-    });
+    };
+
+    if (game.matchId) callbackData.matchId = game.matchId;
+
+    cb(callbackData);
   } catch (error) {
     console.log(error);
   }

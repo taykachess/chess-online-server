@@ -21,12 +21,14 @@
       console.log("Unload", willUnload);
     }
     window.cancelAnimationFrame($info?.requestId);
-    removeSocketListerners();
+    // removeSocketListerners();
     // console.log(to, from);
 
     if (to?.route.id == from?.route.id && to?.params?.id != from?.params?.id) {
-      // $socket.removeListener("game:offerDraw");
-      // $socket.removeListener("game:declineDraw");
+      $socket.removeListener("game:end");
+      $socket.removeListener("game:move");
+    } else {
+      removeSocketListerners();
     }
 
     // $info.chess = null;
@@ -46,7 +48,7 @@
 <!-- {} -->
 <!-- {JSON.stringify($info?.white)}
 {JSON.stringify($info?.black)} -->
-<div class="chess-bg flex h-screen items-center justify-center  ">
+<div class="chess-bg flex h-screen flex-col items-center justify-center  ">
   <Chess />
 </div>
 

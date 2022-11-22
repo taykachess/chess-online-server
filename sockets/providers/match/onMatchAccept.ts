@@ -67,6 +67,7 @@ export async function onMatchAccept(
       },
     });
 
+    console.log("okay");
     const gameId = await createGame({
       data: {
         white,
@@ -78,7 +79,6 @@ export async function onMatchAccept(
 
     socket.emit("game:started", { gameId: gameId });
     socket2.emit("game:started", { gameId: gameId });
-
     Promise.all([
       redis.SADD(PLAYER_IN_GAME_REDIS(socket.data.username), gameId),
       redis.SADD(PLAYER_IN_GAME_REDIS(socket2.data.username), gameId),

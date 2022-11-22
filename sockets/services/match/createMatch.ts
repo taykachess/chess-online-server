@@ -26,7 +26,7 @@ export async function createMatch({
     status: "running",
     control: createMatchDto.control,
   };
-  setMatch(matchId, match);
+  await setMatch(matchId, match);
 
   return matchId;
 }

@@ -35,14 +35,9 @@ export interface Games {
 }
 
 // Frontend and Backend
-export interface GetGame {
-  white: Player;
-  black: Player;
-  time: [number, number];
+// prettier-ignore
+export interface GetGame extends Pick<Game, "white"| "black"|"time"|"result"|"increment"|"lastOfferDraw"|"matchId"> {
   pgn: string;
-  result: Result;
-  inc: number;
-  lastOfferDraw?: OfferedDrawPlayer;
 }
 
 interface Node {
@@ -54,15 +49,9 @@ interface Node {
   next: Node | undefined;
 }
 
-export interface GameInfo {
-  white: Player;
-  black: Player;
-  time: [number, number];
-  result: Result;
-  pgn: string;
+// prettier-ignore
+export interface GameInfo extends Pick<GetGame, "white"| "black"|"time"|"result"|"pgn"|"increment"|"lastOfferDraw"|"matchId"> {
   requestId?: any;
-  inc: number;
-  lastOfferDraw?: OfferedDrawPlayer;
   ply: number;
   role?: "w" | "b";
   tree: {

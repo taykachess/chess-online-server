@@ -77,8 +77,10 @@ export async function onGameOver({
       result,
       gameId,
     };
-    await addGame(game.matchId, matchGame);
-    await runNextGameInMatch({ matchId: game.matchId });
+    let match = await getMatch(game.matchId);
+    if (!match) return;
+    match = await addGame(game.matchId, matchGame, match);
+    await runNextGameInMatch({ matchId: game.matchId, match });
   }
 
   deleteGame(gameId);

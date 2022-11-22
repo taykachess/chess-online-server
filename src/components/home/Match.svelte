@@ -6,9 +6,7 @@
 
   import Table from "$components/common/Table.svelte";
   import Select from "$components/common/Select.svelte";
-  import ChallengeGrid from "$components/home/ChallengeGrid.svelte";
 
-  import type { GetChallenge } from "$types/challenge";
   import type { ChallengeTableRecord } from "$types/challenge";
   import type { GetMatch } from "$types/match";
   import { listOfMatches } from "$store/home/match";
@@ -82,7 +80,7 @@
         $listOfMatches.matches = $listOfMatches.matches;
         records.push({
           onClick: () => {
-            $socket.emit("challenge:accept", { username: match.user });
+            $socket.emit("match:accept", { username: match.user });
           },
           registered: match.user === $page.data?.user?.username,
           records: [

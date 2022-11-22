@@ -3,8 +3,8 @@
 </script>
 
 <!-- 40rem is standart, so if make w-full is going to be problem -->
-<div class="  relative w-[36rem]   flex-none ">
-  <div bind:this={boardHTML} class="  w-full  " />
+<div class="  relative    flex-none ">
+  <div bind:this={boardHTML} class="   " />
 </div>
 
 <style>

@@ -12,18 +12,37 @@ export function setMatch(matchId: string, match: Match) {
   return redis.json.set(MATCHES_IN_PROGRESS_REDIS, matchId, match);
 }
 
-export function addGame(matchId: string, game: MatchGame) {
-  const resultIndex =
-    game.result == "1-0"
-      ? 0
-      : game.result == "0-1"
-      ? 1
-      : game.result == "0.5-0.5"
-      ? 2
-      : -1;
+export async function addGame(
+  matchId: string,
+  game: MatchGame,
+  match: Match
+): Promise<Match> {
+  // const resultIndex =
+  //   game.result == "1-0"
+  //     ? 0
+  //     : game.result == "0-1"
+  //     ? 1
+  //     : game.result == "0.5-0.5"
+  //     ? 2
+  //     : -1;
+
+  function returnIndex(match: Match, game: MatchGame) {
+    if (match.player1 == game.white) {
+      if (game.result == "1-0") return 0;
+      else if (game.result == "0-1") return 1;
+      else if (game.result == "0.5-0.5") return 2;
+    } else if (match.player1 == game.black) {
+      if (game.result == "1-0") return 1;
+      else if (game.result == "0-1") return 0;
+      else if (game.result == "0.5-0.5") return 2;
+    }
+    return -1;
+  }
+
+  const resultIndex = returnIndex(match, game);
 
   if (resultIndex == -1) throw Error("result is wrong");
-  return Promise.all([
+  await Promise.all([
     redis.json.ARRAPPEND(MATCHES_IN_PROGRESS_REDIS, `$.${matchId}.games`, game),
     redis.json.numIncrBy(
       MATCHES_IN_PROGRESS_REDIS,
@@ -31,4 +50,8 @@ export function addGame(matchId: string, game: MatchGame) {
       1
     ),
   ]);
+  match.result[resultIndex] = match.result[resultIndex] + 1;
+  match.games.push(game);
+
+  return match;
 }
