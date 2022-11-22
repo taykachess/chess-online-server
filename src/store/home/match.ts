@@ -23,3 +23,5 @@ function setFilters() {
   const parsedFilters = JSON.parse(storageFilters) as MatchFilters;
   if (storageFilters) filters.set(parsedFilters);
 }
+
+export const currentMatchControl: Writable<string> = writable();

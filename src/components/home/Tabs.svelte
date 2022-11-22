@@ -1,7 +1,6 @@
 <script lang="ts">
   import TabWithSVG from "$components/common/TabWithSVG.svelte";
   import { tab } from "$store/home/tab";
-  import { Icon, ThumbUp } from "svelte-hero-icons";
 </script>
 
 <ul class="flex space-x-10">
@@ -90,14 +89,4 @@
       >
     </TabWithSVG>
   </li>
-  <!-- svelte-ignore a11y-click-events-have-key-events -->
-  <!-- <li
-    on:click={() => {
-      $tab = "puzzle";
-    }}
-  >
-    <Tab title="Задачи" active={$tab === "puzzle" ? true : false}
-      ><Icon src={Cog} size="48" /></Tab
-    >
-  </li> -->
 </ul>

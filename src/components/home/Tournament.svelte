@@ -1,7 +1,4 @@
 <script lang="ts">
-  // import TournamentGrid from "$components/home/TournamentGrid.svelte";
-  // import type { TournamentTab } from "$types/frontend";
-
   import Table from "$components/common/Table.svelte";
   import { page } from "$app/stores";
   import Tabs from "$components/common/Tabs.svelte";

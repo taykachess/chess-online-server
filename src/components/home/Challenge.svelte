@@ -10,7 +10,6 @@
   import ChallengeGrid from "$components/home/ChallengeGrid.svelte";
 
   import type { GetChallenge } from "$types/challenge";
-  import type { ChallengeTab } from "$types/frontend";
   import type { ChallengeTableRecord } from "$types/challenge";
   import { browser } from "$app/environment";
   import Badge from "$components/common/Badge.svelte";

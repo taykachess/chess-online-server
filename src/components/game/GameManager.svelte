@@ -34,6 +34,9 @@
   function resign() {
     console.log("resign");
     countClick = countClick + 1;
+    setTimeout(() => {
+      countClick = 0;
+    }, 5000);
     if (countClick == 2)
       $socket.emit("game:resign", { gameId: $page.params.id });
   }
@@ -118,11 +121,10 @@
       </svg>
       </div>
     {/if}
-    <!-- svelte-ignore a11y-click-events-have-key-events -->
   {/if}
 </div>
-<svelte:window
+<!-- <svelte:window
   on:click={() => {
     if (countClick) countClick = 0;
   }}
-/>
+/> -->

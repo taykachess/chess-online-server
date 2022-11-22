@@ -23,3 +23,5 @@ function setFilters() {
   const parsedFilters = JSON.parse(storageFilters) as ChallengeFilters;
   if (storageFilters) filters.set(parsedFilters);
 }
+
+export const currentChallengeControl: Writable<string> = writable();
