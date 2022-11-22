@@ -9,5 +9,6 @@ declare namespace App {
 
   interface PageData {
     user?: import("$types/user").DecodedUser;
+    gameIds?: string[];
   }
 }

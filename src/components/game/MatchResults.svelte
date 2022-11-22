@@ -34,11 +34,11 @@
     if (result == "0-1" || "1-0" || "0.5-0.5") return result.split("-")[1];
   }
 
-  function player1ScoreFn(match: Match) {
+  function player1ScoreFn(match: Match | undefined) {
     if (!match) return 0;
     return match.result[0] + 0.5 * match.result[2];
   }
-  function player2ScoreFn(match: Match) {
+  function player2ScoreFn(match: Match | undefined) {
     if (!match) return 0;
     return match.result[1] + 0.5 * match.result[2];
   }

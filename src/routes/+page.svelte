@@ -6,6 +6,14 @@
   import Challenge from "$components/home/Challenge.svelte";
   import Tournament from "$components/home/Tournament.svelte";
   import Match from "$components/home/Match.svelte";
+  import { onDestroy } from "svelte";
+  import { currentChallengeControl } from "$store/home/challenges";
+  import { currentMatchControl } from "$store/home/match";
+
+  onDestroy(() => {
+    $currentMatchControl = "";
+    $currentChallengeControl = "";
+  });
 </script>
 
 <div class="mx-auto max-w-6xl pt-20 ">

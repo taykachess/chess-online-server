@@ -124,25 +124,33 @@
       $info.white.ratingNext = newEloWhite;
       $info.black.ratingNext = newEloBlack;
 
-      $match.games.push({
-        white: $info.white.username,
-        black: $info.black.username,
-        result,
-        gameId: $page.params.id,
-      });
+      if ($match) {
+        $match.games.push({
+          white: $info.white.username,
+          black: $info.black.username,
+          result,
+          gameId: $page.params.id,
+        });
 
-      $match.games = $match.games;
+        $match.games = $match.games;
 
-      if ($match.player1 == $info.white.username) {
-        if (result == "1-0") $match.result[0] = $match.result[0] + 1;
-        else if (result == "0-1") $match.result[1] = $match.result[1] + 1;
-        else if (result == "0.5-0.5") $match.result[2] = $match.result[2] + 1;
-      } else if ($match.player1 == $info.black.username) {
-        if (result == "1-0") $match.result[1] = $match.result[1] + 1;
-        else if (result == "0-1") $match.result[0] = $match.result[0] + 1;
-        else if (result == "0.5-0.5") $match.result[2] = $match.result[2] + 1;
+        if ($match.player1 == $info.white.username) {
+          if (result == "1-0") $match.result[0] = $match.result[0] + 1;
+          else if (result == "0-1") $match.result[1] = $match.result[1] + 1;
+          else if (result == "0.5-0.5") $match.result[2] = $match.result[2] + 1;
+        } else if ($match.player1 == $info.black.username) {
+          if (result == "1-0") $match.result[1] = $match.result[1] + 1;
+          else if (result == "0-1") $match.result[0] = $match.result[0] + 1;
+          else if (result == "0.5-0.5") $match.result[2] = $match.result[2] + 1;
+        }
       }
-      console.log("fsdf");
+
+      if ($page.data.gameIds) {
+        console.log("delete gameIds");
+        const index = $page.data.gameIds.indexOf($page.params.id);
+
+        if (index !== -1) $page.data.gameIds.splice(index, 1);
+      }
       // $match.games = $match.games;
 
       // prettier-ignore

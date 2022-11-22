@@ -5,6 +5,7 @@
   import { currentMatchControl } from "$store/home/match";
   import { socket } from "$store/sockets/socket";
   import type { MatchFilters } from "$types/match";
+  import { onDestroy } from "svelte";
 
   // prettier-ignore
   const controls = ["1+0", "1+1", "1+2", "3+0", "3+2", "5+3", "10+0", "10+5"];

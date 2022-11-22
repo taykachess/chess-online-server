@@ -9,11 +9,15 @@
   import "../app.postcss";
 
   import type { LayoutData } from "./$types";
+  import { page } from "$app/stores";
+  import { currentChallengeControl } from "$store/home/challenges";
+  import { currentMatchControl } from "$store/home/match";
 
   export let data: LayoutData;
 
   onMount(() => {
     $socket.on("game:started", ({ gameId }) => {
+      data.gameIds?.push(gameId);
       goto(`/game/${gameId}`);
     });
   });

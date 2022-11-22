@@ -27,7 +27,7 @@ export interface ServerToClientEvents {
   "match:created": (match: GetMatch) => void;
   "match:deleted": ({ socketId }: { socketId?: string }) => void;
 
-  "game:started": ({ gameId }: { gameId?: string }) => void;
+  "game:started": ({ gameId }: { gameId: string }) => void;
   "game:move": (move: string) => void;
   // prettier-ignore
   "game:end": ({result,newEloWhite,newEloBlack}: {result:Result; newEloWhite:number; newEloBlack:number}) => void;
