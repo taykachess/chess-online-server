@@ -17,15 +17,6 @@ export async function addGame(
   game: MatchGame,
   match: Match
 ): Promise<Match> {
-  // const resultIndex =
-  //   game.result == "1-0"
-  //     ? 0
-  //     : game.result == "0-1"
-  //     ? 1
-  //     : game.result == "0.5-0.5"
-  //     ? 2
-  //     : -1;
-
   function returnIndex(match: Match, game: MatchGame) {
     if (match.player1 == game.white) {
       if (game.result == "1-0") return 0;
@@ -54,4 +45,8 @@ export async function addGame(
   match.games.push(game);
 
   return match;
+}
+
+export function deleteMatch(matchId: string) {
+  return redis.json.del(MATCHES_IN_PROGRESS_REDIS, matchId);
 }

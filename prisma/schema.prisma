@@ -11,15 +11,16 @@ datasource db {
 }
 
 model User {
-  id             Int      @id @default(autoincrement())
-  username       String   @unique
-  email          String   @unique
-  hashedPassword String
-  rating         Decimal  @default(2000)
-  title          Title?
-  roles          Role[]
-  participant    Player[]
-  games          Game[]
+  id                 Int          @id @default(autoincrement())
+  username           String       @unique
+  email              String       @unique
+  hashedPassword     String
+  rating             Decimal      @default(2000)
+  title              Title?
+  roles              Role[]
+  participant        Player[]
+  games              Game[]
+  createdTournaments Tournament[]
 }
 
 enum Title {
@@ -56,6 +57,8 @@ model Tournament {
   cut           Json?
   tiebreakers   String[]
   double        Boolean?
+  creator       User     @relation(fields: [creatorId], references: [id])
+  creatorId     Int
 }
 
 model Player {

@@ -1,4 +1,4 @@
-import { getMatch } from "../../global/matches";
+import { deleteMatch, getMatch } from "../../global/matches";
 import { createGame } from "../game/createGame";
 import { getMatchStatus } from "./getMatchStatus";
 import { prisma } from "../../global/prisma";
@@ -69,6 +69,7 @@ export async function runNextGameInMatch({
     //   status     String  @default("created")
     //   armageddon Boolean @default(false)
     //   games      Game[]
+
     const gameIds: { id: string }[] = [];
     match.games.forEach((game) => {
       gameIds.push({ id: game.gameId });
@@ -76,11 +77,15 @@ export async function runNextGameInMatch({
     await prisma.match.create({
       data: {
         id: matchId,
+        player1: match.player1,
+        player2: match.player2,
         rounds: match.rounds,
         result: match.result,
         status,
         games: { connect: gameIds },
       },
     });
+
+    await deleteMatch(matchId);
   }
 }

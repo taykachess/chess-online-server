@@ -7,6 +7,8 @@
 
   import type { TournamentTableRecord } from "$types/tournament";
   import type { GetTournament } from "$types/tournament";
+  import TournamentGridElement from "./TournamentGridElement.svelte";
+  import TournamentCreateButton from "./TournamentCreateButton.svelte";
 
   function formatDate(datePar: Date): string {
     const now = new Date();
@@ -26,17 +28,23 @@
   async function getAllTournaments({
     page,
     register,
+    created,
   }: {
     page: number;
     register?: "yes";
+    created?: "yes";
   }) {
-    return fetch(`/api/tournament/getAll?page=${page}&register=${register}`, {
-      method: "GET",
-    });
+    return fetch(
+      `/api/tournament/getAll?page=${page}&register=${register}&created=${created}`,
+      {
+        method: "GET",
+      }
+    );
   }
 
-  async function getCountAllTournaments({ register }: { register?: "yes" }) {
-    return fetch(`/api/tournament/count?register=${register}`, {
+  //  prettier-ignore
+  async function getCountAllTournaments({ register, created }: { register?: "yes", created?:"yes" }) {
+    return fetch(`/api/tournament/count?register=${register}&created=${created}`, {
       method: "GET",
     });
   }
@@ -49,6 +57,12 @@
 
   async function onClickPaginationRegisted(page: number) {
     const response = await getAllTournaments({ page, register: "yes" });
+    const tournaments: GetTournament[] = await response.json();
+    $listOfTournaments.tournaments = tournaments;
+  }
+
+  async function onClickPaginationMy(page: number) {
+    const response = await getAllTournaments({ page, created: "yes" });
     const tournaments: GetTournament[] = await response.json();
     $listOfTournaments.tournaments = tournaments;
   }
@@ -68,6 +82,17 @@
     const [tournamentsData, countData] = await Promise.all([
       getAllTournaments({ page: 1, register: "yes" }),
       getCountAllTournaments({ register: "yes" }),
+    ]);
+    const tournaments: GetTournament[] = await tournamentsData.json();
+    const count: number = await countData.json();
+    $listOfTournaments.tournaments = tournaments;
+    $listOfTournaments.count = count;
+  }
+
+  async function getInitialMyTournaments() {
+    const [tournamentsData, countData] = await Promise.all([
+      getAllTournaments({ page: 1, created: "yes" }),
+      getCountAllTournaments({ created: "yes" }),
     ]);
     const tournaments: GetTournament[] = await tournamentsData.json();
     const count: number = await countData.json();
@@ -102,13 +127,15 @@
   }
   const titles = ["Турнир", "Дата", "Тип", "Контроль", "Участники"];
 
-  $: isAdmin = $page?.data?.user?.roles.find((role) => role.name === "ADMIN");
+  $: isAdmin = $page?.data?.user?.roles.some((role) => role.name === "ADMIN");
   $: records = createTournamentRecords($listOfTournaments.tournaments);
 
   if ($tournamentTab == "all") {
     getInitialTournaments();
   } else if ($tournamentTab == "IRegistered") {
     getInitialRegistedTournaments();
+  } else if ($tournamentTab == "ICreated") {
+    getInitialMyTournaments();
   }
 </script>
 
@@ -130,8 +157,8 @@
       {
         active: "ICreated",
         title: "Созданные",
-        load: () => {},
-        disabled: true,
+        load: getInitialMyTournaments,
+        disabled: !isAdmin,
       },
     ]}
   />
@@ -153,5 +180,15 @@
     {:else}
       <div class=" w-[40rem] text-white">Зарегестрируйся</div>
     {/if}
+  {:else if $tournamentTab == "ICreated"}
+    <TournamentCreateButton />
+    <div class=" mt-2">
+      <Table
+        {titles}
+        {records}
+        onClickPagination={onClickPaginationMy}
+        count={$listOfTournaments.count}
+      />
+    </div>
   {/if}
 </div>

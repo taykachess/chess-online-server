@@ -13,9 +13,14 @@ export const GET: RequestHandler = async ({ request, locals, url }) => {
   const whereParam: any = {};
 
   const register = url.searchParams.get("register");
+  const created = url.searchParams.get("created");
 
   if (locals.user && register === "yes") {
     whereParam.players = { some: { alies: locals.user.username } };
+  }
+
+  if (locals.user && created === "yes") {
+    whereParam.creator = { username: locals.user.username };
   }
 
   const take = 10;
@@ -23,7 +28,8 @@ export const GET: RequestHandler = async ({ request, locals, url }) => {
     take,
     skip: take * (+page - 1),
     where: {
-      status: "registration",
+      // creator:{username:locals.user.username},
+      // status: "registration",
       ...whereParam,
     },
     orderBy: { startTime: "desc" },
