@@ -11,16 +11,17 @@ datasource db {
 }
 
 model User {
-  id                 Int          @id @default(autoincrement())
-  username           String       @unique
-  email              String       @unique
-  hashedPassword     String
-  rating             Decimal      @default(2000)
-  title              Title?
-  roles              Role[]
-  participant        Player[]
-  games              Game[]
-  createdTournaments Tournament[]
+  id             Int          @id @default(autoincrement())
+  username       String       @unique
+  email          String       @unique
+  hashedPassword String
+  rating         Float        @default(2000)
+  title          Title?
+  roles          Role[]
+  // participant         Player[]
+  games          Game[]
+  orginizer      Tournament[] @relation(name: "orginizer")
+  participant    Tournament[]
 }
 
 enum Title {
@@ -30,7 +31,7 @@ enum Title {
 
 model Role {
   id    Int    @id @default(autoincrement())
-  name  String
+  name  String @unique
   users User[]
 }
 
@@ -48,7 +49,8 @@ model Tournament {
   pointsForBye  Decimal  @default(1)
   currentRound  Int      @default(0)
   startTime     DateTime
-  players       Player[]
+  participants  User[]
+  players       Json?
   matches       Match[]
   status        String   @default("registration")
   rounds        Int?
@@ -57,31 +59,31 @@ model Tournament {
   cut           Json?
   tiebreakers   String[]
   double        Boolean?
-  creator       User     @relation(fields: [creatorId], references: [id])
-  creatorId     Int
+  organizer     User     @relation(fields: [organizerId], references: [id], name: "orginizer")
+  organizerId   Int
 }
 
-model Player {
-  id           String     @id @default(cuid())
-  Tournament   Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
-  tournamentId String
-  seed         Int        @default(0)
-  initialByes  Int        @default(0)
-  User         User       @relation(fields: [alies], references: [username])
-  alies        String
-  pairingBye   Boolean    @default(false)
-  // matchesWhite Match[]    @relation(name: "w")
-  // matchesBlack Match[]    @relation(name: "b")
-  pairUpDown   Boolean    @default(false)
-  matchCount   Int        @default(0)
-  matchPoints  Int        @default(0)
-  gameCount    Int        @default(0)
-  gamePoints   Int        @default(0)
-  bsn          Int        @default(0)
-  active       Boolean    @default(true)
-  results      Json[]
-  tiebreakers  Json
-}
+// model Player {
+//   id           String     @id @default(cuid())
+//   Tournament   Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+//   tournamentId String
+//   seed         Int        @default(0)
+//   initialByes  Int        @default(0)
+//   User         User       @relation(fields: [alies], references: [username])
+//   alies        String
+//   pairingBye   Boolean    @default(false)
+//   // matchesWhite Match[]    @relation(name: "w")
+//   // matchesBlack Match[]    @relation(name: "b")
+//   pairUpDown   Boolean    @default(false)
+//   matchCount   Int        @default(0)
+//   matchPoints  Int        @default(0)
+//   gameCount    Int        @default(0)
+//   gamePoints   Int        @default(0)
+//   bsn          Int        @default(0)
+//   active       Boolean    @default(true)
+//   results      Json[]
+//   tiebreakers  Json
+// }
 
 // player1: string;
 //   player2: string;

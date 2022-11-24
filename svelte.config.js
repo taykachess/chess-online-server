@@ -17,7 +17,8 @@ const config = {
       $components: "src/components",
       $types: "sockets/types",
       $store: "src/store",
-      $sockets: "sockets/"
+      $sockets: "sockets/",
+      $routes: "src/routes/"
     },
     env:{
       dir:'./'

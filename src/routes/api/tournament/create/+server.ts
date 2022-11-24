@@ -8,7 +8,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
   const tournament = await prisma.tournament.create({
     data: {
       ...data,
-      creator: { connect: { username: locals.user.username } },
+      organizer: { connect: { username: locals.user.username } },
     },
     select: { id: true },
   });

@@ -1,7 +1,8 @@
 import { prisma } from "$lib/db/prisma";
-import type { GetTournament } from "$types/tournament";
+import type { TournamentTable } from "$types/tournament";
 import { json } from "@sveltejs/kit";
 import type { RequestHandler } from "./$types";
+import type { Prisma } from "@prisma/client";
 
 export const GET: RequestHandler = async ({ request, locals, url }) => {
   let page = url.searchParams.get("page");
@@ -10,21 +11,21 @@ export const GET: RequestHandler = async ({ request, locals, url }) => {
     page = "1";
   }
 
-  const whereParam: any = {};
+  const whereParam: Prisma.TournamentWhereInput = {};
 
   const register = url.searchParams.get("register");
   const created = url.searchParams.get("created");
 
   if (locals.user && register === "yes") {
-    whereParam.players = { some: { alies: locals.user.username } };
+    whereParam.participants = { some: { username: locals.user.username } };
   }
 
   if (locals.user && created === "yes") {
-    whereParam.creator = { username: locals.user.username };
+    whereParam.organizer = { username: locals.user.username };
   }
 
   const take = 10;
-  const tournaments: GetTournament[] = await prisma.tournament.findMany({
+  const tournaments: TournamentTable[] = await prisma.tournament.findMany({
     take,
     skip: take * (+page - 1),
     where: {
@@ -39,11 +40,13 @@ export const GET: RequestHandler = async ({ request, locals, url }) => {
       control: true,
       playerLimit: true,
       startTime: true,
-      _count: { select: { players: true } },
-      players: {
-        where: { alies: locals.user?.username ? locals.user?.username : "" },
-        select: { id: true },
-      },
+      // participants: { orderBy: { rating: "asc" } },
+      _count: { select: { participants: true } },
+
+      // players: {
+      //   where: { alies: locals.user?.username ? locals.user?.username : "" },
+      //   select: { id: true },
+      // },
       format: true,
     },
   });

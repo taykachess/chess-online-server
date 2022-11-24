@@ -14,6 +14,8 @@ if (process.env.NODE_ENV == "dev") {
   })();
 }
 
+// redis.pubsub
+
 (async () => {
   const data = {};
   //   New object must be created first
