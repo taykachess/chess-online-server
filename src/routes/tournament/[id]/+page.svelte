@@ -10,5 +10,5 @@
 
 <div class=" mx-auto max-w-6xl  ">
   <!-- <RoundRobin /> -->
-  <Swiss {data} />
+  <Swiss />
 </div>

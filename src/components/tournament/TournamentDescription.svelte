@@ -21,6 +21,7 @@
       method: "POST",
     });
     $tournament.participants.push({
+      // @ts-ignore
       username: $page.data.user?.username,
       title: "GM",
       rating: 2349,

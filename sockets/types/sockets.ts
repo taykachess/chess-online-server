@@ -37,13 +37,13 @@ export interface ServerToClientEvents {
 }
 
 export interface ClientToServerEvents {
-  "challenge:subscribe": (cb: any) => void;
+  "challenge:subscribe": () => void;
   // prettier-ignore
   "challenge:create": ({ control, filters }: { control: string, filters: ChallengeFilters}) => void;
   "challenge:cancel": () => void;
   "challenge:accept": ({ username }: { username: string }) => void;
 
-  "match:subscribe": (cb: any) => void;
+  "match:subscribe": () => void;
   // prettier-ignore
   "match:create": ({ control, filters, rounds }: { control: string, filters: MatchFilters, rounds:number }) => void;
   "match:cancel": () => void;
@@ -56,6 +56,9 @@ export interface ClientToServerEvents {
   "game:drawDecline": ({ gameId }: { gameId: string }) => void;
   // prettier-ignore
   "game:get": ({ gameId }: { gameId: string },cb: (data: GetGame) => void) => void;
+
+  "tournament:subscribe": ({ tournamentId }: { tournamentId: string }) => void;
+  "tournament:leave": ({ tournamentId }: { tournamentId: string }) => void;
 }
 
 export interface InterServerEvents {

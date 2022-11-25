@@ -11,13 +11,14 @@
     "lint": "eslint .",
     "sockets:dev": "ts-node-dev index.ts"
   },
-  "prisma":{
+  "prisma": {
     "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed"
   },
   "dependencies": {
     "@prisma/client": "^4.5.0",
     "@redis/json": "^1.0.4",
     "@rgossiaux/svelte-headlessui": "^1.0.2",
+    "@socket.io/redis-emitter": "^5.0.0",
     "bcrypt": "^5.1.0",
     "cm-chess": "^2.4.2",
     "cm-chessboard-ts": "^5.2.17",

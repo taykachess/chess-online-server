@@ -10,6 +10,8 @@ export const PLAYER_IN_GAME_REDIS = (username: string) =>
 // Rooms dynamic
 export const GAME_ROOM = (gameId: string) => `game${gameId}`;
 export const MATCH_ROOM = (matchId: string) => `match${matchId}`;
+export const TOURNAMENT_ROOM = (tournamentId: string) =>
+  `tournament${tournamentId}`;
 
 //Rooms static
 export const MATCHES_ROOM = "matches";
