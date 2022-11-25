@@ -1,20 +1,30 @@
 import { prisma } from "$lib/db/prisma";
+import { emitter } from "$lib/db/redis";
+import { TOURNAMENT_ROOM } from "$sockets/variables/redisIndex";
+import { error } from "@sveltejs/kit";
+
 import type { RequestHandler } from "./$types";
 
 export const POST: RequestHandler = async ({ params, locals }) => {
-  await prisma.tournament.update({
+  const user = await prisma.user.update({
     where: {
-      id: params.id,
+      username: locals.user.username,
     },
     data: {
-      participants: {
+      participant: {
         connect: {
-          username: locals.user.username,
+          id: params.id,
         },
       },
     },
+    select: {
+      username: true,
+      title: true,
+      rating: true,
+    },
   });
 
-  // console.log("tournament", tournament);
+  if (!user) throw error(404);
+  emitter.to(TOURNAMENT_ROOM(params.id)).emit("tournament:register", user);
   return new Response("ok");
 };

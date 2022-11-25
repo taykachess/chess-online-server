@@ -28,6 +28,7 @@ export interface Game {
   control: string;
   lastOfferDraw?: OfferedDrawPlayer;
   matchId?: string;
+  tournamentId?: string;
 }
 
 export interface Games {

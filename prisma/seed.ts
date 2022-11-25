@@ -1,13 +1,19 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, type User } from "@prisma/client";
 const prisma = new PrismaClient();
 async function main() {
-  await prisma.role.create({
-    data: { name: "ADMIN" },
+  await prisma.role.upsert({
+    create: {
+      name: "ADMIN",
+    },
+    update: {},
+    where: {
+      name: "ADMIN",
+    },
   });
 
   //   User with role ADMIN
-  await prisma.user.create({
-    data: {
+  await prisma.user.upsert({
+    create: {
       username: "tayka",
       email: "mvkvol@yandex.ru",
       hashedPassword:
@@ -15,27 +21,79 @@ async function main() {
       title: "GM",
       roles: { connect: { name: "ADMIN" } },
     },
+    update: {},
+    where: {
+      username: "tayka",
+    },
   });
   // User without role
-  await prisma.user.create({
-    data: {
+  await prisma.user.upsert({
+    create: {
       username: "tayka2",
       email: "mvkvol2@yandex.ru",
       hashedPassword:
         "$2b$10$FXPVAxuA5ByTC1lonJxY9.DJrWiPY4PHc1qLWM9a7nXnxHF4sTBuO",
     },
+    update: {},
+    where: {
+      username: "tayka2",
+    },
   });
 
-  await prisma.tournament.create({
-    data: {
+  const prismaQueries: Promise<User>[] = [];
+  for (let i = 0; i < 18; i++) {
+    const qe = prisma.user.upsert({
+      create: {
+        username: `taykas${i}`,
+        email: `mvkvols${i}@yandex.ru`,
+        hashedPassword:
+          "$2b$10$FXPVAxuA5ByTC1lonJxY9.DJrWiPY4PHc1qLWM9a7nXnxHF4sTBuO",
+        rating: 2020 + i,
+      },
+      update: {
+        rating: 2020 + i,
+      },
+      where: {
+        username: `taykas${i}`,
+      },
+    });
+
+    prismaQueries.push(qe);
+  }
+
+  const users = await Promise.all(prismaQueries);
+
+  const tournament = await prisma.tournament.upsert({
+    create: {
+      id: "clav5lj9q0000p13dg45de9ix",
       name: "Мой первый турнир",
       description: "",
       control: "3+0",
       format: "swiss",
       startTime: new Date(),
+      rounds: 11,
       organizer: { connect: { username: "tayka" } },
     },
+    update: {},
+    where: {
+      id: "clav5lj9q0000p13dg45de9ix",
+    },
   });
+  const prismaQueriesUser: Promise<User>[] = [];
+
+  users.forEach((user) => {
+    const qr = prisma.user.update({
+      where: { username: user.username },
+      data: {
+        participant: {
+          connect: { id: tournament.id },
+        },
+      },
+    });
+    prismaQueriesUser.push(qr);
+  });
+
+  const registedUsers = await Promise.all(prismaQueriesUser);
 }
 
 main()

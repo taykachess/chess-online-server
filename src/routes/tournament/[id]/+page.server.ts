@@ -14,7 +14,7 @@ export const load: PageServerLoad = async ({ params }) => {
       organizer: { select: { username: true, title: true } },
       participants: {
         select: { username: true, title: true, rating: true },
-        orderBy: { rating: "asc" },
+        orderBy: { rating: "desc" },
       },
     },
   });

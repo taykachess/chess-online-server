@@ -1,6 +1,11 @@
 import { createClient } from "redis";
-import { MATCHES_IN_PROGRESS_REDIS } from "../variables/redisIndex";
+// import { TOURNAMENTS_IN_PROGRESS_REDIS } from "../variables/redisIndex";
+
+// import { MATCHES_IN_PROGRESS_REDIS } from "../variables/redisIndex";
 const redis = createClient();
+
+const pubClient = createClient();
+const subClient = pubClient.duplicate();
 
 (async () => {
   redis.on("error", (err) => console.log("Redis Client Error", err));
@@ -19,10 +24,14 @@ if (process.env.NODE_ENV == "dev") {
 (async () => {
   const data = {};
   //   New object must be created first
-  await redis.json.set("challenges", `$`, data);
-  await redis.json.set("games", `$`, {});
-  await redis.json.set("matches", `$`, {});
-  await redis.json.set("matchesinprogress", `$`, {});
+
+  await Promise.all([
+    redis.json.set("challenges", `$`, data),
+    redis.json.set("games", `$`, {}),
+    redis.json.set("matches", `$`, {}),
+    redis.json.set("matchesinprogress", `$`, {}),
+    redis.json.set("tournamentsInProgress", `$`, {}),
+  ]);
 })();
 
-export { redis };
+export { redis, pubClient, subClient };

@@ -1,7 +1,7 @@
 import type { RemoteSocket, Server, Socket } from "socket.io";
 import type { ChallengeFilters, GetChallenge } from "./challenge";
 import type { MatchFilters } from "./match";
-import type { GetGame, Result } from "./game";
+import type { GetGame, Result, Title } from "./game";
 import { GetMatch } from "./match";
 
 export type SocketServer = Server<
@@ -20,6 +20,7 @@ export type SocketType = Socket<
 
 export type SocketRemoteType = RemoteSocket<ServerToClientEvents, SocketData>;
 
+// prettier-ignore
 export interface ServerToClientEvents {
   "challenge:created": (challenge: GetChallenge) => void;
   "challenge:deleted": ({ socketId }: { socketId?: string }) => void;
@@ -29,11 +30,12 @@ export interface ServerToClientEvents {
 
   "game:started": ({ gameId }: { gameId: string }) => void;
   "game:move": (move: string) => void;
-  // prettier-ignore
   "game:end": ({result,newEloWhite,newEloBlack}: {result:Result; newEloWhite:number; newEloBlack:number}) => void;
-  // prettier-ignore
   "game:offerDraw": ({username, ply}: {username: string; ply: number;}) => void;
   "game:declineDraw": () => void;
+
+  "tournament:register": ({username, rating, title}:{username: string; rating: number; title: Title | null;}) => void;
+  "tournament:unregister": ({username}:{username: string}) => void;
 }
 
 export interface ClientToServerEvents {

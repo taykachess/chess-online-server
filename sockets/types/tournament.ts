@@ -1,5 +1,5 @@
-import type { Prisma } from "@prisma/client";
-import type { Title } from "./game";
+import type { Title, Result } from "./game";
+
 export interface TournamentTable {
   id: string;
   name: string;
@@ -36,3 +36,53 @@ export type GetTournament = {
     title: Title | null;
   };
 };
+
+export interface PlayerSwissInside {
+  id: string;
+  score: number;
+  colors: number;
+  pairedUpDown?: boolean;
+  receivedBye?: boolean;
+  avoid?: string[];
+  rating: number;
+}
+
+export interface PlayerSwiss extends PlayerSwissInside {
+  matches?: MatchSwiss[];
+}
+
+export interface Match {
+  round: number;
+  // board means
+  match: number;
+}
+
+export interface MatchSwiss extends Match {
+  player1: PlayerSwissInside | null;
+  player2: PlayerSwissInside | null;
+  result?: Result;
+  gameId?: string;
+}
+
+export interface MatchRobin extends Match {
+  player1: string | null;
+  player2: string | null;
+}
+
+export interface MatchElimination extends Match {
+  player1: string | null;
+  player2: string | null;
+  win?: {
+    round: number;
+    match: number;
+  };
+  loss?: {
+    round: number;
+    match: number;
+  };
+}
+
+export interface TournamentSwiss {
+  players: PlayerSwiss[];
+  matches: MatchSwiss[];
+}

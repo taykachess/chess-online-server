@@ -5,6 +5,12 @@ export function onTournamentSub(
   this: SocketType,
   { tournamentId }: { tournamentId: string }
 ) {
-  const socket = this;
-  socket.join(TOURNAMENT_ROOM(tournamentId));
+  try {
+    const socket = this;
+
+    console.log("socket", socket.id, "join to", TOURNAMENT_ROOM(tournamentId));
+    socket.join(TOURNAMENT_ROOM(tournamentId));
+  } catch (error) {
+    console.log(error);
+  }
 }

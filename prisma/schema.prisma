@@ -50,7 +50,7 @@ model Tournament {
   currentRound  Int      @default(0)
   startTime     DateTime
   participants  User[]
-  players       Json?
+  players       Json[]
   matches       Match[]
   status        String   @default("registration")
   rounds        Int?

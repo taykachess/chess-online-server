@@ -15,6 +15,7 @@ export async function createGame({
     black: Player;
     control: string;
     matchId?: string;
+    tournamentId?: string;
   };
 }) {
   const gameId = uuid();
@@ -41,6 +42,8 @@ export async function createGame({
   };
 
   if (data.matchId) game.matchId = data.matchId;
+  if (data.tournamentId) game.tournamentId = data.tournamentId;
+
   setGame(gameId, game);
 
   return gameId;

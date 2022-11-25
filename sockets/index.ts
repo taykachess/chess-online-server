@@ -8,6 +8,10 @@ import { onDisconnect } from "./providers/base/onDisconnect";
 import { gameController } from "./controllers/gameController";
 import { matchController } from "./controllers/matchController";
 import { tournamentController } from "./controllers/tournamentController";
+import { pubClient, subClient } from "./global/redis";
+import { createAdapter } from "@socket.io/redis-adapter";
+import { startTournament } from "./services/tournament/startTournament";
+
 dotenv.config({ path: "../.env" });
 
 io.use((socket, next) => {
@@ -35,9 +39,15 @@ io.on("connection", async (socket) => {
   socket.on("disconnect", onDisconnect);
 });
 
-app.listen(3000, (token: any) => {
-  console.log("Server is connected");
-  if (!token) {
-    console.warn("port already in use");
-  }
+Promise.all([pubClient.connect(), subClient.connect()]).then(() => {
+  io.adapter(createAdapter(pubClient, subClient));
+  // io.listen(3000);
+  app.listen(3000, (token: any) => {
+    console.log("Server is connected");
+    if (!token) {
+      console.warn("port already in use");
+    }
+  });
 });
+
+startTournament("clav5lj9q0000p13dg45de9ix");

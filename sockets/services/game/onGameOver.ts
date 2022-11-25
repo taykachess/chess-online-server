@@ -81,6 +81,8 @@ export async function onGameOver({
     if (!match) return;
     match = await addGame(game.matchId, matchGame, match);
     await runNextGameInMatch({ matchId: game.matchId, match });
+  } else if (game.tournamentId) {
+    // /
   }
 
   deleteGame(gameId);

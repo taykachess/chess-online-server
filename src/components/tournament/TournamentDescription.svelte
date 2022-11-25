@@ -20,24 +20,11 @@
     await fetch(`/api/tournament/register/${$page.params.id}`, {
       method: "POST",
     });
-    $tournament.participants.push({
-      // @ts-ignore
-      username: $page.data.user?.username,
-      title: "GM",
-      rating: 2349,
-    });
-
-    $tournament.participants = $tournament.participants;
   }
   async function CancelRegister() {
     await fetch(`/api/tournament/unregister/${$page.params.id}`, {
       method: "POST",
     });
-    const index = $tournament.participants.findIndex(
-      (participant) => participant.username === $page.data.user?.username
-    );
-    $tournament.participants.splice(index, 1);
-    $tournament.participants = $tournament.participants;
   }
 
   $: isRegister = $tournament.participants.some(
