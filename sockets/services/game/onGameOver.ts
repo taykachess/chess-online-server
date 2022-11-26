@@ -11,6 +11,10 @@ import { redis } from "../../global/redis";
 import { addGame, getMatch } from "../../global/matches";
 import { MatchGame } from "../../types/match";
 import { runNextGameInMatch } from "../match/runNextGameInMatch";
+import {
+  decreaseTournamentActiveGameByOne,
+  setTournamentMatchResult,
+} from "../../global/tournament";
 
 export async function onGameOver({
   gameId,
@@ -82,6 +86,24 @@ export async function onGameOver({
     match = await addGame(game.matchId, matchGame, match);
     await runNextGameInMatch({ matchId: game.matchId, match });
   } else if (game.tournamentId) {
+    if (!game.round || !game.board) return;
+
+    const [currentActiveGames, status] = await Promise.all([
+      decreaseTournamentActiveGameByOne(game.tournamentId),
+      setTournamentMatchResult({
+        tournamentId: game.tournamentId,
+        round: game.round,
+        board: game.board,
+        result: result,
+      }),
+    ]);
+
+    console.log("currentActiveGames", currentActiveGames);
+    if (currentActiveGames == 0) {
+      console.log("need next round");
+    }
+
+    // game.round
     // /
   }
 

@@ -17,7 +17,7 @@ export async function startTournament(tournamentId: string) {
   //   tournament?.participants.
 
   if (tournament?.format == "swiss") {
-    const players: PlayerSwiss[] = [];
+    const players: Record<string, PlayerSwiss> = {};
     const prismaQueries: Promise<any>[] = [];
 
     tournament.participants.forEach((user, index) => {
@@ -25,9 +25,12 @@ export async function startTournament(tournamentId: string) {
         id: user.username,
         score: 0,
         rating: user.rating,
+        title: user.title,
         colors: index % 2,
       };
-      players.push(player);
+
+      if (user.title) player.title = user.title;
+      players[user.username] = player;
       //   const updateQuery = prisma.tournament.update({
       //     where: {
       //       id: tournamentId,
@@ -43,29 +46,56 @@ export async function startTournament(tournamentId: string) {
 
     // Жеребьевка
 
-    const pairings: MatchSwiss[] = Swiss(players, 1, true);
+    const pairings: MatchSwiss[] = Swiss(Object.values(players), true);
+
+    const matches: Record<string, MatchSwiss> = {};
 
     const tournamentSwiss: TournamentSwiss = {
       players,
-      matches: pairings,
+      matches: [pairings],
+      activeGames: pairings.length,
     };
     await setTournament(tournamentId, tournamentSwiss);
 
-    pairings.forEach(async (pair) => {
-      if (!pair.player2 || !pair.player1) return;
+    pairings.forEach(async (pair, index) => {
+      if (!pair[1]) return;
+
+      // const white = await prisma.user.findFirst({
+      //   where: { username: pair[0] },
+      //   select: { rating: true, title: true },
+      // });
+      // const black = await prisma.user.findFirst({
+      //   where: { username: pair[1] },
+      //   select: { rating: true, title: true },
+      // });
+
+      // if(!white || !black) return
       const gameId = await createGame({
         data: {
-          white: { username: pair.player1.id, rating: pair.player1.rating },
-          black: { username: pair.player2.id, rating: pair.player2.rating },
+          white: {
+            username: pair[0],
+            rating: players[pair[0]].rating,
+            title: players[pair[0]].title,
+          },
+          black: {
+            username: pair[1],
+            rating: players[pair[1]].rating,
+            title: players[pair[1]].title,
+          },
           control: tournament.control,
+          tournamentId,
+          round: 1,
+          board: index + 1,
         },
       });
+
+      // matches[gameId] = pair
 
       //   socket.emit("game:started", { gameId: gameId });
       // socket2.emit("game:started", { gameId: gameId });
       Promise.all([
-        redis.SADD(PLAYER_IN_GAME_REDIS(pair.player1.id), gameId),
-        redis.SADD(PLAYER_IN_GAME_REDIS(pair.player2.id), gameId),
+        redis.SADD(PLAYER_IN_GAME_REDIS(pair[0]), gameId),
+        redis.SADD(PLAYER_IN_GAME_REDIS(pair[1]), gameId),
       ]);
     });
 

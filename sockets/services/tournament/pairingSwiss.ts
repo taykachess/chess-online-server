@@ -40,7 +40,6 @@ interface PlayerSwissIndex extends PlayerSwiss {
 
 export function Swiss(
   players: PlayerSwissIndex[],
-  round: number,
   rated = false
 ): MatchSwiss[] {
   const matches: MatchSwiss[] = [];
@@ -127,7 +126,6 @@ export function Swiss(
   const blossomPairs = blossom(pairs, true);
   const playerCopy = [...playerArray];
   let byeArray = [];
-  let match = 1;
   do {
     const indexA = playerCopy[0].index;
     // @ts-ignore
@@ -142,30 +140,20 @@ export function Swiss(
       1
     );
     //   @ts-ignore
-    let one = playerArray.find((p) => p.index === indexA);
+    const one = playerArray.find((p) => p.index === indexA);
     //   @ts-ignore
-    let two = playerArray.find((p) => p.index === indexB);
+    const two = playerArray.find((p) => p.index === indexB);
     if (!one || !two) break;
-    one = {
-      id: one?.id,
-      score: one?.score,
-      rating: one?.rating,
-      colors: one?.colors,
-    };
-    two = {
-      id: two?.id,
-      score: two?.score,
-      rating: two?.rating,
-      colors: two?.colors,
-    };
-    matches.push({
-      round: round,
-      match: match++,
+    delete one.index;
+    delete two.index;
+
+    matches.push([
       //   @ts-ignore
-      player1: one?.colors < two?.colors ? one : two,
+      one?.colors < two?.colors ? one.id : two.id,
       //   @ts-ignore
-      player2: one?.colors < two?.colors ? two : one,
-    });
+      one?.colors < two?.colors ? two.id : one.id,
+      "*",
+    ]);
   } while (
     playerCopy.length >
     blossomPairs.reduce(
@@ -175,12 +163,8 @@ export function Swiss(
   );
   byeArray = [...byeArray, ...playerCopy];
   for (let i = 0; i < byeArray.length; i++) {
-    matches.push({
-      round: round,
-      match: match++,
-      player1: byeArray[i],
-      player2: null,
-    });
+    matches.push([byeArray[i].id, null, "+-"]);
+    delete byeArray[i].index;
   }
   //   @ts-ignore
   return matches;

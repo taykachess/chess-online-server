@@ -45,24 +45,20 @@ export interface PlayerSwissInside {
   receivedBye?: boolean;
   avoid?: string[];
   rating: number;
+  title?: Title | null;
 }
 
 export interface PlayerSwiss extends PlayerSwissInside {
-  matches?: MatchSwiss[];
+  matches?: string[];
 }
 
 export interface Match {
-  round: number;
+  round?: number;
   // board means
-  match: number;
+  match?: number;
 }
 
-export interface MatchSwiss extends Match {
-  player1: PlayerSwissInside | null;
-  player2: PlayerSwissInside | null;
-  result?: Result;
-  gameId?: string;
-}
+export type MatchSwiss = [string, string | null, Result];
 
 export interface MatchRobin extends Match {
   player1: string | null;
@@ -83,6 +79,7 @@ export interface MatchElimination extends Match {
 }
 
 export interface TournamentSwiss {
-  players: PlayerSwiss[];
-  matches: MatchSwiss[];
+  players: Record<string, PlayerSwiss>;
+  matches: MatchSwiss[][];
+  activeGames: number;
 }

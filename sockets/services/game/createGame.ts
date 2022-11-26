@@ -6,6 +6,7 @@ import { deleteGame, setGame } from "../../global/games";
 import { TIME_TO_CANCEL_GAME } from "../../variables/redisIndex";
 
 import type { Game, Player } from "../../types/game";
+import { onGameOver } from "./onGameOver";
 
 export async function createGame({
   data,
@@ -15,14 +16,18 @@ export async function createGame({
     black: Player;
     control: string;
     matchId?: string;
+
     tournamentId?: string;
+    round?: number;
+    board?: number;
   };
 }) {
   const gameId = uuid();
 
   // Set game inside memory
   const timerId = setInterval(() => {
-    deleteGame(gameId);
+    onGameOver({ gameId, result: "0-1" });
+    // deleteGame(gameId);
   }, TIME_TO_CANCEL_GAME);
 
   const game: Game = {
@@ -42,7 +47,11 @@ export async function createGame({
   };
 
   if (data.matchId) game.matchId = data.matchId;
-  if (data.tournamentId) game.tournamentId = data.tournamentId;
+  if (data.tournamentId) {
+    game.tournamentId = data.tournamentId;
+    game.round = data.round;
+    game.board = data.board;
+  }
 
   setGame(gameId, game);
 
