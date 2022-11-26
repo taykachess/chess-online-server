@@ -12,6 +12,7 @@
   import { page } from "$app/stores";
   import { currentChallengeControl } from "$store/home/challenges";
   import { currentMatchControl } from "$store/home/match";
+  import { tournament } from "$store/tournament/tournament";
 
   export let data: LayoutData;
 

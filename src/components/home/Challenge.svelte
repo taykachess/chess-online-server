@@ -66,9 +66,7 @@
 
   onMount(async () => {
     await getInitialChallenges();
-    $socket.emit("challenge:subscribe", (challenges: any) => {
-      console.log(challenges);
-    });
+    $socket.emit("challenge:subscribe");
     records = createChallengeRecords($listOfChallenges.challenges);
 
     $socket.on("challenge:created", (challenge) => {

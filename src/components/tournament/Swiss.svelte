@@ -9,10 +9,6 @@
   type TournamentStatus = "registration" | "running" | "finnished" | "cancelled"
 
   let status: TournamentStatus = "registration";
-
-  $: isRegister = $tournament.participants.some(
-    (participant) => participant.username === $page.data.user?.username
-  );
 </script>
 
 <div class=" mt-4 grid grid-cols-2  ">
@@ -25,7 +21,6 @@
         format: $tournament.format,
         startDate: $tournament.startTime,
         orginizer: $tournament.organizer,
-        isRegister,
       }}
     />
   </div>
