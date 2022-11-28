@@ -2,9 +2,11 @@ import { prisma } from "../../global/prisma";
 import { setTournament } from "../../global/tournament";
 import { TournamentSwiss } from "../../types/tournament";
 
-import { Swiss } from "./pairingSwiss";
+import { pairingSwiss } from "./pairingSwiss";
 import type { PlayerSwiss, MatchSwiss } from "../../types/tournament";
 import { startTournamentGame } from "./startTournamentGame";
+import { io } from "../../global/io";
+import { TOURNAMENT_ROOM } from "../../variables/redisIndex";
 
 export async function startTournament(tournamentId: string) {
   // console.log("start tournament");
@@ -18,6 +20,8 @@ export async function startTournament(tournamentId: string) {
   //   tournament?.participants.
 
   if (tournament?.format == "swiss") {
+    io.to(TOURNAMENT_ROOM(tournamentId)).emit("tournament:start");
+
     const players: Record<string, PlayerSwiss> = {};
     const prismaQueries: Promise<any>[] = [];
     tournament.participants.sort((a, b) => b.rating - a.rating);
@@ -52,7 +56,7 @@ export async function startTournament(tournamentId: string) {
 
     // Жеребьевка
 
-    const pairings: MatchSwiss[] = Swiss(Object.values(players), true);
+    const pairings: MatchSwiss[] = pairingSwiss(Object.values(players), true);
 
     const matches: Record<string, MatchSwiss> = {};
 

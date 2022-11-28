@@ -38,7 +38,7 @@ interface PlayerSwissIndex extends PlayerSwiss {
   index?: number;
 }
 
-export function Swiss(
+export function pairingSwiss(
   players: PlayerSwissIndex[],
   rated = false
 ): MatchSwiss[] {

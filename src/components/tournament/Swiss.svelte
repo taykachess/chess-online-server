@@ -4,6 +4,7 @@
   import TournamentSwissPlayersStanding from "./TournamentSwissPlayersStanding.svelte";
   import { page } from "$app/stores";
   import { tournament } from "$store/tournament/tournament";
+  import GameList from "./GameList.svelte";
 
   // prettier-ignore
   type TournamentStatus = "registration" | "running" | "finnished" | "cancelled"
@@ -23,6 +24,10 @@
         orginizer: $tournament.organizer,
       }}
     />
+    <div class=" mt-4">
+      <GameList />
+    </div>
+    <div class="">Super</div>
   </div>
   <div class=" ml-10  ">
     {#if status == "registration"}
