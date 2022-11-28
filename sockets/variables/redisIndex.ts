@@ -22,6 +22,6 @@ export const CHALLENGES_ROOM = "challenges";
 
 // Const
 // 20000000
-export const TIME_TO_CANCEL_GAME = 20000;
+export const TIME_TO_CANCEL_GAME = 5000;
 
 // Tournament

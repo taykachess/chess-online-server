@@ -1,33 +1,39 @@
 import { prisma } from "../../global/prisma";
-import { redis } from "../../global/redis";
 import { setTournament } from "../../global/tournament";
 import { TournamentSwiss } from "../../types/tournament";
-import { PLAYER_IN_GAME_REDIS } from "../../variables/redisIndex";
-import { createGame } from "../game/createGame";
+
 import { Swiss } from "./pairingSwiss";
 import type { PlayerSwiss, MatchSwiss } from "../../types/tournament";
+import { startTournamentGame } from "./startTournamentGame";
 
 export async function startTournament(tournamentId: string) {
-  console.log("start tournament");
+  // console.log("start tournament");
   const tournament = await prisma.tournament.findUnique({
     where: { id: tournamentId },
     include: { participants: true },
   });
+  if (!tournament) throw Error("Tournament not found");
+  if (!tournament.rounds) throw Error("rounds not include");
 
   //   tournament?.participants.
 
   if (tournament?.format == "swiss") {
     const players: Record<string, PlayerSwiss> = {};
     const prismaQueries: Promise<any>[] = [];
+    tournament.participants.sort((a, b) => b.rating - a.rating);
 
     tournament.participants.forEach((user, index) => {
       const player: PlayerSwiss = {
         id: user.username,
         score: 0,
         rating: user.rating,
-        title: user.title,
         colors: index % 2,
+        avoid: [],
+        matches: [],
+        pairedUpDown: false,
+        receivedBye: false,
       };
+      console.log("sorted", player);
 
       if (user.title) player.title = user.title;
       players[user.username] = player;
@@ -54,49 +60,20 @@ export async function startTournament(tournamentId: string) {
       players,
       matches: [pairings],
       activeGames: pairings.length,
+      round: 1,
+      maxRounds: tournament.rounds,
     };
     await setTournament(tournamentId, tournamentSwiss);
 
     pairings.forEach(async (pair, index) => {
-      if (!pair[1]) return;
-
-      // const white = await prisma.user.findFirst({
-      //   where: { username: pair[0] },
-      //   select: { rating: true, title: true },
-      // });
-      // const black = await prisma.user.findFirst({
-      //   where: { username: pair[1] },
-      //   select: { rating: true, title: true },
-      // });
-
-      // if(!white || !black) return
-      const gameId = await createGame({
-        data: {
-          white: {
-            username: pair[0],
-            rating: players[pair[0]].rating,
-            title: players[pair[0]].title,
-          },
-          black: {
-            username: pair[1],
-            rating: players[pair[1]].rating,
-            title: players[pair[1]].title,
-          },
-          control: tournament.control,
-          tournamentId,
-          round: 1,
-          board: index + 1,
-        },
+      startTournamentGame({
+        pair,
+        tournamentId,
+        players,
+        board: index + 1,
+        control: tournament.control,
+        round: tournamentSwiss.round,
       });
-
-      // matches[gameId] = pair
-
-      //   socket.emit("game:started", { gameId: gameId });
-      // socket2.emit("game:started", { gameId: gameId });
-      Promise.all([
-        redis.SADD(PLAYER_IN_GAME_REDIS(pair[0]), gameId),
-        redis.SADD(PLAYER_IN_GAME_REDIS(pair[1]), gameId),
-      ]);
     });
 
     console.log(pairings);

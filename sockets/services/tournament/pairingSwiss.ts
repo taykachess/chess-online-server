@@ -153,6 +153,8 @@ export function Swiss(
       //   @ts-ignore
       one?.colors < two?.colors ? two.id : one.id,
       "*",
+      one?.colors < two?.colors ? one.score : two.score,
+      one?.colors < two?.colors ? two.score : one.score,
     ]);
   } while (
     playerCopy.length >
@@ -163,7 +165,7 @@ export function Swiss(
   );
   byeArray = [...byeArray, ...playerCopy];
   for (let i = 0; i < byeArray.length; i++) {
-    matches.push([byeArray[i].id, null, "+-"]);
+    matches.push([byeArray[i].id, null, "+-", -1, -1]);
     delete byeArray[i].index;
   }
   //   @ts-ignore

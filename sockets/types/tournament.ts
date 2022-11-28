@@ -49,6 +49,7 @@ export interface PlayerSwissInside {
 }
 
 export interface PlayerSwiss extends PlayerSwissInside {
+  // GameIds
   matches?: string[];
 }
 
@@ -58,7 +59,7 @@ export interface Match {
   match?: number;
 }
 
-export type MatchSwiss = [string, string | null, Result];
+export type MatchSwiss = [string, string | null, Result, number, number];
 
 export interface MatchRobin extends Match {
   player1: string | null;
@@ -82,4 +83,6 @@ export interface TournamentSwiss {
   players: Record<string, PlayerSwiss>;
   matches: MatchSwiss[][];
   activeGames: number;
+  round: number;
+  maxRounds: number;
 }

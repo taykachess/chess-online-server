@@ -26,10 +26,16 @@ export async function createGame({
 
   // Set game inside memory
   const timerId = setInterval(() => {
-    onGameOver({ gameId, result: "0-1" });
+    const randomResult = Math.floor(Math.random() * 3);
+    // console.log(randomResult);
+    onGameOver({
+      gameId,
+      result: randomResult == 0 ? "0-1" : randomResult == 1 ? "1-0" : "0.5-0.5",
+    });
     // deleteGame(gameId);
   }, TIME_TO_CANCEL_GAME);
 
+  // console.log("white", data.white, "black", data.black);
   const game: Game = {
     chess: new Chess(),
     white: data.white,

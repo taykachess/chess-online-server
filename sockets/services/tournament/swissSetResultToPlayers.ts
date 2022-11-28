@@ -1,42 +1,104 @@
+import {
+  addPlayerAvoid,
+  addPlayerMatches,
+  increasePlayerColorsByOne,
+  increasePlayerScore,
+  setPlayerPairedUpDown,
+} from "../../global/tournament";
 import { Result } from "../../types/game";
-import { PlayerSwiss } from "../../types/tournament";
 
-export function swissSetResultToPlayer({
+export async function swissSetResultToPlayers({
+  tournamentId,
   white,
   black,
   result,
   gameId,
 }: {
-  white: PlayerSwiss;
-  black: PlayerSwiss;
+  tournamentId: string;
+  white: { id: string; score: number };
+  black: { id: string; score: number };
   result: Result;
   gameId: string;
 }) {
+  //   increasePlayerScore()
+  //   increasePlayerColorsByOne()
+  //   addPlayerMatches()
+  // addPlayerAvoid()
+  //   setPlayerPairedUpDown()
+
   // Increase white player color
-  white.colors = white.colors + 1;
+  const q1 = increasePlayerColorsByOne({ tournamentId, username: white.id });
 
   // Avoid to play each other in the next round
-  white.avoid?.push(black.id);
-  black.avoid?.push(white.id);
+
+  const q2 = addPlayerAvoid({
+    tournamentId,
+    username: white.id,
+    playerId: black.id,
+  });
+  const q3 = addPlayerAvoid({
+    tournamentId,
+    username: black.id,
+    playerId: white.id,
+  });
 
   // after the game set to false and then once again check
-  white.pairedUpDown = false;
-  black.pairedUpDown = false;
+  let q4, q5;
+  if (white.score == black.score) {
+    q4 = setPlayerPairedUpDown({
+      tournamentId,
+      username: white.id,
+      pairedUpDown: false,
+    });
 
-  if (white.score > black.score) {
-    white.pairedUpDown = true;
-    black.pairedUpDown = true;
+    q5 = setPlayerPairedUpDown({
+      tournamentId,
+      username: black.id,
+      pairedUpDown: false,
+    });
+  } else {
+    q4 = setPlayerPairedUpDown({
+      tournamentId,
+      username: white.id,
+      pairedUpDown: true,
+    });
+
+    q5 = setPlayerPairedUpDown({
+      tournamentId,
+      username: black.id,
+      pairedUpDown: true,
+    });
   }
 
-  white.matches?.push(gameId);
-  black.matches?.push(gameId);
+  const q6 = addPlayerMatches({ tournamentId, username: white.id, gameId });
+  const q7 = addPlayerMatches({ tournamentId, username: black.id, gameId });
 
+  const q8: Promise<any>[] = [];
   if (result == "1-0" || result == "+-") {
-    white.score = white.score + 1;
+    q8.push(
+      increasePlayerScore({ tournamentId, username: white.id, point: 1 })
+    );
   } else if (result == "0-1" || result == "-+") {
-    black.score = black.score + 1;
+    q8.push(
+      increasePlayerScore({ tournamentId, username: black.id, point: 1 })
+    );
   } else if (result == "0.5-0.5") {
-    white.score = white.score + 0.5;
-    black.score = black.score + 0.5;
+    q8.push(
+      increasePlayerScore({ tournamentId, username: white.id, point: 0.5 })
+    );
+    q8.push(
+      increasePlayerScore({ tournamentId, username: black.id, point: 0.5 })
+    );
   }
+
+  const [m1, m2, m3, m4, m5, m6, m7, m8] = await Promise.all([
+    q1,
+    q2,
+    q3,
+    q4,
+    q5,
+    q6,
+    q7,
+    ...q8,
+  ]);
 }
