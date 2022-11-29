@@ -1,4 +1,5 @@
 import { io } from "../../global/io";
+import { prisma } from "../../global/prisma";
 import {
   addTournamentMatch,
   decreaseTournamentActiveGameByOne,
@@ -73,6 +74,15 @@ export async function finishTournamentGame({
     const maxRound = await getTournamentMaxRound(tournamentId);
     // console.log(round, maxRound);
     if (round[0] > maxRound[0]) {
+      // TOURNAMENT ENDED
+      await prisma.tournament.update({
+        where: {
+          id: tournamentId,
+        },
+        data: {
+          status: "finished",
+        },
+      });
       console.log("Tournament ended");
     } else {
       const players = await getAllPlayers({

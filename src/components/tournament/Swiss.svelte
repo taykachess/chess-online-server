@@ -27,7 +27,6 @@
     <div class=" mt-4">
       <GameList />
     </div>
-    <div class="">Super</div>
   </div>
   <div class=" ml-10  ">
     {#if status == "registration"}
