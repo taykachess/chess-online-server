@@ -28,7 +28,6 @@ export async function finishTournamentGame({
   result: Result;
 }) {
   if (!game.round || !game.board) return;
-  console.log("status", game.round, game.board);
 
   //   Устанавливаем результат матча и уменьшаем количество игр
   const [currentActiveGames, status] = await Promise.all([
@@ -68,21 +67,19 @@ export async function finishTournamentGame({
     gameId,
   });
 
-  console.log("currentActiveGames", currentActiveGames);
   if (currentActiveGames == 0) {
     const round = await increaseTournamentRound(tournamentId);
     const maxRound = await getTournamentMaxRound(tournamentId);
-    // console.log(round, maxRound);
     if (round[0] > maxRound[0]) {
       // TOURNAMENT ENDED
-      await prisma.tournament.update({
-        where: {
-          id: tournamentId,
-        },
-        data: {
-          status: "finished",
-        },
-      });
+      // await prisma.tournament.update({
+      //   where: {
+      //     id: tournamentId,
+      //   },
+      //   data: {
+      //     status: "finished",
+      //   },
+      // });
       console.log("Tournament ended");
     } else {
       const players = await getAllPlayers({
@@ -92,10 +89,12 @@ export async function finishTournamentGame({
       const pairings = pairingSwiss(Object.values(players[0]), true);
 
       pairings.sort((a, b) => {
-        const diff = Math.max(b[3], b[4]) - Math.max(a[3], a[4]);
+        if (!b[1] || !a[1]) return 0;
+        const diff =
+          Math.max(b[0].score, b[1]?.score) - Math.max(a[0].score, a[1]?.score);
         if (diff > 0) return 1;
         if (diff == 0) {
-          const summa = b[3] + b[4] - a[3] - a[4];
+          const summa = b[0].score + b[0].score - a[0].score - a[1]?.score;
           if (summa > 0) {
             return 1;
           }
@@ -106,21 +105,10 @@ export async function finishTournamentGame({
         }
         if (diff < 0) return -1;
         return 0;
-      }),
-        addTournamentMatch({
-          tournamentId,
-          matches: pairings,
-        });
-
-      io.to(TOURNAMENT_ROOM(tournamentId)).emit("tournament:pairings", {
-        pairings,
       });
 
-      console.log("pairing of", round[0], "round", pairings);
-      setTournamentActiveGames(tournamentId, pairings.length);
-      // console.log(players[0]);
-      pairings.forEach(async (pair, index) => {
-        await startTournamentGame({
+      for await (const [index, pair] of pairings.entries()) {
+        const gameId = await startTournamentGame({
           pair,
           tournamentId,
           players: players[0],
@@ -128,8 +116,29 @@ export async function finishTournamentGame({
           control: game.control,
           round: round[0],
         });
+        pair[3] = `${gameId}`;
+      }
+
+      // pairings.forEach(async (pair, index) => {
+      //   await startTournamentGame({
+      //     pair,
+      //     tournamentId,
+      //     players: players[0],
+      //     board: index + 1,
+      //     control: game.control,
+      //     round: round[0],
+      //   });
+      // });
+      addTournamentMatch({
+        tournamentId,
+        matches: pairings,
       });
+
+      io.to(TOURNAMENT_ROOM(tournamentId)).emit("tournament:pairings", {
+        pairings,
+      });
+
+      setTournamentActiveGames(tournamentId, pairings.length);
     }
-    //   return console.log("Game over", round, "round");
   }
 }

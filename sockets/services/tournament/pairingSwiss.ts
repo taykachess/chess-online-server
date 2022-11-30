@@ -148,13 +148,26 @@ export function pairingSwiss(
     delete two.index;
 
     matches.push([
-      //   @ts-ignore
-      one?.colors < two?.colors ? one.id : two.id,
-      //   @ts-ignore
-      one?.colors < two?.colors ? two.id : one.id,
+      one?.colors < two?.colors
+        ? { id: one.id, rating: one.rating, title: one.title, score: one.score }
+        : {
+            id: two.id,
+            rating: two.rating,
+            title: two.title,
+            score: two.score,
+          },
+      one?.colors < two?.colors
+        ? { id: two.id, rating: two.rating, title: two.title, score: two.score }
+        : {
+            id: one.id,
+            rating: one.rating,
+            title: one.title,
+            score: one.score,
+          },
       "*",
-      one?.colors < two?.colors ? one.score : two.score,
-      one?.colors < two?.colors ? two.score : one.score,
+      null,
+      // one?.colors < two?.colors ? one.score : two.score,
+      // one?.colors < two?.colors ? two.score : one.score,
     ]);
   } while (
     playerCopy.length >
@@ -165,7 +178,17 @@ export function pairingSwiss(
   );
   byeArray = [...byeArray, ...playerCopy];
   for (let i = 0; i < byeArray.length; i++) {
-    matches.push([byeArray[i].id, null, "+-", -1, -1]);
+    matches.push([
+      {
+        id: byeArray[i].id,
+        rating: byeArray[i].rating,
+        title: byeArray[i].title,
+        score: byeArray[i].score,
+      },
+      null,
+      "+-",
+      null,
+    ]);
     delete byeArray[i].index;
   }
   //   @ts-ignore

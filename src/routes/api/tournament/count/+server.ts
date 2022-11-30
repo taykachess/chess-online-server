@@ -15,7 +15,7 @@ export const GET: RequestHandler = async ({ request, locals, url }) => {
 
   const count = await prisma.tournament.count({
     where: {
-      status: { in: ["registration", "active", "playoffs"] },
+      status: { in: ["registration", "running"] },
       // participants: {
       //   some: { username: locals.user.username },
       // },

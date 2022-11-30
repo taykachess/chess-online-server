@@ -27,35 +27,23 @@ export async function startTournamentGame({
 }) {
   if (!pair[1]) {
     decreaseTournamentActiveGameByOne(tournamentId);
-    increasePlayerScore({ tournamentId, username: pair[0], point: 1 });
+    increasePlayerScore({ tournamentId, username: pair[0].id, point: 1 });
     // prettier-ignore
-    const status = await setPlayerReceivedBye({tournamentId, username:pair[0], receivedBye:true})
-
-    // console.log(status);
+    setPlayerReceivedBye({tournamentId, username:pair[0].id, receivedBye:true})
     return;
   }
 
-  // const white = await prisma.user.findFirst({
-  //   where: { username: pair[0] },
-  //   select: { rating: true, title: true },
-  // });
-  // const black = await prisma.user.findFirst({
-  //   where: { username: pair[1] },
-  //   select: { rating: true, title: true },
-  // });
-
-  // if(!white || !black) return
   const gameId = await createGame({
     data: {
       white: {
-        username: pair[0],
-        rating: players[pair[0]].rating,
-        title: players[pair[0]].title,
+        username: pair[0].id,
+        rating: players[pair[0].id].rating,
+        title: players[pair[0].id].title,
       },
       black: {
-        username: pair[1],
-        rating: players[pair[1]].rating,
-        title: players[pair[1]].title,
+        username: pair[1].id,
+        rating: players[pair[1].id].rating,
+        title: players[pair[1].id].title,
       },
       control,
       tournamentId,
@@ -69,7 +57,9 @@ export async function startTournamentGame({
   //   socket.emit("game:started", { gameId: gameId });
   // socket2.emit("game:started", { gameId: gameId });
   Promise.all([
-    redis.SADD(PLAYER_IN_GAME_REDIS(pair[0]), gameId),
-    redis.SADD(PLAYER_IN_GAME_REDIS(pair[1]), gameId),
+    redis.SADD(PLAYER_IN_GAME_REDIS(pair[0].id), gameId),
+    redis.SADD(PLAYER_IN_GAME_REDIS(pair[1].id), gameId),
   ]);
+
+  return gameId;
 }

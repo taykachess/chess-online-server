@@ -24,16 +24,19 @@ export async function createGame({
 }) {
   const gameId = uuid();
 
+  // TODO: Узнать что за ошибка с маленьким временем
+  const randomTime = Math.floor(Math.random() * 20) * 1000 + 5000;
   // Set game inside memory
   const timerId = setInterval(() => {
     const randomResult = Math.floor(Math.random() * 3);
+
     // console.log(randomResult);
     onGameOver({
       gameId,
       result: randomResult == 0 ? "0-1" : randomResult == 1 ? "1-0" : "0.5-0.5",
     });
     // deleteGame(gameId);
-  }, TIME_TO_CANCEL_GAME);
+  }, randomTime);
 
   // console.log("white", data.white, "black", data.black);
   const game: Game = {

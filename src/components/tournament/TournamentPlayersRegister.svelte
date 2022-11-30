@@ -5,8 +5,8 @@
   import type { Prisma } from "@prisma/client";
   export let players: {
     username: string;
-    title: Title | null;
-    rating: number;
+    title?: Title | null;
+    rating?: number;
     // seed: number;
   }[];
 

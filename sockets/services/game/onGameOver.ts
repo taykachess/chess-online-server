@@ -20,9 +20,7 @@ export async function onGameOver({
   gameId: string;
   result: Result;
 }) {
-  // console.log("Game over", result);
   const game = getGame(gameId);
-  // game.white.rating, game.black.rating, game.result,
   const { newEloBlack, newEloWhite } = calculateRating({
     eloWhite: game.white.rating,
     eloBlack: game.black.rating,
@@ -32,7 +30,9 @@ export async function onGameOver({
   game.white.ratingNext = newEloWhite;
   game.black.ratingNext = newEloBlack;
 
-  const createGame = prisma.game.create({
+  console.log("gameId", gameId);
+
+  const createGame = await prisma.game.create({
     data: {
       id: gameId,
       pgn: game.chess.pgn(),
@@ -52,17 +52,17 @@ export async function onGameOver({
     },
   });
 
-  const updateRatingWhite = prisma.user.update({
+  const updateRatingWhite = await prisma.user.update({
     where: { username: game.white.username },
     data: { rating: newEloWhite },
   });
 
-  const updateRatingBlack = prisma.user.update({
+  const updateRatingBlack = await prisma.user.update({
     where: { username: game.black.username },
     data: { rating: newEloBlack },
   });
 
-  await prisma.$transaction([createGame, updateRatingWhite, updateRatingBlack]);
+  // await prisma.$transaction([createGame, updateRatingWhite, updateRatingBlack]);
 
   io.to(GAME_ROOM(gameId)).emit("game:end", {
     result,
@@ -97,7 +97,6 @@ export async function onGameOver({
   } else if (tournamentId) {
     finishTournamentGame({ game, gameId, tournamentId, result });
   }
-  console.log("gameDeleted");
 
   // ]);
 }

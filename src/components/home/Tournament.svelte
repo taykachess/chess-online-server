@@ -10,20 +10,7 @@
   import TournamentGridElement from "./TournamentGridElement.svelte";
   import TournamentCreateButton from "./TournamentCreateButton.svelte";
 
-  function formatDate(datePar: Date): string {
-    const now = new Date();
-    const date = new Date(datePar);
-    const diff = date.getTime() - now.getTime();
-    if (diff < 0) return `Турнир прошел ${date.toLocaleString()}`;
-
-    const MINUTE = 60 * 1000;
-    const HOUR = MINUTE * 60;
-    const DAY = HOUR * 24;
-    if (diff < HOUR) return `Через ${Math.round(diff / MINUTE)} минут`;
-    else if (diff < DAY)
-      return `Через ${Math.round(diff / HOUR)} часов ${date.toLocaleString()}`;
-    else return `${date.toLocaleString()}`;
-  }
+  import { formatDate } from "$lib/utils/formatDate";
 
   async function getAllTournaments({
     page,
@@ -107,11 +94,11 @@
     if (!tournaments) return [];
     tournaments.forEach((tournament) => {
       arrayRecords.push({
-        link: `/tournament/${tournament.id}`,
+        link: `/${tournament.format}/${tournament.id}`,
         registered: false,
         records: [
           tournament.name,
-          `${formatDate(tournament.startTime)}`,
+          `${formatDate(tournament.startTime, tournament.status)}`,
           tournament.format,
           tournament.control,
           ` ${

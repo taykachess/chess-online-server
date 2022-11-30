@@ -1,4 +1,4 @@
-<script lang="ts">
+<!-- <script lang="ts">
   import TournamentDescription from "./TournamentDescription.svelte";
   import TournamentPlayersRegister from "./TournamentPlayersRegister.svelte";
   import TournamentSwissPlayersStanding from "./TournamentSwissPlayersStanding.svelte";
@@ -35,4 +35,4 @@
       <TournamentSwissPlayersStanding />
     {/if}
   </div>
-</div>
+</div> -->

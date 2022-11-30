@@ -36,6 +36,7 @@ export async function startTournament(tournamentId: string) {
         matches: [],
         pairedUpDown: false,
         receivedBye: false,
+        title: user.title,
       };
       console.log("sorted", player);
 
@@ -60,6 +61,20 @@ export async function startTournament(tournamentId: string) {
 
     const matches: Record<string, MatchSwiss> = {};
 
+    for await (const [index, pair] of pairings.entries()) {
+      const gameId = await startTournamentGame({
+        pair,
+        tournamentId,
+        players,
+        board: index + 1,
+        control: tournament.control,
+        round: 1,
+      });
+      pair[3] = `${gameId}`;
+    }
+
+    console.log(pairings);
+
     const tournamentSwiss: TournamentSwiss = {
       players,
       matches: [pairings],
@@ -69,17 +84,8 @@ export async function startTournament(tournamentId: string) {
     };
     await setTournament(tournamentId, tournamentSwiss);
 
-    pairings.forEach(async (pair, index) => {
-      startTournamentGame({
-        pair,
-        tournamentId,
-        players,
-        board: index + 1,
-        control: tournament.control,
-        round: tournamentSwiss.round,
-      });
+    io.to(TOURNAMENT_ROOM(tournamentId)).emit("tournament:pairings", {
+      pairings,
     });
-
-    console.log(pairings);
   }
 }

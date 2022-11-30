@@ -36,23 +36,29 @@ model Role {
 }
 
 model Tournament {
-  id           String   @id @default(cuid())
+  id           String           @id @default(cuid())
   name         String
   description  String
   format       String
   control      String
   startTime    DateTime
-  playerLimit  Int      @default(0)
-  currentRound Int      @default(0)
+  playerLimit  Int              @default(0)
+  currentRound Int              @default(0)
   participants User[]
   players      Json[]
-  status       String   @default("registration")
+  status       TournamentStatus @default(registration)
   rounds       Int?
   playoffs     String?
   bestOf       Int?
   double       Boolean?
-  organizer    User     @relation(fields: [organizerId], references: [id], name: "orginizer")
+  organizer    User             @relation(fields: [organizerId], references: [id], name: "orginizer")
   organizerId  Int
+}
+
+enum TournamentStatus {
+  registration
+  running
+  finished
 }
 
 // model Player {

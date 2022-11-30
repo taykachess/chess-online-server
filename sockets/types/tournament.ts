@@ -1,3 +1,4 @@
+import type { TournamentStatus } from "@prisma/client";
 import type { Title, Result } from "./game";
 
 export interface TournamentTable {
@@ -9,6 +10,7 @@ export interface TournamentTable {
   format: string;
   control: string;
   playerLimit: number;
+  status: TournamentStatus;
   // participants: Prisma.UserSelect;
   // players: { id: string }[];
   startTime: Date;
@@ -23,21 +25,33 @@ export type TournamentTableRecord = {
 export type GetTournament = {
   name: string;
   description: string;
+  status: "registration" | "running" | "finished";
   format: string;
   control: string;
   startTime: Date;
   participants: {
     username: string;
     rating: number;
-    title: Title | null;
+    title?: Title | null;
   }[];
   organizer: {
     username: string;
     title: Title | null;
   };
+
+  rounds?: number | null;
+  currentRound?: number | null;
+  standing?: number;
 };
 
-export interface PlayerSwissInside {
+// export interface GetTournamentSwiss extends GetTournament {
+//   rounds: number | null;
+//   currentRound: number;
+//   standing?: number;
+// }
+
+export interface PlayerSwiss {
+  // GameIds
   id: string;
   score: number;
   colors: number;
@@ -46,10 +60,6 @@ export interface PlayerSwissInside {
   avoid?: string[];
   rating: number;
   title?: Title | null;
-}
-
-export interface PlayerSwiss extends PlayerSwissInside {
-  // GameIds
   matches?: string[];
 }
 
@@ -59,7 +69,19 @@ export interface Match {
   match?: number;
 }
 
-export type MatchSwiss = [string, string | null, Result, number, number];
+export type PlayerInsideMatch = {
+  id: string;
+  rating: number;
+  score: number;
+  title?: Title | null;
+};
+// White, Black, Result, gameId
+export type MatchSwiss = [
+  PlayerInsideMatch,
+  PlayerInsideMatch | null,
+  Result,
+  string | null
+];
 
 export interface MatchRobin extends Match {
   player1: string | null;

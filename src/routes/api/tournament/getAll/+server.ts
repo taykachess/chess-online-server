@@ -40,6 +40,7 @@ export const GET: RequestHandler = async ({ request, locals, url }) => {
       control: true,
       playerLimit: true,
       startTime: true,
+      status: true,
       // participants: { orderBy: { rating: "asc" } },
       _count: { select: { participants: true } },
 
