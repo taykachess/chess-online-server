@@ -4,6 +4,7 @@
   import BadgeTitle from "$components/common/BadgeTitle.svelte";
   import PulseAnimatedElement from "$components/common/PulseAnimatedElement.svelte";
   import { socket } from "$store/sockets/socket";
+  import { tournament } from "$store/tournament/tournament";
   import type { MatchSwiss } from "$types/tournament";
   import { onDestroy, onMount } from "svelte";
 
@@ -67,9 +68,9 @@
 </script>
 
 <div class="mt-10  rounded-lg  border shadow-lg ">
-  <div class=" flex justify-center border-b  ">
+  <div class=" flex justify-center  border-b  ">
     <div
-      class="w-1/7 flex h-10 w-full select-none items-center justify-center  bg-slate-800  px-2 text-slate-200"
+      class="w-1/7 flex h-10 w-full select-none items-center justify-center rounded-tl-lg  bg-slate-800  px-2 text-slate-200"
     >
       Тур
     </div>
@@ -82,8 +83,11 @@
           gameList = pairings[0];
           selectedRound = index + 1;
         }}
-        class=" relative  flex w-full   items-center justify-center border-l    bg-white  {currentRound <=
-        index
+        class=" relative  flex w-full   items-center justify-center {index +
+          1 ==
+        rounds
+          ? 'rounded-tr-lg'
+          : ''}  border-l    bg-white  {currentRound <= index
           ? 'bg-slate-100 text-slate-300'
           : 'hover:bg-sky-100 cursor-pointer'} {selectedRound == index + 1
           ? 'bg-sky-100 text-sky-700 '
@@ -91,7 +95,7 @@
       >
         {index + 1}
 
-        {#if selectedRound != currentRound && currentRound == index + 1}
+        {#if selectedRound != currentRound && currentRound == index + 1 && $tournament.status == "running"}
           <div class=" absolute -top-1 z-20  ">
             <PulseAnimatedElement />
           </div>
