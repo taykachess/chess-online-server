@@ -3,6 +3,7 @@ import { redis } from "./redis";
 
 import type {
   MatchSwiss,
+  MatchSwissShort,
   PlayerSwiss,
   TournamentSwiss,
 } from "../types/tournament";
@@ -162,16 +163,16 @@ export function addPlayerAvoid({
 export function addPlayerMatches({
   tournamentId,
   username,
-  gameId,
+  game,
 }: {
   tournamentId: string;
   username: string;
-  gameId: string;
+  game: MatchSwissShort;
 }) {
   return redis.json.arrAppend(
     TOURNAMENTS_IN_PROGRESS_REDIS,
     `$.${tournamentId}.players["${username}"].matches`,
-    gameId
+    game
   );
 }
 
@@ -206,5 +207,22 @@ export function setPlayerReceivedBye({
     TOURNAMENTS_IN_PROGRESS_REDIS,
     `$.${tournamentId}.players["${username}"].receivedBye`,
     receivedBye
+  );
+}
+
+export function setPlayerCoefficientBuchholz({
+  tournamentId,
+  username,
+  buchholz,
+}: {
+  tournamentId: string;
+  username: string;
+  buchholz: number;
+}) {
+  console.log(tournamentId, username, buchholz);
+  return redis.json.set(
+    TOURNAMENTS_IN_PROGRESS_REDIS,
+    `$.${tournamentId}.players["${username}"].coefficient.buchholz`,
+    buchholz
   );
 }

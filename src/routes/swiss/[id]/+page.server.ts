@@ -1,9 +1,12 @@
 import { prisma } from "$lib/db/prisma";
 import { redis } from "$lib/db/redis";
 import { TOURNAMENTS_IN_PROGRESS_REDIS } from "$sockets/variables/redisIndex";
-import type { GetTournament } from "$types/tournament";
 import { error } from "@sveltejs/kit";
+
+import type { GetTournament } from "$types/tournament";
+import type { PlayerSwiss } from "$types/tournament";
 import type { PageServerLoad } from "./$types";
+
 export const load: PageServerLoad = async ({ params, fetch }) => {
   const tournamentWithStatus = await prisma.tournament.findUnique({
     where: {
@@ -37,6 +40,8 @@ export const load: PageServerLoad = async ({ params, fetch }) => {
   // type TournamentGet = typeof tournament;
 
   if (tournamentWithStatus.status == "running") {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     const tournament: GetTournament | null = await prisma.tournament.findUnique(
       {
         where: { id: params.id },
@@ -49,9 +54,9 @@ export const load: PageServerLoad = async ({ params, fetch }) => {
           control: true,
           rounds: true,
           organizer: { select: { username: true, title: true } },
-          participants: {
-            select: { username: true, rating: true },
-          },
+          // participants: {
+          //   select: { username: true, rating: true },
+          // },
         },
       }
     );
@@ -66,9 +71,21 @@ export const load: PageServerLoad = async ({ params, fetch }) => {
     tournament.currentRound =
       currentRound > tournament.rounds ? tournament.rounds : currentRound;
 
-    const pairings = await fetch(
-      `/api/tournament/${params.id}/pairings?round=${tournament.currentRound}`
+    // const pairings = await fetch(
+    //   `/api/tournament/${params.id}/pairings?round=${tournament.currentRound}`
+    // );
+
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    const [players]: [Record<string, PlayerSwiss>] = await redis.json.get(
+      TOURNAMENTS_IN_PROGRESS_REDIS,
+      {
+        path: `$.${params.id}.players`,
+      }
     );
+    console.log("players length", players);
+
+    if (players) tournament.players = Object.values(players);
 
     console.log("rounds", currentRound);
     // const swiss: GetTournament|null = {

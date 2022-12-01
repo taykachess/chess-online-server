@@ -71,7 +71,7 @@
       {#if $tournament.status == "registration" && $tournament.participants}
         <TournamentPlayersRegister bind:players={$tournament.participants} />
       {:else if $tournament.status == "running"}
-        <TournamentSwissPlayersStanding />
+        <TournamentSwissPlayersStanding bind:players={$tournament.players} />
       {/if}
     </div>
   </div>

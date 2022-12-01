@@ -12,6 +12,7 @@ import {
 } from "../../global/tournament";
 import { Game, Result } from "../../types/game";
 import { TOURNAMENT_ROOM } from "../../variables/redisIndex";
+import { calculateBuchholz } from "./calculateBuchholz";
 import { pairingSwiss } from "./pairingSwiss";
 import { startTournamentGame } from "./startTournamentGame";
 import { swissSetResultToPlayers } from "./swissSetResultToPlayers";
@@ -61,13 +62,25 @@ export async function finishTournamentGame({
 
   await swissSetResultToPlayers({
     tournamentId,
-    white: { id: game.white.username, score: scoreW },
-    black: { id: game.black.username, score: scoreB },
+    white: {
+      id: game.white.username,
+      rating: game.white.rating,
+      title: game.white.title,
+      score: scoreW,
+    },
+    black: {
+      id: game.black.username,
+      rating: game.black.rating,
+      title: game.black.title,
+      score: scoreB,
+    },
     result,
     gameId,
   });
 
   if (currentActiveGames == 0) {
+    const [players] = await getAllPlayers({ tournamentId });
+    await calculateBuchholz({ tournamentId, players });
     const round = await increaseTournamentRound(tournamentId);
     const maxRound = await getTournamentMaxRound(tournamentId);
     if (round[0] > maxRound[0]) {

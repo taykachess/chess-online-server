@@ -39,6 +39,7 @@ export type GetTournament = {
     title: Title | null;
   };
 
+  players?: PlayerSwiss[];
   rounds?: number | null;
   currentRound?: number | null;
   standing?: number;
@@ -57,11 +58,19 @@ export interface PlayerSwiss {
   colors: number;
   pairedUpDown?: boolean;
   receivedBye?: boolean;
-  avoid?: string[];
+  avoid: string[];
   rating: number;
   title?: Title | null;
-  matches?: string[];
+  matches?: MatchSwissShort[];
+  coefficient: Record<Coefficient, number>;
 }
+
+export interface PlayerSwissFrontend extends PlayerSwiss {
+  uuid?: string;
+  place?: string;
+}
+
+export type Coefficient = "buchholz";
 
 export interface Match {
   round?: number;
@@ -80,6 +89,11 @@ export type MatchSwiss = [
   PlayerInsideMatch,
   PlayerInsideMatch | null,
   Result,
+  string | null
+];
+
+export type MatchSwissShort = [
+  { id: string; rating: number; title?: Title | null; res: 1 | 0 | 0.5 | "*" },
   string | null
 ];
 

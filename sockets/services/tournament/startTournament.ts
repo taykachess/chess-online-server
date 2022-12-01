@@ -33,6 +33,7 @@ export async function startTournament(tournamentId: string) {
         rating: user.rating,
         colors: index % 2,
         avoid: [],
+        coefficient: { buchholz: 0 },
         matches: [],
         pairedUpDown: false,
         receivedBye: false,

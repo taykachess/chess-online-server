@@ -5,7 +5,7 @@ import {
   increasePlayerScore,
   setPlayerPairedUpDown,
 } from "../../global/tournament";
-import { Result } from "../../types/game";
+import { Result, Title } from "../../types/game";
 
 export async function swissSetResultToPlayers({
   tournamentId,
@@ -15,8 +15,8 @@ export async function swissSetResultToPlayers({
   gameId,
 }: {
   tournamentId: string;
-  white: { id: string; score: number };
-  black: { id: string; score: number };
+  white: { id: string; rating: number; title?: Title | null; score: number };
+  black: { id: string; rating: number; title?: Title | null; score: number };
   result: Result;
   gameId: string;
 }) {
@@ -70,8 +70,32 @@ export async function swissSetResultToPlayers({
     });
   }
 
-  const q6 = addPlayerMatches({ tournamentId, username: white.id, gameId });
-  const q7 = addPlayerMatches({ tournamentId, username: black.id, gameId });
+  const q6 = addPlayerMatches({
+    tournamentId,
+    username: white.id,
+    game: [
+      {
+        id: black.id,
+        rating: black.rating,
+        title: black.title,
+        res: shortResult(result, "w"),
+      },
+      gameId,
+    ],
+  });
+  const q7 = addPlayerMatches({
+    tournamentId,
+    username: black.id,
+    game: [
+      {
+        id: white.id,
+        rating: white.rating,
+        title: white.title,
+        res: shortResult(result, "b"),
+      },
+      gameId,
+    ],
+  });
 
   const q8: Promise<any>[] = [];
   if (result == "1-0" || result == "+-") {
@@ -101,4 +125,19 @@ export async function swissSetResultToPlayers({
     q7,
     ...q8,
   ]);
+}
+
+function shortResult(result: Result, color: "w" | "b") {
+  if (result == "1-0" || result == "+-") {
+    if (color == "w") return 1;
+    return 0;
+  }
+  if (result == "0-1" || result == "-+") {
+    if (color == "w") return 0;
+    return 1;
+  }
+  if (result == "0.5-0.5") {
+    return 0.5;
+  }
+  return "*";
 }

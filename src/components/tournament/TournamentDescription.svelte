@@ -28,9 +28,14 @@
     });
   }
 
-  $: isRegister = $tournament.participants?.some(
-    (participant) => participant.username === $page.data.user?.username
-  );
+  $: isRegister =
+    ($page.data.user?.username &&
+      $tournament.participants?.some(
+        (participant) => participant.username === $page.data.user?.username
+      )) ||
+    $tournament.players?.some(
+      (player) => player.id === $page.data.user?.username
+    );
 </script>
 
 <!-- prettier-ignore -->
