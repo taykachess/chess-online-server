@@ -20,8 +20,6 @@ export async function startTournament(tournamentId: string) {
   //   tournament?.participants.
 
   if (tournament?.format == "swiss") {
-    io.to(TOURNAMENT_ROOM(tournamentId)).emit("tournament:start");
-
     const players: Record<string, PlayerSwiss> = {};
     const prismaQueries: Promise<any>[] = [];
     tournament.participants.sort((a, b) => b.rating - a.rating);
@@ -58,10 +56,20 @@ export async function startTournament(tournamentId: string) {
 
     // Жеребьевка
 
-    const pairings: MatchSwiss[] = pairingSwiss(Object.values(players), true);
+    const playersValues = Object.values(players);
+    const pairings: MatchSwiss[] = pairingSwiss(playersValues, true);
 
     const matches: Record<string, MatchSwiss> = {};
 
+    const tournamentSwiss: TournamentSwiss = {
+      players,
+      matches: [pairings],
+      activeGames:
+        playersValues.length % 2 == 0 ? pairings.length : pairings.length - 1,
+      round: 1,
+      maxRounds: tournament.rounds,
+    };
+    await setTournament(tournamentId, tournamentSwiss);
     for await (const [index, pair] of pairings.entries()) {
       const gameId = await startTournamentGame({
         pair,
@@ -74,16 +82,9 @@ export async function startTournament(tournamentId: string) {
       pair[3] = `${gameId}`;
     }
 
-    console.log(pairings);
+    io.to(TOURNAMENT_ROOM(tournamentId)).emit("tournament:start");
 
-    const tournamentSwiss: TournamentSwiss = {
-      players,
-      matches: [pairings],
-      activeGames: pairings.length,
-      round: 1,
-      maxRounds: tournament.rounds,
-    };
-    await setTournament(tournamentId, tournamentSwiss);
+    console.log(pairings);
 
     io.to(TOURNAMENT_ROOM(tournamentId)).emit("tournament:pairings", {
       pairings,

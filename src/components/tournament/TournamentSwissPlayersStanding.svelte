@@ -1,10 +1,9 @@
 <script lang="ts">
   import { goto } from "$app/navigation";
   import BadgeTitle from "$components/common/BadgeTitle.svelte";
+  import { tournament } from "$store/tournament/tournament";
 
   import type { PlayerSwissFrontend } from "$types/tournament";
-
-  export let players: PlayerSwissFrontend[] = [];
 
   function sortFunction(a: PlayerSwissFrontend, b: PlayerSwissFrontend) {
     const scoreDiff = b.score - a.score;
@@ -100,15 +99,14 @@
     player.matches.forEach((match) => {
       const opponent = match[0].id;
       const index = sortedPlayers.findIndex((p) => p.id == opponent);
-      buchholz += sortedPlayers[index].score;
+      if (index != -1) buchholz += sortedPlayers[index].score;
     });
 
     player.coefficient.buchholz = buchholz;
 
     return buchholz;
   }
-
-  $: sortedPlayers = transformPlayers(players);
+  $: sortedPlayers = transformPlayers($tournament.players);
 </script>
 
 <div class=" shadow-lg">

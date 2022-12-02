@@ -1,6 +1,7 @@
 import { redis } from "../../global/redis";
 
 import {
+  addPlayerMatches,
   decreaseTournamentActiveGameByOne,
   increasePlayerScore,
   setPlayerReceivedBye,
@@ -26,8 +27,22 @@ export async function startTournamentGame({
   control: string;
 }) {
   if (!pair[1]) {
-    decreaseTournamentActiveGameByOne(tournamentId);
+    console.log("decrease");
+    // decreaseTournamentActiveGameByOne(tournamentId);
     increasePlayerScore({ tournamentId, username: pair[0].id, point: 1 });
+    addPlayerMatches({
+      tournamentId,
+      username: pair[0].id,
+      game: [
+        {
+          id: "Bye",
+          rating: 0,
+          // title: black.title,
+          res: 1,
+        },
+        "",
+      ],
+    });
     // prettier-ignore
     setPlayerReceivedBye({tournamentId, username:pair[0].id, receivedBye:true})
     return;

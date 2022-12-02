@@ -99,7 +99,7 @@ export function pairingSwiss(
           ? 5 / (2 * Math.log10(scoreGroupDiff + 2))
           : 1 / Math.log10(scoreGroupDiff + 2);
 
-      wt += Math.abs(curr.colors - opp.colors);
+      if (!scoreGroupDiff) wt += Math.abs(curr.colors - opp.colors) * 0.01;
       if (scoreGroupDiff === 1 && curr.pairedUpDown && opp.pairedUpDown) {
         wt += 1.1;
       }

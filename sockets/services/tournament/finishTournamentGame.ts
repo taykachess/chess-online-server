@@ -92,12 +92,14 @@ export async function finishTournamentGame({
     gameId,
   });
 
+  console.log(currentActiveGames);
+
   if (currentActiveGames == 0) {
     const [players] = await getAllPlayers({ tournamentId });
-    await calculateBuchholz({ tournamentId, players });
-    const round = await increaseTournamentRound(tournamentId);
+    const [round] = await increaseTournamentRound(tournamentId);
     const maxRound = await getTournamentMaxRound(tournamentId);
-    if (round[0] > maxRound[0]) {
+    if (round > maxRound[0]) {
+      await calculateBuchholz({ tournamentId, players });
       // TOURNAMENT ENDED
       // await prisma.tournament.update({
       //   where: {
@@ -109,11 +111,9 @@ export async function finishTournamentGame({
       // });
       console.log("Tournament ended");
     } else {
-      const players = await getAllPlayers({
-        tournamentId,
-      });
+      const playersValues = Object.values(players);
 
-      const pairings = pairingSwiss(Object.values(players[0]), true);
+      const pairings = pairingSwiss(playersValues, true);
 
       pairings.sort((a, b) => {
         if (!b[1] || !a[1]) return 0;
@@ -138,10 +138,10 @@ export async function finishTournamentGame({
         const gameId = await startTournamentGame({
           pair,
           tournamentId,
-          players: players[0],
+          players,
           board: index + 1,
           control: game.control,
-          round: round[0],
+          round,
         });
         pair[3] = `${gameId}`;
       }
@@ -165,7 +165,10 @@ export async function finishTournamentGame({
         pairings,
       });
 
-      setTournamentActiveGames(tournamentId, pairings.length);
+      setTournamentActiveGames(
+        tournamentId,
+        playersValues.length % 2 == 0 ? pairings.length : pairings.length - 1
+      );
     }
   }
 }

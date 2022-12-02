@@ -18,6 +18,22 @@
   // export let rounds: number;
   // export let $tournament.currentRound: number;
 
+  function setBye({ id }: { id: string }) {
+    const indexW = $tournament.players.findIndex((player) => player.id == id);
+
+    if (indexW != -1) {
+      $tournament.players[indexW].matches.push([
+        {
+          id: "Bye",
+          rating: 0,
+          // title: b.title,
+          res: 1,
+        },
+        "",
+      ]);
+      $tournament.players[indexW].score = $tournament.players[indexW].score + 1;
+    }
+  }
   function subOnGameResult() {
     $socket.on("tournament:gameOver", async ({ gameId, result, w, b }) => {
       const index = $tournament.gameList.findIndex((game) => game[3] == gameId);
@@ -80,16 +96,8 @@
       }
       $tournament.currentRound++;
 
-      // prettier-ignore
-      // pairings.forEach(pair=>{
-      //   const indexW = $tournament.players.findIndex((player) => player.id == pair[0].id);
-      //   const indexB = $tournament.players.findIndex((player) => player.id == pair[1]?.id);
-
-      //   console.log('Pair indexex', indexW,indexB)
-      //   if(indexW!=-1) $tournament.players[indexW].matches[$tournament.players[indexW].matches.length-1] =[{id:pair[1]?.id,rating:pair[1]?.rating, title:pair[1]?.title, res:"*" },pair[3]]
-      //   if(indexB!=-1) $tournament.players[indexB].matches[$tournament.players[indexB].matches.length-1] =[{id:pair[0]?.id,rating:pair[0]?.rating, title:pair[0]?.title, res:"*" },pair[3]]
-
-      // })
+      const pairBye = pairings.find((pair) => !pair[1]);
+      if (pairBye) setBye({ id: pairBye[0].id });
 
       console.log($tournament.gameList);
       // $tournament.selectedRound = $tournament.gameList.length - 1;

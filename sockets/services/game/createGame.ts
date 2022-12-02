@@ -25,7 +25,7 @@ export async function createGame({
   const gameId = uuid();
 
   // TODO: Узнать что за ошибка с маленьким временем
-  const randomTime = Math.floor(Math.random() * 20) * 1000 + 5000;
+  const randomTime = Math.floor(Math.random() * 5) * 1000 + 1000;
   // Set game inside memory
   const timerId = setInterval(() => {
     const randomResult = Math.floor(Math.random() * 3);
