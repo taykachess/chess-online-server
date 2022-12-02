@@ -5,7 +5,9 @@ import {
   increasePlayerScore,
   setPlayerPairedUpDown,
 } from "../../global/tournament";
-import { Result, Title } from "../../types/game";
+
+import type { Result, Title } from "../../types/game";
+import { transformResult } from "../../utils/transformResult";
 
 export async function swissSetResultToPlayers({
   tournamentId,
@@ -78,7 +80,7 @@ export async function swissSetResultToPlayers({
         id: black.id,
         rating: black.rating,
         title: black.title,
-        res: shortResult(result, "w"),
+        res: transformResult(result, "w"),
       },
       gameId,
     ],
@@ -91,7 +93,7 @@ export async function swissSetResultToPlayers({
         id: white.id,
         rating: white.rating,
         title: white.title,
-        res: shortResult(result, "b"),
+        res: transformResult(result, "b"),
       },
       gameId,
     ],
@@ -125,19 +127,4 @@ export async function swissSetResultToPlayers({
     q7,
     ...q8,
   ]);
-}
-
-function shortResult(result: Result, color: "w" | "b") {
-  if (result == "1-0" || result == "+-") {
-    if (color == "w") return 1;
-    return 0;
-  }
-  if (result == "0-1" || result == "-+") {
-    if (color == "w") return 0;
-    return 1;
-  }
-  if (result == "0.5-0.5") {
-    return 0.5;
-  }
-  return "*";
 }

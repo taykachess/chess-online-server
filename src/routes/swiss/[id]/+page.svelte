@@ -60,10 +60,7 @@
       />
       <div class=" mt-4">
         {#if $tournament.currentRound && $tournament.rounds}
-          <GameList
-            currentRound={$tournament.currentRound}
-            rounds={$tournament.rounds}
-          />
+          <GameList />
         {/if}
       </div>
     </div>

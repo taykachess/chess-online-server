@@ -6,53 +6,93 @@
   import { socket } from "$store/sockets/socket";
   import { tournament } from "$store/tournament/tournament";
   import type { MatchSwiss } from "$types/tournament";
-  import { onDestroy, onMount } from "svelte";
+  import { onDestroy, onMount, tick } from "svelte";
 
-  export let gameList: MatchSwiss[] = [
-    [
-      { id: "p", rating: 2432, title: "GM", score: 3 },
-      { id: "p", rating: 2432, title: "GM", score: 3 },
-      "*",
-      null,
-    ],
-    // ["tayka", "philips", "*", null],
-  ];
+  // export let gameList: MatchSwiss[] = [];
 
   const fetchPairings = (round: number) => {
     return fetch(`/api/tournament/${$page.params.id}/pairings?round=${round}`);
   };
 
-  onMount(async () => {});
-
-  export let rounds: number;
-  export let currentRound: number;
-  let selectedRound = 0;
+  console.log("render");
+  // export let rounds: number;
+  // export let $tournament.currentRound: number;
 
   function subOnGameResult() {
-    $socket.on("tournament:gameOver", ({ gameId, result }) => {
-      console.log("got result", gameId, result);
-      const index = gameList.findIndex((game) => game[3] == gameId);
-      if (index != -1) gameList[index][2] = result;
+    $socket.on("tournament:gameOver", async ({ gameId, result, w, b }) => {
+      const index = $tournament.gameList.findIndex((game) => game[3] == gameId);
+      if (index != -1) $tournament.gameList[index][2] = result;
+
+      const indexW = $tournament.players.findIndex(
+        (player) => player.id == w.id
+      );
+      const indexB = $tournament.players.findIndex(
+        (player) => player.id == b.id
+      );
+
+      if (indexW != -1) {
+        $tournament.players[indexW].matches.push([
+          {
+            id: b.id,
+            rating: b.rating,
+            title: b.title,
+            res: b.res,
+          },
+          gameId,
+        ]);
+        $tournament.players[indexW].score =
+          $tournament.players[indexW].score + +b.res;
+      }
+
+      if (indexB != -1) {
+        $tournament.players[indexB].matches.push([
+          {
+            id: w.id,
+            rating: w.rating,
+            title: w.title,
+            res: w.res,
+          },
+          gameId,
+        ]);
+        $tournament.players[indexB].score =
+          $tournament.players[indexB].score + +w.res;
+      }
+      await tick();
+      // $tournament.players = $tournament.players;
+
+      //   if(indexB!=-1) $tournament.players[indexB].matches[$tournament.players[indexB].matches.length-1] =[{id:pair[0]?.id,rating:pair[0]?.rating, title:pair[0]?.title, res:"*" },pair[3]]
+      console.log("Index", indexB, indexW);
     });
   }
 
   onMount(async () => {
-    const data = await fetchPairings(currentRound - 1);
-    const pairings = await data.json();
-    gameList = pairings[0];
-    selectedRound = currentRound;
-    console.log("pairings", pairings);
+    // const data = await fetchPairings($tournament.currentRound - 1);
+    // const pairings = await data.json();
+    // $tournament.gameList = pairings[0];
+    $tournament.selectedRound = $tournament.currentRound;
+    // console.log("pairings", pairings);
     $socket.on("tournament:pairings", ({ pairings }) => {
-      // gameList[gameList.length - 1] = pairings;
-      // gameList.push(pairings);
-      if (selectedRound == currentRound) {
-        gameList = pairings;
-        selectedRound = selectedRound + 1;
+      // $tournament.gameList[$tournament.gameList.length - 1] = pairings;
+      // $tournament.gameList.push(pairings);
+      if ($tournament.selectedRound == $tournament.currentRound) {
+        $tournament.gameList = pairings;
+        $tournament.selectedRound = $tournament.selectedRound + 1;
       }
-      currentRound++;
+      $tournament.currentRound++;
 
-      console.log(gameList);
-      // selectedRound = gameList.length - 1;
+      // prettier-ignore
+      // pairings.forEach(pair=>{
+      //   const indexW = $tournament.players.findIndex((player) => player.id == pair[0].id);
+      //   const indexB = $tournament.players.findIndex((player) => player.id == pair[1]?.id);
+
+      //   console.log('Pair indexex', indexW,indexB)
+      //   if(indexW!=-1) $tournament.players[indexW].matches[$tournament.players[indexW].matches.length-1] =[{id:pair[1]?.id,rating:pair[1]?.rating, title:pair[1]?.title, res:"*" },pair[3]]
+      //   if(indexB!=-1) $tournament.players[indexB].matches[$tournament.players[indexB].matches.length-1] =[{id:pair[0]?.id,rating:pair[0]?.rating, title:pair[0]?.title, res:"*" },pair[3]]
+
+      // })
+
+      console.log($tournament.gameList);
+      // $tournament.selectedRound = $tournament.gameList.length - 1;
     });
 
     subOnGameResult();
@@ -74,28 +114,29 @@
     >
       Тур
     </div>
-    {#each Array(rounds) as round, index}
+    {#each Array($tournament.rounds) as round, index}
       <!-- svelte-ignore a11y-click-events-have-key-events -->
       <div
         on:click={async () => {
           const data = await fetchPairings(index);
           const pairings = await data.json();
-          gameList = pairings[0];
-          selectedRound = index + 1;
+          $tournament.gameList = pairings[0];
+          $tournament.selectedRound = index + 1;
         }}
         class=" relative  flex w-full   items-center justify-center {index +
           1 ==
-        rounds
+        $tournament.rounds
           ? 'rounded-tr-lg'
-          : ''}  border-l    bg-white  {currentRound <= index
+          : ''}  border-l    bg-white  {$tournament.currentRound <= index
           ? 'bg-slate-100 text-slate-300'
-          : 'hover:bg-sky-100 cursor-pointer'} {selectedRound == index + 1
+          : 'hover:bg-sky-100 cursor-pointer'} {$tournament.selectedRound ==
+        index + 1
           ? 'bg-sky-100 text-sky-700 '
           : ''} "
       >
         {index + 1}
 
-        {#if selectedRound != currentRound && currentRound == index + 1 && $tournament.status == "running"}
+        {#if $tournament.selectedRound != $tournament.currentRound && $tournament.currentRound == index + 1 && $tournament.status == "running"}
           <div class=" absolute -top-1 z-20  ">
             <PulseAnimatedElement />
           </div>
@@ -112,7 +153,7 @@
     </div>
   </div> -->
 
-  {#each gameList as game, index}
+  {#each $tournament.gameList as game, index}
     <!-- svelte-ignore a11y-click-events-have-key-events -->
     <div
       on:click={() => {

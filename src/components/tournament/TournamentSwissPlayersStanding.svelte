@@ -2,12 +2,11 @@
   import { goto } from "$app/navigation";
   import BadgeTitle from "$components/common/BadgeTitle.svelte";
 
-  import type { Title } from "$types/game";
   import type { PlayerSwissFrontend } from "$types/tournament";
-  // import { randomUUID } from "crypto";
+
   export let players: PlayerSwissFrontend[] = [];
 
-  players.sort((a, b) => {
+  function sortFunction(a: PlayerSwissFrontend, b: PlayerSwissFrontend) {
     const scoreDiff = b.score - a.score;
     if (scoreDiff > 0) {
       return 1;
@@ -30,34 +29,53 @@
       }
     }
     return -1;
-  });
+  }
 
-  let i = 0;
+  function resetUUID(players: PlayerSwissFrontend[]) {
+    players.forEach((player) => (player.uuid = undefined));
+  }
 
-  while (i < players.length) {
-    if (!players[i]) break;
-    if (players[i].uuid) {
-      let j = i;
-      const uuid = players[i].uuid;
-      console.log("uuid", uuid);
-      let counter = 0;
-      // players[i].place = `${i}`;
-      while (uuid == players[j].uuid) {
-        counter++;
-        //   players[j + 1].place = `${i}`;
-        if (j + 1 >= players.length) break;
-        j = j + 1;
+  function transformUUIDtoPlace(players: PlayerSwissFrontend[]) {
+    let i = 0;
+
+    while (i < players.length) {
+      if (!players[i]) break;
+      if (players[i].uuid) {
+        let j = i;
+        const uuid = players[i].uuid;
+        console.log("uuid", uuid, players.length, i, j);
+        let counter = 0;
+        // players[i].place = `${i}`;
+        while (uuid == players[j].uuid) {
+          counter++;
+          //   players[j + 1].place = `${i}`;
+          if (j + 1 >= players.length) {
+            j = j + 1;
+            break;
+          }
+          j = j + 1;
+        }
+
+        for (let x = i; x < i + counter; x++) {
+          players[x].place = `${i + 1}-${i + counter}`;
+        }
+        i = j;
+        continue;
       }
 
-      for (let x = i; x < i + counter; x++) {
-        players[x].place = `${i + 1}-${i + counter}`;
-      }
-      i = j;
-      continue;
+      players[i].place = `${i + 1}`;
+      i = i + 1;
     }
+  }
 
-    players[i].place = `${i + 1}`;
-    i = i + 1;
+  function transformPlayers(players: PlayerSwissFrontend[]) {
+    resetUUID(players);
+    players.sort(sortFunction);
+    transformUUIDtoPlace(players);
+
+    console.log("sorted");
+
+    return players;
   }
 
   let selectedPlayerGames = -1;
@@ -76,25 +94,21 @@
 
     return `${summa} / ${rounds}`;
   }
-  // players.forEach((player, index) => {
-  //   if (player.place) return;
-  //   // console.log("place", index);
-  //   // if (player.uuid) {
-  //   //   const startIndex = index;
-  //   //   let i = index;
-  //   //   while (i < players.length - 1) {
-  //   //     if (players[i + 1].uuid == player.uuid) {
-  //   //       i = i + 1;
-  //   //     }
-  //   //     break;
-  //   //   }
-  //   //   const finishIndex = index;
 
-  //   //   for (let j = startIndex; j++; j <= finishIndex) {
-  //   //     // players[j].place = `${startIndex + 1}-${finishIndex + 1}`;
-  //   //   }
-  //   // }
-  // });
+  function calculateBuchholz(player: PlayerSwissFrontend) {
+    let buchholz = 0;
+    player.matches.forEach((match) => {
+      const opponent = match[0].id;
+      const index = sortedPlayers.findIndex((p) => p.id == opponent);
+      buchholz += sortedPlayers[index].score;
+    });
+
+    player.coefficient.buchholz = buchholz;
+
+    return buchholz;
+  }
+
+  $: sortedPlayers = transformPlayers(players);
 </script>
 
 <div class=" shadow-lg">
@@ -107,7 +121,7 @@
 
       </div>
 
-  {#each players as player, index}
+  {#each sortedPlayers as player, index}
     <!-- prettier-ignore -->
     <div class=" grid grid-cols-7 bg-white border-b  border-x  w-full text-center">
               <div class="relative text-center border-r col-span-1   border-gray-300  py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">{player.place}</div>
@@ -185,7 +199,7 @@
                   <!-- <Badge title="2700" color={{text:" text-slate-100 ", bg:" bg-slate-800"}} /> -->
               </div>
               <div class="relative text-center col-span-1 border-r border-gray-300  py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">{stringPoints(player)}</div>
-              <div class="relative text-center col-span-1  border-gray-300  py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">{player.coefficient?.buchholz}</div>
+              <div class="relative text-center col-span-1  border-gray-300  py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">{calculateBuchholz(player)}</div>
             </div>
   {/each}
 </div>

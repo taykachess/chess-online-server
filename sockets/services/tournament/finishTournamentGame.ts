@@ -1,5 +1,6 @@
 import { io } from "../../global/io";
 import { prisma } from "../../global/prisma";
+
 import {
   addTournamentMatch,
   decreaseTournamentActiveGameByOne,
@@ -11,6 +12,7 @@ import {
   setTournamentMatchResult,
 } from "../../global/tournament";
 import { Game, Result } from "../../types/game";
+import { transformResult } from "../../utils/transformResult";
 import { TOURNAMENT_ROOM } from "../../variables/redisIndex";
 import { calculateBuchholz } from "./calculateBuchholz";
 import { pairingSwiss } from "./pairingSwiss";
@@ -44,6 +46,18 @@ export async function finishTournamentGame({
   io.to(TOURNAMENT_ROOM(tournamentId)).emit("tournament:gameOver", {
     gameId,
     result,
+    w: {
+      id: game.white.username,
+      rating: game.white.rating,
+      title: game.white.title,
+      res: transformResult(result, "b"),
+    },
+    b: {
+      id: game.black.username,
+      rating: game.black.rating,
+      title: game.black.title,
+      res: transformResult(result, "w"),
+    },
   });
 
   // Получаем очки двух игроков

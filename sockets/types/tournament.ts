@@ -39,10 +39,12 @@ export type GetTournament = {
     title: Title | null;
   };
 
-  players?: PlayerSwiss[];
+  players: PlayerSwiss[];
   rounds?: number | null;
   currentRound?: number | null;
+  selectedRound?: number | null;
   standing?: number;
+  gameList: MatchSwiss[];
 };
 
 // export interface GetTournamentSwiss extends GetTournament {
@@ -61,7 +63,7 @@ export interface PlayerSwiss {
   avoid: string[];
   rating: number;
   title?: Title | null;
-  matches?: MatchSwissShort[];
+  matches: MatchSwissShort[];
   coefficient: Record<Coefficient, number>;
 }
 

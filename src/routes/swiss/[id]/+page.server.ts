@@ -71,9 +71,16 @@ export const load: PageServerLoad = async ({ params, fetch }) => {
     tournament.currentRound =
       currentRound > tournament.rounds ? tournament.rounds : currentRound;
 
-    // const pairings = await fetch(
-    //   `/api/tournament/${params.id}/pairings?round=${tournament.currentRound}`
-    // );
+    const data = await fetch(
+      `/api/tournament/${params.id}/pairings?round=${
+        tournament.currentRound - 1
+      }`
+    );
+
+    const pairings = await data.json();
+
+    tournament.gameList = pairings[0];
+    console.log(tournament.gameList);
 
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
@@ -83,11 +90,9 @@ export const load: PageServerLoad = async ({ params, fetch }) => {
         path: `$.${params.id}.players`,
       }
     );
-    console.log("players length", players);
 
     if (players) tournament.players = Object.values(players);
 
-    console.log("rounds", currentRound);
     // const swiss: GetTournament|null = {
     //   ...tournament,
     //   // currentRound: tournament.rounds,
