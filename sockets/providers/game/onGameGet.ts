@@ -31,7 +31,6 @@ export async function onGameGet(
       return cb({ ...prismaGame });
     }
 
-    socket.join(GAME_ROOM(gameId));
     // ОЧень опасное место возможно стоит это делать на клиенте!
     //
     if (game.matchId) socket.join(MATCH_ROOM(game.matchId));

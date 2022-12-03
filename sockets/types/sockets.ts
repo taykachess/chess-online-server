@@ -3,7 +3,7 @@ import type { ChallengeFilters, GetChallenge } from "./challenge";
 import type { MatchFilters } from "./match";
 import type { GetGame, Result, Title } from "./game";
 import { GetMatch } from "./match";
-import { MatchSwiss } from "./tournament";
+import { MatchSwiss, PlayerSwiss } from "./tournament";
 
 export type SocketServer = Server<
   ClientToServerEvents,
@@ -44,7 +44,8 @@ export interface ServerToClientEvents {
     w:{ id: string; rating: number; title?: Title | null; res: 1 | 0 | 0.5 | "*" }, 
     b:{ id: string; rating: number; title?: Title | null; res: 1 | 0 | 0.5 | "*" }
   })=>void
-  "tournament:start": ()=>void
+  "tournament:start": ({pairings, players}:{pairings:MatchSwiss[], players:PlayerSwiss[]})=>void
+  "tournament:finish": ()=>void
 
 }
 
@@ -61,6 +62,8 @@ export interface ClientToServerEvents {
   "match:cancel": () => void;
   "match:accept": ({ username }: { username: string }) => void;
 
+  "game:sub": ({ gameId }: { gameId: string }) => void;
+  "game:leave": ({ gameId }: { gameId: string }) => void;
   "game:move": ({ move, gameId }: { move: string; gameId: string }) => void;
   "game:resign": ({ gameId }: { gameId: string }) => void;
   "game:drawOffer": ({ gameId }: { gameId: string }) => void;

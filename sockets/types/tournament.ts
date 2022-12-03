@@ -40,11 +40,12 @@ export type GetTournament = {
   };
 
   players: PlayerSwiss[];
-  rounds?: number | null;
-  currentRound?: number | null;
-  selectedRound?: number | null;
+  rounds: number | null;
+  currentRound: number;
+  selectedRound: number;
+
   standing?: number;
-  gameList: MatchSwiss[];
+  matches: MatchSwiss[];
 };
 
 // export interface GetTournamentSwiss extends GetTournament {

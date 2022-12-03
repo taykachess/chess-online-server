@@ -13,7 +13,7 @@ import { MatchGame } from "../../types/match";
 import { runNextGameInMatch } from "../match/runNextGameInMatch";
 import { finishTournamentGame } from "../tournament/finishTournamentGame";
 
-export async function onGameOver({
+export async function setGameOver({
   gameId,
   result,
 }: {

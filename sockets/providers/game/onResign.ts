@@ -1,6 +1,6 @@
 import { getGame } from "../../global/games";
 
-import { onGameOver } from "../../services/game/onGameOver";
+import { setGameOver } from "../../services/game/setGameOver";
 
 import type { SocketType } from "../../types/sockets";
 
@@ -20,7 +20,7 @@ export async function onResign(
 
     // const turn = game.chess.turn();
     const result = game.white.username == socket.data.username ? "0-1" : "1-0";
-    await onGameOver({ gameId, result });
+    await setGameOver({ gameId, result });
   } catch (error) {
     console.log(error);
   }

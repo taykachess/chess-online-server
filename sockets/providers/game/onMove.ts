@@ -2,7 +2,7 @@ import { getGame, increasePly } from "../../global/games";
 
 import { changeTime } from "../../services/game/changeTime";
 import { isGameOver } from "../../services/game/isGameOver";
-import { onGameOver } from "../../services/game/onGameOver";
+import { setGameOver } from "../../services/game/setGameOver";
 
 import { GAME_ROOM } from "../../variables/redisIndex";
 
@@ -44,7 +44,7 @@ export async function onMove(
 
     const result = isGameOver({ chess: game.chess });
     if (result != "*") {
-      await onGameOver({ gameId, result });
+      await setGameOver({ gameId, result });
     }
 
     increasePly(gameId);

@@ -6,12 +6,14 @@ import {
   decreaseTournamentActiveGameByOne,
   getAllPlayers,
   getPlayerScore,
+  getTournamentMatches,
   getTournamentMaxRound,
   increaseTournamentRound,
   setTournamentActiveGames,
   setTournamentMatchResult,
 } from "../../global/tournament";
 import { Game, Result } from "../../types/game";
+import { MatchSwiss } from "../../types/tournament";
 import { transformResult } from "../../utils/transformResult";
 import { TOURNAMENT_ROOM } from "../../variables/redisIndex";
 import { calculateBuchholz } from "./calculateBuchholz";
@@ -100,15 +102,24 @@ export async function finishTournamentGame({
     const maxRound = await getTournamentMaxRound(tournamentId);
     if (round > maxRound[0]) {
       await calculateBuchholz({ tournamentId, players });
+      const [matches] = (await getTournamentMatches({
+        tournamentId,
+      })) as MatchSwiss[];
+
       // TOURNAMENT ENDED
-      // await prisma.tournament.update({
-      //   where: {
-      //     id: tournamentId,
-      //   },
-      //   data: {
-      //     status: "finished",
-      //   },
-      // });
+      await prisma.tournament.update({
+        where: {
+          id: tournamentId,
+        },
+        data: {
+          status: "finished",
+          // @ts-ignore
+          players: Object.values(players),
+          matches,
+        },
+      });
+
+      io.emit("tournament:finish");
       console.log("Tournament ended");
     } else {
       const playersValues = Object.values(players);

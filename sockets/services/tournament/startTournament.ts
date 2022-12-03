@@ -1,93 +1,27 @@
 import { prisma } from "../../global/prisma";
-import { setTournament } from "../../global/tournament";
-import { TournamentSwiss } from "../../types/tournament";
-
-import { pairingSwiss } from "./pairingSwiss";
-import type { PlayerSwiss, MatchSwiss } from "../../types/tournament";
-import { startTournamentGame } from "./startTournamentGame";
-import { io } from "../../global/io";
+import { startSwiss } from "./startSwiss";
 import { TOURNAMENT_ROOM } from "../../variables/redisIndex";
+import { io } from "../../global/io";
 
 export async function startTournament(tournamentId: string) {
   // console.log("start tournament");
-  const tournament = await prisma.tournament.findUnique({
+  const tournament = await prisma.tournament.update({
     where: { id: tournamentId },
+    data: {
+      status: "running",
+    },
     include: { participants: true },
   });
   if (!tournament) throw Error("Tournament not found");
-  if (!tournament.rounds) throw Error("rounds not include");
-
-  //   tournament?.participants.
 
   if (tournament?.format == "swiss") {
-    const players: Record<string, PlayerSwiss> = {};
-    const prismaQueries: Promise<any>[] = [];
-    tournament.participants.sort((a, b) => b.rating - a.rating);
-
-    tournament.participants.forEach((user, index) => {
-      const player: PlayerSwiss = {
-        id: user.username,
-        score: 0,
-        rating: user.rating,
-        colors: index % 2,
-        avoid: [],
-        coefficient: { buchholz: 0 },
-        matches: [],
-        pairedUpDown: false,
-        receivedBye: false,
-        title: user.title,
-      };
-      console.log("sorted", player);
-
-      if (user.title) player.title = user.title;
-      players[user.username] = player;
-      //   const updateQuery = prisma.tournament.update({
-      //     where: {
-      //       id: tournamentId,
-      //     },
-      //     data: {
-      //       players: { push: player },
-      //     },
-      //   });
-      //   prismaQueries.push(updateQuery);
+    const { pairings, players } = await startSwiss({
+      tournament,
+      tournamentId,
     });
-
-    // await Promise.all(prismaQueries);
-
-    // Жеребьевка
-
-    const playersValues = Object.values(players);
-    const pairings: MatchSwiss[] = pairingSwiss(playersValues, true);
-
-    const matches: Record<string, MatchSwiss> = {};
-
-    const tournamentSwiss: TournamentSwiss = {
-      players,
-      matches: [pairings],
-      activeGames:
-        playersValues.length % 2 == 0 ? pairings.length : pairings.length - 1,
-      round: 1,
-      maxRounds: tournament.rounds,
-    };
-    await setTournament(tournamentId, tournamentSwiss);
-    for await (const [index, pair] of pairings.entries()) {
-      const gameId = await startTournamentGame({
-        pair,
-        tournamentId,
-        players,
-        board: index + 1,
-        control: tournament.control,
-        round: 1,
-      });
-      pair[3] = `${gameId}`;
-    }
-
-    io.to(TOURNAMENT_ROOM(tournamentId)).emit("tournament:start");
-
-    console.log(pairings);
-
-    io.to(TOURNAMENT_ROOM(tournamentId)).emit("tournament:pairings", {
+    io.to(TOURNAMENT_ROOM(tournamentId)).emit("tournament:start", {
       pairings,
+      players,
     });
   }
 }

@@ -1,6 +1,6 @@
 import { getGame, setGameTimeout } from "../../global/games";
 
-import { onGameOver } from "./onGameOver";
+import { setGameOver } from "./setGameOver";
 
 export function changeTime({
   gameId,
@@ -31,7 +31,7 @@ export function changeTime({
       async () => {
         console.log("Время черных вышло");
         game.time[1] = 0;
-        await onGameOver({ gameId, result: "1-0" });
+        await setGameOver({ gameId, result: "1-0" });
       },
       game.time[1]
     );
@@ -42,7 +42,7 @@ export function changeTime({
       async () => {
         console.log("Время белых вышло");
         game.time[0] = 0;
-        await onGameOver({ gameId, result: "0-1" });
+        await setGameOver({ gameId, result: "0-1" });
       },
       game.time[0]
     );

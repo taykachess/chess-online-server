@@ -1,5 +1,5 @@
 import { getGame } from "../../global/games";
-import { onGameOver } from "../../services/game/onGameOver";
+import { setGameOver } from "../../services/game/setGameOver";
 
 import type { SocketType } from "../../types/sockets";
 
@@ -24,7 +24,7 @@ export async function onDrawAccept(
       throw Error("Draw was declined");
     if (game.lastOfferDraw.ply + 2 < game.ply) throw Error("Too late");
 
-    await onGameOver({ gameId, result: "0.5-0.5" });
+    await setGameOver({ gameId, result: "0.5-0.5" });
 
     // await onGameOver({ gameId, result });
   } catch (error) {

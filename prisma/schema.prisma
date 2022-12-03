@@ -45,7 +45,8 @@ model Tournament {
   playerLimit  Int              @default(0)
   currentRound Int              @default(0)
   participants User[]
-  players      Json[]
+  players      Json?
+  matches      Json?
   status       TournamentStatus @default(registration)
   rounds       Int?
   playoffs     String?

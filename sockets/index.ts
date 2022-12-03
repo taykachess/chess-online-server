@@ -11,6 +11,7 @@ import { tournamentController } from "./controllers/tournamentController";
 import { pubClient, subClient } from "./global/redis";
 import { createAdapter } from "@socket.io/redis-adapter";
 import { startTournament } from "./services/tournament/startTournament";
+import { prisma } from "./global/prisma";
 
 dotenv.config({ path: "../.env" });
 
@@ -50,4 +51,22 @@ Promise.all([pubClient.connect(), subClient.connect()]).then(() => {
   });
 });
 
-startTournament("clav5lj9q0000p13dg45de9ix");
+console.log(new Date(new Date().getTime() + 1000 * 60 * 3));
+prisma.tournament
+  .update({
+    where: {
+      id: "clav5lj9q0000p13dg45de9ix",
+    },
+    data: {
+      status: "registration",
+      startTime: new Date(new Date().getTime() + 1000 * 60 * 0.2),
+    },
+  })
+  .then((tournament) => {
+    const diff = tournament.startTime.getTime() - new Date().getTime();
+
+    console.log(diff);
+    setTimeout(() => {
+      startTournament("clav5lj9q0000p13dg45de9ix");
+    }, diff);
+  });

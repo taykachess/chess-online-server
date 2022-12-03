@@ -5,39 +5,16 @@
   import PulseAnimatedElement from "$components/common/PulseAnimatedElement.svelte";
   import { socket } from "$store/sockets/socket";
   import { tournament } from "$store/tournament/tournament";
-  import type { MatchSwiss } from "$types/tournament";
-  import { onDestroy, onMount, tick } from "svelte";
-
-  // export let gameList: MatchSwiss[] = [];
+  import { onMount, tick } from "svelte";
 
   const fetchPairings = (round: number) => {
     return fetch(`/api/tournament/${$page.params.id}/pairings?round=${round}`);
   };
 
-  console.log("render");
-  // export let rounds: number;
-  // export let $tournament.currentRound: number;
-
-  function setBye({ id }: { id: string }) {
-    const indexW = $tournament.players.findIndex((player) => player.id == id);
-
-    if (indexW != -1) {
-      $tournament.players[indexW].matches.push([
-        {
-          id: "Bye",
-          rating: 0,
-          // title: b.title,
-          res: 1,
-        },
-        "",
-      ]);
-      $tournament.players[indexW].score = $tournament.players[indexW].score + 1;
-    }
-  }
   function subOnGameResult() {
     $socket.on("tournament:gameOver", async ({ gameId, result, w, b }) => {
-      const index = $tournament.gameList.findIndex((game) => game[3] == gameId);
-      if (index != -1) $tournament.gameList[index][2] = result;
+      const index = $tournament.matches.findIndex((game) => game[3] == gameId);
+      if (index != -1) $tournament.matches[index][2] = result;
 
       const indexW = $tournament.players.findIndex(
         (player) => player.id == w.id
@@ -75,44 +52,17 @@
       }
       await tick();
       // $tournament.players = $tournament.players;
-
-      //   if(indexB!=-1) $tournament.players[indexB].matches[$tournament.players[indexB].matches.length-1] =[{id:pair[0]?.id,rating:pair[0]?.rating, title:pair[0]?.title, res:"*" },pair[3]]
-      console.log("Index", indexB, indexW);
     });
   }
 
   onMount(async () => {
-    // const data = await fetchPairings($tournament.currentRound - 1);
-    // const pairings = await data.json();
-    // $tournament.gameList = pairings[0];
     $tournament.selectedRound = $tournament.currentRound;
-    // console.log("pairings", pairings);
-    $socket.on("tournament:pairings", ({ pairings }) => {
-      // $tournament.gameList[$tournament.gameList.length - 1] = pairings;
-      // $tournament.gameList.push(pairings);
-      if ($tournament.selectedRound == $tournament.currentRound) {
-        $tournament.gameList = pairings;
-        $tournament.selectedRound = $tournament.selectedRound + 1;
-      }
-      $tournament.currentRound++;
-
-      const pairBye = pairings.find((pair) => !pair[1]);
-      if (pairBye) setBye({ id: pairBye[0].id });
-
-      console.log($tournament.gameList);
-      // $tournament.selectedRound = $tournament.gameList.length - 1;
-    });
-
     subOnGameResult();
   });
 
   beforeNavigate(() => {
     $socket.removeListener("tournament:pairings");
   });
-
-  // onDestroy(() => {
-  //   $socket.removeListener("tournament:pairings");
-  // });
 </script>
 
 <div class="mt-10  rounded-lg  border shadow-lg ">
@@ -128,7 +78,9 @@
         on:click={async () => {
           const data = await fetchPairings(index);
           const pairings = await data.json();
-          $tournament.gameList = pairings[0];
+
+          console.log("pairings", pairings);
+          $tournament.matches = pairings;
           $tournament.selectedRound = index + 1;
         }}
         class=" relative  flex w-full   items-center justify-center {index +
@@ -152,20 +104,12 @@
       </div>
     {/each}
   </div>
-  <!-- {#each gameList[showRound] as round, index} -->
-  <!-- <div
-    class=" rounded-tr-md rounded-tl-md  border-x border-t bg-white text-center text-sm"
-  >
-    <div class=" col-span-1 border-gray-300 px-4   py-2 text-gray-700">
-      Тур {showRound + 1}
-    </div>
-  </div> -->
 
-  {#each $tournament.gameList as game, index}
+  {#each $tournament.matches as game, index}
     <!-- svelte-ignore a11y-click-events-have-key-events -->
     <div
       on:click={() => {
-        goto(`/game/${game[3]}`);
+        if (game[1]) goto(`/game/${game[3]}`);
         // goto()
       }}
       class="grid grid-cols-12   {index % 2
@@ -190,36 +134,20 @@
       <div
         class=" col-span-1 flex items-center justify-center border-x border-gray-300 font-medium text-gray-700"
       >
-        {game[2] == "0.5-0.5" ? "=" : game[2]}
+        {game[2] == "0.5-0.5" ? "=" : game[2] == "+-" ? "Bye" : game[2]}
       </div>
       <div class=" col-span-5 flex border-gray-300   px-4 py-2 text-gray-700">
-        <div class="">{game[1]?.score}</div>
-        <div class=" mx-auto">
-          {#if game[1]?.title}
-            <BadgeTitle title={game[1].title} />
-          {/if}
-          <span class=" font-medium text-slate-800">{game[1]?.id}</span>
-          <span class=" text-xs text-orange-700"> {game[1]?.rating}</span>
-        </div>
+        {#if game[1]}
+          <div class="">{game[1]?.score}</div>
+          <div class=" mx-auto">
+            {#if game[1]?.title}
+              <BadgeTitle title={game[1].title} />
+            {/if}
+            <span class=" font-medium text-slate-800">{game[1]?.id}</span>
+            <span class=" text-xs text-orange-700"> {game[1]?.rating}</span>
+          </div>
+        {/if}
       </div>
     </div>
   {/each}
-  <!-- {/each} -->
-
-  <!-- <div class=" col-span-3 border-t border-gray-300 px-4   py-2 text-gray-700">
-      <BadgeTitle title="GM" />
-      <span class=" font-medium text-slate-800">Tayka</span>
-      <span class=" text-xs text-orange-700"> 2345</span>
-    </div>
-    <div
-      class=" col-span-1 border-x border-t border-gray-300  px-4  py-2 text-gray-700"
-    >
-      1-0
-    </div>
-    <div class=" col-span-3 border-t border-gray-300 px-4  py-2 text-gray-700">
-      <BadgeTitle title="IM" />
-      <span class=" font-medium text-slate-800">Kirpish2019</span>
-      <span class=" text-xs text-orange-700"> 2456</span>
-    </div> -->
-  <!-- <div class="flex items-center justify-between px-4 py-5 sm:px-6">sdf</div> -->
 </div>

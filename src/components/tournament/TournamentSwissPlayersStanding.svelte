@@ -170,31 +170,18 @@
                               <span class=" font-medium text-slate-800">{ game[0].id }</span>
                               <span class=" text-xs text-orange-700"> {game[0].rating}</span>
                             </div>
-                            <!-- <div class=" ml-auto">{game[0].score}</div> -->
                           </div>
                           <div
                             class=" col-span-1 flex items-center justify-center border-x border-gray-300 font-medium text-gray-700"
                           >
                           {game[0].res}
-                            <!-- {game[2] == "0.5-0.5" ? "=" : game[2]} -->
                           </div>
-                          <!-- <div class=" col-span-5 flex border-gray-300   px-4 py-2 text-gray-700">
-                            <div class="">{game[1]?.score}</div>
-                            <div class=" mx-auto">
-                              {#if game[1]?.title}
-                                <BadgeTitle title={game[1].title} />
-                              {/if}
-                              <span class=" font-medium text-slate-800">{game[1]?.id}</span>
-                              <span class=" text-xs text-orange-700"> {game[1]?.rating}</span>
-                            </div>
-                          </div> -->
                         </div>
                       {/each}
                         {/if}
                       </div>
                     {/if}
                   </div>
-                  <!-- <Badge title="2700" color={{text:" text-slate-100 ", bg:" bg-slate-800"}} /> -->
               </div>
               <div class="relative text-center col-span-1 border-r border-gray-300  py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">{stringPoints(player)}</div>
               <div class="relative text-center col-span-1  border-gray-300  py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">{calculateBuchholz(player)}</div>

@@ -6,7 +6,7 @@ import { deleteGame, setGame } from "../../global/games";
 import { TIME_TO_CANCEL_GAME } from "../../variables/redisIndex";
 
 import type { Game, Player } from "../../types/game";
-import { onGameOver } from "./onGameOver";
+import { setGameOver } from "./setGameOver";
 
 export async function createGame({
   data,
@@ -25,13 +25,13 @@ export async function createGame({
   const gameId = uuid();
 
   // TODO: Узнать что за ошибка с маленьким временем
-  const randomTime = Math.floor(Math.random() * 5) * 1000 + 1000;
+  const randomTime = Math.floor(Math.random() * 50) * 1000 + 5000;
   // Set game inside memory
   const timerId = setInterval(() => {
     const randomResult = Math.floor(Math.random() * 3);
 
     // console.log(randomResult);
-    onGameOver({
+    setGameOver({
       gameId,
       result: randomResult == 0 ? "0-1" : randomResult == 1 ? "1-0" : "0.5-0.5",
     });

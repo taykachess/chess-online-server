@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { browser } from "$app/environment";
   import { afterNavigate, beforeNavigate } from "$app/navigation";
   import { page } from "$app/stores";
 
@@ -16,6 +17,10 @@
     $socket.removeListener("game:declineDraw");
   }
 
+  // if (browser) {
+  //   $socket.emit("game:sub", { gameId: $page.params.id });
+  // }
+
   beforeNavigate(({ willUnload, type, to, from }) => {
     if (willUnload) {
       console.log("Unload", willUnload);
@@ -29,6 +34,8 @@
       $socket.removeListener("game:move");
     } else {
       removeSocketListerners();
+      // if (to?.params?.id)
+      //   $socket.emit("game:leave", { gameId: $page.params.id });
     }
 
     // $info.chess = null;

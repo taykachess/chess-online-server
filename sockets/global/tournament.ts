@@ -65,6 +65,16 @@ export function setTournamentMatchResult({
   );
 }
 
+export function getTournamentMatches({
+  tournamentId,
+}: {
+  tournamentId: string;
+}) {
+  return redis.json.get(TOURNAMENTS_IN_PROGRESS_REDIS, {
+    path: `$.${tournamentId}.matches`,
+  });
+}
+
 export function addTournamentMatch({
   tournamentId,
   matches,

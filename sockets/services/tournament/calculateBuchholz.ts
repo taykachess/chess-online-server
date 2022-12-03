@@ -15,6 +15,8 @@ export function calculateBuchholz({
     player.avoid.forEach(
       (playerId) => (buchholz = buchholz + players[playerId].score)
     );
+    // Для записи в db
+    player.coefficient.buchholz = buchholz;
     console.log(player.id, buchholz, "buchholz");
 
     queries.push(

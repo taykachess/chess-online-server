@@ -20,7 +20,7 @@
   import { browser } from "$app/environment";
   import GameManager from "./GameManager.svelte";
   import { board } from "$store/game/board";
-  import { afterNavigate } from "$app/navigation";
+  import { afterNavigate, beforeNavigate } from "$app/navigation";
   import MatchResults from "./MatchResults.svelte";
   import Badge from "$components/common/Badge.svelte";
   import { match } from "$store/game/match";
@@ -278,6 +278,8 @@
         }
 
         if (result == "*") {
+          $socket.emit("game:sub", { gameId: $page.params.id });
+
           startClock();
           setSocketListeners();
           const turn = $info.chess.turn();
@@ -299,6 +301,12 @@
       getGame();
       // @ts-ignore
     } else $board = undefined;
+  });
+
+  beforeNavigate(({}) => {
+    if ($info.result == "*") {
+      $socket.emit("game:leave", { gameId: $page.params.id });
+    }
   });
 
   $: orientation =
