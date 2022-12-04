@@ -3,22 +3,35 @@ import type { TournamentStatus } from "@prisma/client";
 // {tournamentInfo.startDate.toLocaleString("ru-RU", {  month: 'long', day: 'numeric'})} {tournamentInfo.startDate.toLocaleString("ru-RU", {  timeStyle:"short"})}
 
 export function formatDate(
-  datePar: Date,
+  date: number,
+  now: Date,
   tournamentStatus: TournamentStatus
 ): string {
-  const now = new Date();
-  const date = new Date(datePar);
-  const diff = date.getTime() - now.getTime();
-  if (diff < 0) {
-    if (tournamentStatus == "finished") return "Турнир завершен";
-    if (tournamentStatus == "running") return "Турнир идет";
-  }
+  const diff = date - now.getTime();
+  // if (diff < 0) {
 
-  const MINUTE = 60 * 1000;
+  // }
+
+  const SECOND = 1000;
+  const MINUTE = SECOND * 60;
   const HOUR = MINUTE * 60;
   const DAY = HOUR * 24;
-  if (diff < HOUR) return `Через ${Math.round(diff / MINUTE)} минут`;
-  else if (diff < DAY)
+  if (diff < 0) {
+    if (tournamentStatus == "finished") return "Турнир завершен";
+    if (tournamentStatus == "running") {
+      const minutes = Math.floor(-diff / MINUTE) % 60;
+      const seconds = Math.floor(-diff / SECOND) % 60;
+      const secondString = `${seconds < 10 ? "0" + seconds : seconds}`;
+
+      return `Идет ${minutes}:${secondString}`;
+    }
+  } else if (diff < HOUR) {
+    const minutes = Math.floor(diff / MINUTE) % 60;
+    const seconds = Math.floor(diff / SECOND) % 60;
+    const secondString = `${seconds < 10 ? "0" + seconds : seconds}`;
+    return `Через ${minutes}:${secondString}`;
+  } else if (diff < DAY)
     return `Через ${Math.round(diff / HOUR)} часов ${date.toLocaleString()}`;
-  else return `${date.toLocaleString()}`;
+
+  return `${new Date(date).toLocaleString()}`;
 }

@@ -8,6 +8,7 @@
 
   import type { Title } from "$types/game";
   import { formatDate } from "$lib/utils/formatDate";
+  import { time } from "$store/global/time";
   export let tournamentInfo: {
     name: string;
     control: string;
@@ -42,8 +43,6 @@
 <div class="overflow-hidden bg-white shadow sm:rounded-lg border">
     <div class="px-4 py-5 sm:px-6 flex justify-between items-center">
       <h3 class="text-lg font-medium leading-6 text-gray-900">Турнирная информация</h3>
-      <Badge title={`${tournamentInfo.control}`} color={{text:"text-slate-700 px-2", bg:"bg-slate-100"}}/>
-      
 
       {#if !isRegister}
       <!-- svelte-ignore a11y-click-events-have-key-events -->
@@ -93,7 +92,7 @@
         </div>
         <div class="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
           <dt class="text-sm font-medium text-gray-500">Дата начала</dt>
-          <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">{formatDate(tournamentInfo.startDate, $tournament.status)}</dd>
+          <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">{formatDate(tournamentInfo.startDate.getTime(),$time, $tournament.status)}</dd>
         </div>
         <div class="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
           <dt class="text-sm font-medium text-gray-500">Описание</dt>

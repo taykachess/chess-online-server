@@ -11,6 +11,7 @@
   import TournamentCreateButton from "./TournamentCreateButton.svelte";
 
   import { formatDate } from "$lib/utils/formatDate";
+  import { time } from "$store/global/time";
 
   async function getAllTournaments({
     page,
@@ -98,7 +99,11 @@
         registered: false,
         records: [
           tournament.name,
-          `${formatDate(tournament.startTime, tournament.status)}`,
+          formatDate(
+            new Date(tournament.startTime).getTime(),
+            $time,
+            tournament.status
+          ),
           tournament.format,
           tournament.control,
           ` ${

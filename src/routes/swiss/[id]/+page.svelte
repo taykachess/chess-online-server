@@ -3,7 +3,6 @@
   import { page } from "$app/stores";
   import GameList from "$components/tournament/GameList.svelte";
   import RoundRobin from "$components/tournament/RoundRobin.svelte";
-  import Swiss from "$components/tournament/Swiss.svelte";
   import TournamentDescription from "$components/tournament/TournamentDescription.svelte";
   import TournamentPlayersRegister from "$components/tournament/TournamentPlayersRegister.svelte";
   import TournamentSwissPlayersStanding from "$components/tournament/TournamentSwissPlayersStanding.svelte";
