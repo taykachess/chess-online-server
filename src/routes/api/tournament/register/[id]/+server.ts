@@ -6,6 +6,14 @@ import { error } from "@sveltejs/kit";
 import type { RequestHandler } from "./$types";
 
 export const POST: RequestHandler = async ({ params, locals }) => {
+  const tournament = await prisma.tournament.findUnique({
+    where: { id: params.id },
+    select: {
+      status: true,
+    },
+  });
+
+  if (tournament?.status != "registration") return error(406);
   const user = await prisma.user.update({
     where: {
       username: locals.user.username,

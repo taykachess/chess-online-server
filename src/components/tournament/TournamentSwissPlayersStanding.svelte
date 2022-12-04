@@ -122,7 +122,18 @@
   {#each sortedPlayers as player, index}
     <!-- prettier-ignore -->
     <div class=" grid grid-cols-7 bg-white border-b  border-x  w-full text-center">
-              <div class="relative text-center border-r col-span-1   border-gray-300  py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">{player.place}</div>
+              <div class="relative text-center border-r col-span-1   border-gray-300  py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">
+                {#if player.active}
+                  {player.place}
+                {:else}
+                <div class=" flex items-center justify-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M14.25 9v6m-4.5 0V9M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+
+                </div>
+                {/if}
+              </div>
               <div class="relative col-span-4 flex   border-r border-gray-300  py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">
                 <div class=" ml-2 ">
                   {#if player.title}

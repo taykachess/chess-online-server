@@ -111,6 +111,17 @@ export function getAllPlayers({
   });
 }
 
+export function getActivePlayers({
+  tournamentId,
+}: {
+  tournamentId: string;
+}): Promise<PlayerSwiss[]> {
+  // @ts-ignore
+  return redis.json.get(TOURNAMENTS_IN_PROGRESS_REDIS, {
+    path: `$.${tournamentId}.players.[?(@.active==true)]`,
+  });
+}
+
 export function getPlayerScore({
   tournamentId,
   username,

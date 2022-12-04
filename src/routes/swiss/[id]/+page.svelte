@@ -79,6 +79,27 @@
       const pairBye = pairings.find((pair) => !pair[1]);
       if (pairBye) setBye({ id: pairBye[0].id });
     });
+
+    $socket.on("tournament:pause", ({ username }) => {
+      const indexPausePlayer = $tournament.players.findIndex(
+        (player) => player.id == username
+      );
+      if (indexPausePlayer != -1)
+        $tournament.players[indexPausePlayer].active = false;
+    });
+
+    $socket.on("tournament:continue", ({ username }) => {
+      const indexPausePlayer = $tournament.players.findIndex(
+        (player) => player.id == username
+      );
+      if (indexPausePlayer != -1)
+        $tournament.players[indexPausePlayer].active = true;
+    });
+
+    $socket.on("tournament:entry", (player) => {
+      $tournament.players.push(player);
+      $tournament.players = $tournament.players;
+    });
   });
 
   beforeNavigate(() => {
@@ -87,6 +108,10 @@
     $socket.removeListener("tournament:pairings");
     $socket.removeListener("tournament:start");
     $socket.removeListener("tournament:gameOver");
+    $socket.removeListener("tournament:continue");
+    $socket.removeListener("tournament:entry");
+    $socket.removeListener("tournament:pause");
+
     $socket.emit("tournament:leave", { tournamentId: $page.params.id });
   });
 </script>
@@ -102,6 +127,7 @@
           format: $tournament.format,
           startDate: $tournament.startTime,
           orginizer: $tournament.organizer,
+          rounds: $tournament.rounds,
         }}
       />
       <div class=" mt-4">

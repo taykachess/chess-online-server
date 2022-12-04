@@ -280,16 +280,21 @@
     .cm-chessboard.chessboard-js .coordinates .coordinate.white {
       fill: #b58863; }
 
+      /* EEF0F3 */
 .cm-chessboard.black-and-white .board .square.white {
-  fill: #ffffff7a; }
+  fill: #ffffff7a; 
+}
+      /* BAC5CF */
 
 .cm-chessboard.black-and-white .board .square.black {
-  fill: #9c9c9c; }
+  fill: #9c9c9c; 
+}
 
 .cm-chessboard.black-and-white.border-type-thin .board .border {
   stroke: #9c9c9c;
   stroke-width: 0.7%;
-  fill: #ffffff00; }
+  fill: #ffffff00;
+ }
 
 .cm-chessboard.black-and-white.border-type-none .board .border {
   stroke: #9c9c9c;
@@ -317,4 +322,51 @@
     .cm-chessboard.black-and-white .coordinates .coordinate.white {
       fill: #9c9c9c; }
 
+
+
+
+      /* New style */
+
+      .cm-chessboard.fancy-gray .board .square.white {
+        fill: #EEF0F3; 
+      }
+            /* BAC5CF */
+      
+      .cm-chessboard.fancy-gray .board .square.black {
+        fill: #BAC5CF; 
+      }
+      
+      .cm-chessboard.fancy-gray.border-type-thin .board .border {
+        stroke: #9c9c9c;
+        stroke-width: 0.7%;
+        fill: #ffffff00;
+       }
+      
+      .cm-chessboard.fancy-gray.border-type-none .board .border {
+        stroke: #9c9c9c;
+        stroke-width: 0;
+        fill: #ffffff; }
+      
+      .cm-chessboard.fancy-gray.border-type-frame .board .border {
+        fill: #ffffff00;
+        stroke: none; 
+      }
+      
+      /* .cm-chessboard.fancy-gray.border-type-frame .board .border-inner {
+        fill: transparent;
+        stroke: #9c9c9c;
+        stroke-width: 0%; } */
+      
+      .cm-chessboard.fancy-gray .coordinates {
+        pointer-events: none;
+        user-select: none; }
+        .cm-chessboard.fancy-gray .coordinates .coordinate {
+          fill: #000000;
+          font-size: 7px;
+          cursor: default; }
+          .cm-chessboard.fancy-gray .coordinates .coordinate.black {
+            fill: #ffffff; }
+          .cm-chessboard.fancy-gray .coordinates .coordinate.white {
+            fill: #9c9c9c; }
+      
 /*# sourceMappingURL=cm-chessboard.css.map */

@@ -37,6 +37,10 @@ export interface ServerToClientEvents {
 
   "tournament:register": ({username, rating, title}:{username: string; rating: number; title: Title | null;}) => void;
   "tournament:unregister": ({username}:{username: string}) => void;
+  "tournament:pause":({username}:{username: string}) => void;
+  "tournament:continue":({username}:{username: string}) => void;
+  "tournament:entry":(player:PlayerSwiss) => void;
+
   "tournament:pairings": ({pairings}:{pairings:MatchSwiss[]})=>void
   "tournament:gameOver": ({gameId, result, w, b}:{
     gameId:string, 

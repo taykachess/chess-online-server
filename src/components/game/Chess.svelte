@@ -25,6 +25,9 @@
   import Badge from "$components/common/Badge.svelte";
   import { match } from "$store/game/match";
 
+  import { PromotionDialog } from "cm-chessboard-ts/src/cm-chessboard/extensions/promotion-dialog";
+  import ChessTmp from "./ChessTmp.svelte";
+
   let lastTime: number;
   let boardHTML: HTMLElement;
   if (browser) {
@@ -68,10 +71,11 @@
       // responsive: true,
       position: $info.chess.fen(),
       style: {
-        borderType: "thin",
+        borderType: "none",
         showCoordinates: false,
         aspectRatio: 1,
-        cssClass: "black-and-white",
+        // "fancy-gray"
+        cssClass: "fancy-gray",
         // cssClass: "black-and-white",
         moveFromMarker: MARKER_TYPE.square,
         moveToMarker: MARKER_TYPE.square,
@@ -82,6 +86,8 @@
         size: 40, // the sprite tiles size, defaults to 40x40px
         cache: true, // cache the sprite
       },
+      extensions: [{ class: PromotionDialog, props: {} }],
+      // extensions:{}
     };
     $board = new Chessboard(boardHTML, config);
   }
@@ -183,13 +189,53 @@
       }
       return moves.length > 0;
     } else if (event.type === INPUT_EVENT_TYPE.validateMoveInput) {
-      const move = { from: event.squareFrom, to: event.squareTo };
+      console.log("trying", event.squareTo.charAt(1));
+      let move = {
+        from: event.squareFrom,
+        to: event.squareTo,
+      };
+
+      // Функция синхронная, так делать не разрешает
+      // const pos = $board.getPosition();
+
+      // const promise = new Promise<string>((resolve, reject) => {
+      //   if (
+      //     (event.squareTo.charAt(1) === "8" ||
+      //       event.squareTo.charAt(1) === "1") &&
+      //     event.piece.charAt(1) === "p"
+      //   ) {
+      //     event.chessboard.showPromotionDialog(
+      //       event.squareTo,
+      //       $info.chess.turn(),
+      //       async (event) => {
+      //         console.log("48a99d Piece selected", event);
+      //         if (event.piece) {
+      //           resolve(event.piece[1]);
+      //           // move.promotion = event.piece[1];
+      //           // event.chessboard.setPiece(event.square, event.piece, true);
+      //         } else {
+      //           await $board.setPosition(pos);
+      //           resolve("");
+      //         }
+      //       }
+      //     );
+      //   } else {
+      //     resolve("");
+      //   }
+      // });
+
+      // const promotionPiece = await promise;
+      // if (promotionPiece) move.promotion = promotionPiece;
+
+      console.log("want to move");
       // @ts-ignore
       const result = $info.chess.move(move);
+      console.log("result", result);
 
       if (result) {
         $board.disableMoveInput();
         $board.state.moveInputProcess.then(() => {
+          console.log("position seted");
           // wait for the move input process has finished
           $board.setPosition($info.chess.fen(), false).then(() => {
             // update position, maybe castled and wait for animation has finished
@@ -212,6 +258,8 @@
           });
         });
       } else {
+        // Must work without it, but does'not ! Maybe bug of the last version!
+        // $board.setPosition(pos);
         console.warn("invalid move", move, $info.chess.fen());
       }
       return result;
@@ -317,9 +365,10 @@
   <div class="text-3xl text-slate-900">♕ ♔ ♗ ♘ ♖ ♙</div>
   <div class="text-3xl text-slate-900">♛ ♚ ♝ ♞ ♜ ♟︎ ♟︎</div>
 </div> -->
-<div class=" grid w-full max-w-4xl md:grid-cols-7 ">
+<div class=" z-0 grid w-full max-w-4xl md:grid-cols-7 ">
   <div class=" col-span-5">
     <Board bind:boardHTML />
+    <ChessTmp />
   </div>
 
   {#if $info}

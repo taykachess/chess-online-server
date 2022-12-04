@@ -36,6 +36,7 @@ export async function startSwiss({
       pairedUpDown: false,
       receivedBye: false,
       title: user.title,
+      active: true,
     };
 
     if (user.title) player.title = user.title;

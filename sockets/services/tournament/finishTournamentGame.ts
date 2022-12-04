@@ -4,6 +4,7 @@ import { prisma } from "../../global/prisma";
 import {
   addTournamentMatch,
   decreaseTournamentActiveGameByOne,
+  getActivePlayers,
   getAllPlayers,
   getPlayerScore,
   getTournamentMatches,
@@ -122,9 +123,13 @@ export async function finishTournamentGame({
       io.emit("tournament:finish");
       console.log("Tournament ended");
     } else {
-      const playersValues = Object.values(players);
+      const activePlayers = await getActivePlayers({ tournamentId });
+      console.log("active players count", activePlayers.length);
 
-      const pairings = pairingSwiss(playersValues, true);
+      // const playersValues = Object.values(players);
+      // console.log("active players count", players.length);
+
+      const pairings = pairingSwiss(activePlayers, true);
 
       pairings.sort((a, b) => {
         if (!b[1] || !a[1]) return 0;
@@ -178,7 +183,7 @@ export async function finishTournamentGame({
 
       setTournamentActiveGames(
         tournamentId,
-        playersValues.length % 2 == 0 ? pairings.length : pairings.length - 1
+        activePlayers.length % 2 == 0 ? pairings.length : pairings.length - 1
       );
     }
   }

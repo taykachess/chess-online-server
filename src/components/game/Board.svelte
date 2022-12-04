@@ -3,10 +3,11 @@
 </script>
 
 <!-- 40rem is standart, so if make w-full is going to be problem -->
-<div class="  relative    flex-none ">
+<div class="     relative flex-none  ">
   <div bind:this={boardHTML} class="   " />
 </div>
 
 <style>
   @import "/assets/styles/cm-chessboard.css";
+  @import "/assets/styles/promotion-dialog.css";
 </style>

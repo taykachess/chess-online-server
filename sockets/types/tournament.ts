@@ -66,6 +66,7 @@ export interface PlayerSwiss {
   title?: Title | null;
   matches: MatchSwissShort[];
   coefficient: Record<Coefficient, number>;
+  active: boolean;
 }
 
 export interface PlayerSwissFrontend extends PlayerSwiss {
