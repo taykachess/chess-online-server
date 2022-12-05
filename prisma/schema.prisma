@@ -39,7 +39,7 @@ model Tournament {
   id           String           @id @default(cuid())
   name         String
   description  String
-  format       String
+  format       TournamentFormat
   control      String
   startTime    DateTime
   playerLimit  Int              @default(0)
@@ -60,6 +60,10 @@ enum TournamentStatus {
   registration
   running
   finished
+}
+
+enum TournamentFormat {
+  swiss
 }
 
 // model Player {

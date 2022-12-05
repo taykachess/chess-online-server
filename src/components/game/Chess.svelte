@@ -4,7 +4,7 @@
   import { page } from "$app/stores";
   import { socket } from "$store/sockets/socket";
   import type { GetGame } from "$types/game";
-  import { Chess } from "cm-chess";
+  import { Chess, type Move, type Square } from "cm-chess";
   import {
     MARKER_TYPE,
     INPUT_EVENT_TYPE,
@@ -26,7 +26,6 @@
   import { match } from "$store/game/match";
 
   import { PromotionDialog } from "cm-chessboard-ts/src/cm-chessboard/extensions/promotion-dialog";
-  import ChessTmp from "./ChessTmp.svelte";
 
   let lastTime: number;
   let boardHTML: HTMLElement;
@@ -68,7 +67,7 @@
     const config: Config = {
       orientation:
         $info.black.username === $page.data.user?.username ? "b" : "w",
-      // responsive: true,
+      responsive: true,
       position: $info.chess.fen(),
       style: {
         borderType: "none",
@@ -172,25 +171,27 @@
       $board.disableMoveInput();
     });
   }
-
   function inputHandler(event: {
     chessboard: ChessBoardInstance;
     type: string;
     square: string;
-    squareFrom: string;
-    squareTo: string;
+    squareFrom: Square;
+    squareTo: Square;
+    piece: string;
   }) {
     event.chessboard.removeMarkers(MARKER_TYPE.dot);
+    // let moves: Move[];
     if (event.type === INPUT_EVENT_TYPE.moveInputStarted) {
       const moves = $info.chess.moves({ square: event.square, verbose: true });
       for (const move of moves) {
         // draw dots on possible squares
         event.chessboard.addMarker(MARKER_TYPE.dot, move.to);
       }
+      console.log(moves);
       return moves.length > 0;
     } else if (event.type === INPUT_EVENT_TYPE.validateMoveInput) {
       console.log("trying", event.squareTo.charAt(1));
-      let move = {
+      let move: Pick<Move, "from" | "to" | "promotion"> = {
         from: event.squareFrom,
         to: event.squareTo,
       };
@@ -198,30 +199,72 @@
       // Функция синхронная, так делать не разрешает
       // const pos = $board.getPosition();
 
+      // console.log(event);
+      const moves = $info.chess.moves({
+        square: event.squareFrom,
+        verbose: true,
+      });
+      // console.log(moves);
+      console.log("event", event);
+
       // const promise = new Promise<string>((resolve, reject) => {
-      //   if (
-      //     (event.squareTo.charAt(1) === "8" ||
-      //       event.squareTo.charAt(1) === "1") &&
-      //     event.piece.charAt(1) === "p"
-      //   ) {
-      //     event.chessboard.showPromotionDialog(
-      //       event.squareTo,
-      //       $info.chess.turn(),
-      //       async (event) => {
-      //         console.log("48a99d Piece selected", event);
-      //         if (event.piece) {
-      //           resolve(event.piece[1]);
-      //           // move.promotion = event.piece[1];
-      //           // event.chessboard.setPiece(event.square, event.piece, true);
-      //         } else {
-      //           await $board.setPosition(pos);
-      //           resolve("");
-      //         }
-      //       }
-      //     );
-      //   } else {
-      //     resolve("");
-      //   }
+      if (
+        (event.squareTo.charAt(1) === "8" ||
+          event.squareTo.charAt(1) === "1") &&
+        event.piece.charAt(1) === "p" &&
+        moves?.some(
+          (move) => move.to == event.squareTo && move.from == event.squareFrom
+        )
+      ) {
+        return event.chessboard.showPromotionDialog(
+          event.squareTo,
+          $info.chess.turn(),
+          (event: any) => {
+            console.log("48a99d Piece selected", event);
+            if (event.piece) {
+              // resolve(event.piece[1]);
+              move.promotion = event.piece[1];
+              const result = $info.chess.move(move);
+
+              if (result) {
+                $board.disableMoveInput();
+                $board.state.moveInputProcess.then(() => {
+                  console.log("position seted");
+                  // wait for the move input process has finished
+                  $board.setPosition($info.chess.fen(), false).then(() => {
+                    // update position, maybe castled and wait for animation has finished
+
+                    $socket.emit("game:move", {
+                      move: result.san,
+                      gameId: $page.params.id,
+                    });
+
+                    $info.ply = $info.ply + 1;
+
+                    $info.tree.history = $info.tree.history;
+                    $info.tree.liveNode =
+                      $info.tree.history[$info.tree.history.length - 1];
+                    $info.tree.currentNode =
+                      $info.tree.history[$info.tree.history.length - 1];
+
+                    const newTurn = $info.chess.turn();
+                    increamentTimer(newTurn);
+                  });
+                });
+              } else {
+                // Must work without it, but does'not ! Maybe bug of the last version!
+                // $board.setPosition(pos);
+                console.warn("invalid move", move, $info.chess.fen());
+              }
+              // event.chessboard.setPiece(event.square, event.piece, true);
+            } else {
+              // await $board.setPosition(pos);
+            }
+          }
+        );
+      }
+
+      console.log("want to move");
       // });
 
       // const promotionPiece = await promise;
@@ -368,7 +411,6 @@
 <div class=" z-0 grid w-full max-w-4xl md:grid-cols-7 ">
   <div class=" col-span-5">
     <Board bind:boardHTML />
-    <ChessTmp />
   </div>
 
   {#if $info}

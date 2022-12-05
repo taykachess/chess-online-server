@@ -119,17 +119,7 @@
 <div class=" mx-auto max-w-6xl  ">
   <div class=" mt-4 grid grid-cols-2  ">
     <div class="  ">
-      <TournamentDescription
-        tournamentInfo={{
-          name: $tournament.name,
-          control: $tournament.control,
-          description: $tournament.description,
-          format: $tournament.format,
-          startDate: $tournament.startTime,
-          orginizer: $tournament.organizer,
-          rounds: $tournament.rounds,
-        }}
-      />
+      <TournamentDescription />
       <div class=" mt-4">
         {#if $tournament.rounds && $tournament.matches}
           <GameList />

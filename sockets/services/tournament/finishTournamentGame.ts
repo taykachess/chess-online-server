@@ -7,11 +7,14 @@ import {
   getActivePlayers,
   getAllPlayers,
   getPlayerScore,
+  getTournamentActiveGames,
   getTournamentMatches,
   getTournamentMaxRound,
+  getTournamentTV,
   increaseTournamentRound,
   setTournamentActiveGames,
   setTournamentMatchResult,
+  setTournamentTV,
 } from "../../global/tournament";
 import { Game, Result } from "../../types/game";
 import { MatchSwiss } from "../../types/tournament";
@@ -36,7 +39,7 @@ export async function finishTournamentGame({
   if (!game.round || !game.board) return;
 
   //   Устанавливаем результат матча и уменьшаем количество игр
-  const [currentActiveGames, status] = await Promise.all([
+  const [[currentActiveGames], status] = await Promise.all([
     decreaseTournamentActiveGameByOne(tournamentId),
     setTournamentMatchResult({
       tournamentId,
@@ -64,7 +67,7 @@ export async function finishTournamentGame({
   });
 
   // Получаем очки двух игроков
-  const [scoreW, scoreB] = await Promise.all([
+  const [scoreW, scoreB, [res]] = await Promise.all([
     getPlayerScore({
       tournamentId,
       username: game.white.username,
@@ -73,7 +76,21 @@ export async function finishTournamentGame({
       tournamentId,
       username: game.black.username,
     }),
+    getTournamentTV({ tournamentId, gameId }),
   ]);
+
+  if (gameId == res && currentActiveGames != 0) {
+    console.log("new tv set", game.round, res);
+    const games = await getTournamentActiveGames({
+      tournamentId,
+      round: game.round,
+    });
+
+    console.log("games", games);
+    if (games.length) await setTournamentTV({ tournamentId, gameId: games[0] });
+  }
+
+  // if(res[0]==ga)
 
   //   Настраиваем правильно игроков перед жеребьевкой следующего раунда
 
@@ -95,7 +112,9 @@ export async function finishTournamentGame({
     gameId,
   });
 
-  console.log(currentActiveGames);
+  // const tv = await getTournamentTV(tournamentId)
+
+  console.log("currentActiveGames", currentActiveGames);
 
   if (currentActiveGames == 0) {
     const [players] = await getAllPlayers({ tournamentId });
@@ -160,6 +179,11 @@ export async function finishTournamentGame({
           round,
         });
         pair[3] = `${gameId}`;
+      }
+
+      if (pairings[0][3]) {
+        await setTournamentTV({ tournamentId, gameId: pairings[0][3] });
+        console.log("new tv set");
       }
 
       // pairings.forEach(async (pair, index) => {

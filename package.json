@@ -21,7 +21,7 @@
     "@socket.io/redis-emitter": "^5.0.0",
     "bcrypt": "^5.1.0",
     "cm-chess": "^2.4.2",
-    "cm-chessboard-ts": "^5.2.22",
+    "cm-chessboard-ts": "^5.2.23",
     "date-picker-svelte": "^2.2.1",
     "jsonwebtoken": "^8.5.1",
     "redis": "^4.4.0",

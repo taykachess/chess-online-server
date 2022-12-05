@@ -1,6 +1,10 @@
 import type { Tournament, User } from "@prisma/client";
 import { io } from "../../global/io";
-import { addTournamentMatch, setTournament } from "../../global/tournament";
+import {
+  addTournamentMatch,
+  setTournament,
+  setTournamentTV,
+} from "../../global/tournament";
 import type {
   PlayerSwiss,
   MatchSwiss,
@@ -70,6 +74,12 @@ export async function startSwiss({
     });
     pair[3] = `${gameId}`;
   }
+
+  if (pairings[0][3]) {
+    console.log("tv set");
+    await setTournamentTV({ tournamentId, gameId: pairings[0][3] });
+  }
+  // tournamentSwiss.tv = pairings[0][3];
 
   await addTournamentMatch({
     tournamentId,

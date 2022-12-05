@@ -1,4 +1,4 @@
-import type { TournamentStatus } from "@prisma/client";
+import type { TournamentFormat, TournamentStatus } from "@prisma/client";
 import type { Title, Result } from "./game";
 
 export interface TournamentTable {
@@ -25,8 +25,8 @@ export type TournamentTableRecord = {
 export type GetTournament = {
   name: string;
   description: string;
-  status: "registration" | "running" | "finished";
-  format: string;
+  status: TournamentStatus;
+  format: TournamentFormat;
   control: string;
   startTime: Date;
   participants: {
@@ -125,4 +125,5 @@ export interface TournamentSwiss {
   activeGames: number;
   round: number;
   maxRounds: number;
+  tv?: string | null;
 }

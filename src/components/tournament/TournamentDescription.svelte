@@ -13,15 +13,15 @@
   import ButtonCancel from "./ButtonCancel.svelte";
   import ButtonReadyToPlay from "./ButtonReadyToPlay.svelte";
   import ButtonStop from "./ButtonStop.svelte";
-  export let tournamentInfo: {
-    name: string;
-    control: string;
-    format: "swiss";
-    startDate: Date;
-    description: string;
-    orginizer: { title: Title | null; username: string };
-    rounds: number;
-  };
+  // export let tournamentInfo: {
+  //   name: string;
+  //   control: string;
+  //   format: "swiss";
+  //   startDate: Date;
+  //   description: string;
+  //   orginizer: { title: Title | null; username: string };
+  //   rounds: number;
+  // };
 
   $: isRegister = $tournament.participants?.some(
     (participant) => participant.username === $page.data.user?.username
@@ -64,20 +64,20 @@
       <dl>
         <div class="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
           <dt class="text-sm font-medium text-gray-500">Название турнира</dt>
-          <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">{tournamentInfo.name}</dd>
+          <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">{$tournament.name}</dd>
         </div>
         <div class="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
           <dt class="text-sm font-medium text-gray-500">Контроль</dt>
           <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
-            <Badge title={`${tournamentInfo.control}`} color={{text:"text-slate-700 px-2 py-1", bg:"bg-slate-100"}}/>
+            <Badge title={`${$tournament.control}`} color={{text:"text-slate-700 px-2 py-1", bg:"bg-slate-100"}}/>
           </dd>
         </div>
         <div class="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
           <dt class="text-sm font-medium text-gray-500">Формат</dt>
           <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
             <div class="">
-              <Badge title={transformTournamentFormat(tournamentInfo.format)} color={{text:"text-orange-800 px-2 py-1", bg:"bg-orange-100"}}/>
-              <Badge title={`${tournamentInfo.rounds} туров`} color={{text:"text-sky-800 px-2 py-1", bg:"bg-sky-100"}}/>
+              <Badge title={transformTournamentFormat($tournament.format)} color={{text:"text-orange-800 px-2 py-1", bg:"bg-orange-100"}}/>
+              <Badge title={`${$tournament.rounds} туров`} color={{text:"text-sky-800 px-2 py-1", bg:"bg-sky-100"}}/>
 
             </div>
           </dd>
@@ -88,24 +88,27 @@
             <div class=" flex items-center space-x-3">
               <div class="">
 
-                {formatDate(tournamentInfo.startDate.getTime(),$time, $tournament.status)}
+                {formatDate($tournament.startTime.getTime(),$time, $tournament.status)}
               </div>
+              {#if $tournament.currentRound && $tournament.status=='running'}
               <Badge title={`${$tournament.currentRound} тур`} color={{text:"text-sky-800 px-2 py-1", bg:"bg-sky-100"}}/>
+                
+              {/if}
 
             </div>
           </dd>
         </div>
         <div class="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
           <dt class="text-sm font-medium text-gray-500">Описание</dt>
-          <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0 max-h-40 overflow-y-scroll">{tournamentInfo.description}</dd>
+          <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0 max-h-40 overflow-y-scroll">{$tournament.description}</dd>
         </div>
         <div class="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
           <dt class="text-sm font-medium text-gray-500">Организатор</dt>
           <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
-            {#if tournamentInfo.orginizer.title}
-            <BadgeTitle title={tournamentInfo.orginizer.title} /> 
+            {#if $tournament.organizer.title}
+            <BadgeTitle title={$tournament.organizer.title} /> 
             {/if}
-         {tournamentInfo.orginizer.username}
+         {$tournament.organizer.username}
         </dd>
         </div>
       </dl>

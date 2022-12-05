@@ -16,12 +16,37 @@ export function getTournament(tournamentId: string) {
 }
 
 // prettier-ignore
+export function getTournamentTV({tournamentId,gameId}:{tournamentId: string, gameId:string}):[string] {
+  // @ts-ignore
+  return redis.json.get(TOURNAMENTS_IN_PROGRESS_REDIS, {
+    path: `$.${tournamentId}.tv`,
+  }) 
+}
+
+export function setTournamentTV({
+  tournamentId,
+  gameId,
+}: {
+  tournamentId: string;
+  gameId: string;
+}) {
+  return redis.json.set(
+    TOURNAMENTS_IN_PROGRESS_REDIS,
+    `$.${tournamentId}.tv`,
+    gameId
+  );
+}
+
+// prettier-ignore
 export function setTournament(tournamentId: string, tournament: TournamentSwiss) {
 // @ts-ignore
   return redis.json.set(TOURNAMENTS_IN_PROGRESS_REDIS,tournamentId,tournament);
 }
 
-export function decreaseTournamentActiveGameByOne(tournamentId: string) {
+export function decreaseTournamentActiveGameByOne(
+  tournamentId: string
+): [number] {
+  // @ts-ignore
   return redis.json.numIncrBy(
     TOURNAMENTS_IN_PROGRESS_REDIS,
     `$.${tournamentId}.activeGames`,
@@ -45,6 +70,15 @@ export function setTournamentActiveGames(
     `$.${tournamentId}.activeGames`,
     activeGames
   );
+}
+
+// prettier-ignore
+export function getTournamentActiveGames({tournamentId,round}:{tournamentId:string, round:number}):string[] {
+  // @ts-ignore
+return redis.json.get(TOURNAMENTS_IN_PROGRESS_REDIS,{
+  path:`$.${tournamentId}.matches[${round-1}][?(@.[2]=="*")][3]`
+})
+  
 }
 
 export function setTournamentMatchResult({
