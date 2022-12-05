@@ -66,7 +66,7 @@ prisma.tournament
     const diff = tournament.startTime.getTime() - new Date().getTime();
 
     console.log(diff);
-    setTimeout(() => {
-      startTournament("clav5lj9q0000p13dg45de9ix");
+    setTimeout(async () => {
+      await startTournament("clav5lj9q0000p13dg45de9ix");
     }, diff);
   });

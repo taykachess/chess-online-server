@@ -18,9 +18,10 @@ export interface Game {
   white: Player;
   black: Player;
   // Needed for inside memory use
-  chess: Chess;
+  // chess: Chess;
+  pgn: string;
   // Needed for inside memory use
-  timerId: any;
+  // timerId: any;
   ply: number;
   tsmp: number;
   increment: number;

@@ -10,7 +10,7 @@ export async function onDrawAccept(
   const socket = this;
 
   try {
-    const game = getGame(gameId);
+    const [game] = await getGame(gameId);
     if (
       game.white.username != socket.data.username &&
       game.black.username != socket.data.username
@@ -24,7 +24,7 @@ export async function onDrawAccept(
       throw Error("Draw was declined");
     if (game.lastOfferDraw.ply + 2 < game.ply) throw Error("Too late");
 
-    await setGameOver({ gameId, result: "0.5-0.5" });
+    await setGameOver({ gameId, result: "0.5-0.5", game });
 
     // await onGameOver({ gameId, result });
   } catch (error) {

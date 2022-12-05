@@ -1,4 +1,4 @@
-import { getGame } from "../../global/games";
+import { getGame, setLastOfferDrawStatus } from "../../global/games";
 import { io } from "../../global/io";
 
 import type { SocketType } from "../../types/sockets";
@@ -12,7 +12,7 @@ export async function onDrawDecline(
   const socket = this;
 
   try {
-    const game = getGame(gameId);
+    const [game] = await getGame(gameId);
     if (
       game.white.username != socket.data.username &&
       game.black.username != socket.data.username
@@ -24,8 +24,8 @@ export async function onDrawDecline(
       throw Error("You can't decline your draw ");
 
     if (game.lastOfferDraw.ply + 2 < game.ply) throw Error("Too late");
-
-    game.lastOfferDraw.status = "declined";
+    await setLastOfferDrawStatus(gameId, "declined");
+    // game.lastOfferDraw.status = "declined";
 
     io.to(GAME_ROOM(gameId)).emit("game:declineDraw");
     // await onGameOver({ gameId, result: "0.5-0.5" });

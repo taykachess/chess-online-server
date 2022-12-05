@@ -80,13 +80,11 @@ export async function finishTournamentGame({
   ]);
 
   if (gameId == res && currentActiveGames != 0) {
-    console.log("new tv set", game.round, res);
     const games = await getTournamentActiveGames({
       tournamentId,
       round: game.round,
     });
 
-    console.log("games", games);
     if (games.length) await setTournamentTV({ tournamentId, gameId: games[0] });
   }
 
@@ -114,8 +112,6 @@ export async function finishTournamentGame({
 
   // const tv = await getTournamentTV(tournamentId)
 
-  console.log("currentActiveGames", currentActiveGames);
-
   if (currentActiveGames == 0) {
     const [players] = await getAllPlayers({ tournamentId });
     const [round] = await increaseTournamentRound(tournamentId);
@@ -140,10 +136,8 @@ export async function finishTournamentGame({
       });
 
       io.emit("tournament:finish");
-      console.log("Tournament ended");
     } else {
       const activePlayers = await getActivePlayers({ tournamentId });
-      console.log("active players count", activePlayers.length);
 
       // const playersValues = Object.values(players);
       // console.log("active players count", players.length);
@@ -183,7 +177,6 @@ export async function finishTournamentGame({
 
       if (pairings[0][3]) {
         await setTournamentTV({ tournamentId, gameId: pairings[0][3] });
-        console.log("new tv set");
       }
 
       // pairings.forEach(async (pair, index) => {
@@ -196,7 +189,7 @@ export async function finishTournamentGame({
       //     round: round[0],
       //   });
       // });
-      addTournamentMatch({
+      await addTournamentMatch({
         tournamentId,
         matches: pairings,
       });
@@ -205,7 +198,7 @@ export async function finishTournamentGame({
         pairings,
       });
 
-      setTournamentActiveGames(
+      await setTournamentActiveGames(
         tournamentId,
         activePlayers.length % 2 == 0 ? pairings.length : pairings.length - 1
       );

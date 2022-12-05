@@ -6,7 +6,7 @@ import { calculateRating } from "./calculateRating";
 
 import { GAME_ROOM, PLAYER_IN_GAME_REDIS } from "../../variables/redisIndex";
 
-import type { Result } from "../../types/game";
+import type { Game, Result } from "../../types/game";
 import { redis } from "../../global/redis";
 import { addGame, getMatch } from "../../global/matches";
 import { MatchGame } from "../../types/match";
@@ -16,26 +16,29 @@ import { finishTournamentGame } from "../tournament/finishTournamentGame";
 export async function setGameOver({
   gameId,
   result,
+  game,
 }: {
   gameId: string;
   result: Result;
+  game: Game;
 }) {
-  const game = getGame(gameId);
+  console.log(game);
+  // const game = await getGame(gameId);
   const { newEloBlack, newEloWhite } = calculateRating({
     eloWhite: game.white.rating,
     eloBlack: game.black.rating,
     result: result,
     control: game.control,
   });
+  // setNextRating(gameId,)
+  //Здесь не нужно записывать в Редис потому что не используется в дальнейшем
   game.white.ratingNext = newEloWhite;
   game.black.ratingNext = newEloBlack;
-
-  console.log("gameId", gameId);
 
   const createGame = await prisma.game.create({
     data: {
       id: gameId,
-      pgn: game.chess.pgn(),
+      pgn: game.pgn,
       // @ts-ignore
       white: game.white,
       // @ts-ignore
@@ -75,7 +78,6 @@ export async function setGameOver({
   const tournamentId = game.tournamentId;
 
   // Можно удалить сейчас, когда программа доработает сборщик удалит игру из кэша
-  deleteGame(gameId);
 
   // const roun
 
@@ -95,8 +97,13 @@ export async function setGameOver({
     match = await addGame(matchId, matchGame, match);
     await runNextGameInMatch({ matchId: matchId, match });
   } else if (tournamentId) {
-    finishTournamentGame({ game, gameId, tournamentId, result });
+    // console.log("1");
+    await finishTournamentGame({ game, gameId, tournamentId, result });
+    // console.log("2");
   }
+  // console.log("3");
+  await deleteGame(gameId);
+  // console.log("gameDeleted", gameId);
 
   // ]);
 }

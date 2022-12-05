@@ -1,4 +1,4 @@
-import { getGame } from "../../global/games";
+import { getGame, setLastOfferDraw } from "../../global/games";
 import { io } from "../../global/io";
 
 import type { SocketType } from "../../types/sockets";
@@ -12,7 +12,7 @@ export async function onDrawOffer(
   const socket = this;
 
   try {
-    const game = getGame(gameId);
+    const [game] = await getGame(gameId);
     if (!game) throw Error("Game not found");
     if (
       game.white.username != socket.data.username &&
@@ -21,17 +21,15 @@ export async function onDrawOffer(
       throw Error("You have no access to offerDraw");
 
     const lastOfferDraw = game.lastOfferDraw;
-    if (!lastOfferDraw) {
-      game.lastOfferDraw = { username: socket.data.username, ply: game.ply };
-      return io.to(GAME_ROOM(gameId)).emit("game:offerDraw", {
+    if (lastOfferDraw && lastOfferDraw.username === socket.data.username) {
+      throw Error("You are already offered draw");
+    } else {
+      await setLastOfferDraw({
+        gameId,
         username: socket.data.username,
         ply: game.ply,
       });
-    } else if (lastOfferDraw.username === socket.data.username) {
-      throw Error("You are already offered draw");
-    } else {
       game.lastOfferDraw = { username: socket.data.username, ply: game.ply };
-
       return io.to(GAME_ROOM(gameId)).emit("game:offerDraw", {
         username: socket.data.username,
         ply: game.ply,

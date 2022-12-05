@@ -7,6 +7,7 @@ import { TIME_TO_CANCEL_GAME } from "../../variables/redisIndex";
 
 import type { Game, Player } from "../../types/game";
 import { setGameOver } from "./setGameOver";
+import { setGameTimeoutInitial } from "../../global/timers";
 
 export async function createGame({
   data,
@@ -24,23 +25,8 @@ export async function createGame({
 }) {
   const gameId = uuid();
 
-  // TODO: Узнать что за ошибка с маленьким временем
-  const randomTime = Math.floor(Math.random() * 5) * 1000 + 1000;
-  // Set game inside memory
-  const timerId = setInterval(() => {
-    const randomResult = Math.floor(Math.random() * 3);
-
-    // console.log(randomResult);
-    setGameOver({
-      gameId,
-      result: randomResult == 0 ? "0-1" : randomResult == 1 ? "1-0" : "0.5-0.5",
-    });
-    // deleteGame(gameId);
-  }, randomTime);
-
-  // console.log("white", data.white, "black", data.black);
   const game: Game = {
-    chess: new Chess(),
+    pgn: "",
     white: data.white,
     black: data.black,
     time: [
@@ -50,10 +36,27 @@ export async function createGame({
     ply: 0,
     tsmp: new Date().getTime(),
     increment: +data.control.split("+")[1],
-    timerId,
     result: "*",
     control: data.control,
   };
+  // console.log("gen", gameId);
+
+  // TODO: Узнать что за ошибка с маленьким временем
+  const randomTime = Math.floor(Math.random() * 40) * 1000 + 5000;
+  // Set game inside memory
+
+  const initialFn = async () => {
+    const randomResult = Math.floor(Math.random() * 3);
+    await setGameOver({
+      gameId,
+      result: randomResult == 0 ? "0-1" : randomResult == 1 ? "1-0" : "0.5-0.5",
+      game,
+    });
+  };
+
+  setGameTimeoutInitial(gameId, initialFn, randomTime);
+
+  // console.log("white", data.white, "black", data.black);
 
   if (data.matchId) game.matchId = data.matchId;
   if (data.tournamentId) {
@@ -62,7 +65,7 @@ export async function createGame({
     game.board = data.board;
   }
 
-  setGame(gameId, game);
+  await setGame(gameId, game);
 
   return gameId;
 }

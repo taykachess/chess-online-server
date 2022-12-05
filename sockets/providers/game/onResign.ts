@@ -11,7 +11,7 @@ export async function onResign(
   const socket = this;
 
   try {
-    const game = getGame(gameId);
+    const [game] = await getGame(gameId);
     if (
       game.white.username != socket.data.username &&
       game.black.username != socket.data.username
@@ -20,7 +20,7 @@ export async function onResign(
 
     // const turn = game.chess.turn();
     const result = game.white.username == socket.data.username ? "0-1" : "1-0";
-    await setGameOver({ gameId, result });
+    await setGameOver({ gameId, result, game });
   } catch (error) {
     console.log(error);
   }
