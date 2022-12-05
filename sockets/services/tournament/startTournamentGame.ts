@@ -27,7 +27,6 @@ export async function startTournamentGame({
   control: string;
 }) {
   if (!pair[1]) {
-    // console.log("decrease");
     // decreaseTournamentActiveGameByOne(tournamentId);
     increasePlayerScore({ tournamentId, username: pair[0].id, point: 1 });
     addPlayerMatches({

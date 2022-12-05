@@ -10,6 +10,9 @@
   import { socket } from "$store/sockets/socket";
   import { set } from "zod";
 
+  import type { PageData } from "./$types";
+  export let data: PageData;
+
   function removeSocketListerners() {
     $socket.removeListener("game:end");
     $socket.removeListener("game:move");
@@ -52,19 +55,9 @@
   });
 </script>
 
-<!-- {} -->
-<!-- {JSON.stringify($info?.white)}
-{JSON.stringify($info?.black)} -->
 <div class="chess-bg flex h-screen flex-col items-center justify-center  ">
-  <Chess />
+  <Chess game={data.game} />
 </div>
 
 <style>
-  /* .chess-bg {
-    background: radial-gradient(
-      circle,
-      rgba(30, 41, 59, 1) 0%,
-      rgba(226, 232, 240, 1) 100%
-    );
-  } */
 </style>

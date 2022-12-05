@@ -139,9 +139,6 @@ export async function finishTournamentGame({
     } else {
       const activePlayers = await getActivePlayers({ tournamentId });
 
-      // const playersValues = Object.values(players);
-      // console.log("active players count", players.length);
-
       const pairings = pairingSwiss(activePlayers, true);
 
       pairings.sort((a, b) => {

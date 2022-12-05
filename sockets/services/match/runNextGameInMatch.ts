@@ -28,7 +28,6 @@ export async function runNextGameInMatch({
   });
   if (!player2) throw Error("User not found");
 
-  console.log(status);
   if (status == "running") {
     let pairing;
     if (match.games[match.games.length - 1].white == player1.username) {

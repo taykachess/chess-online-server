@@ -22,9 +22,6 @@ export async function changeTime({
   turn: "w" | "b";
   game: Game;
 }) {
-  // console.log(game.time);
-  // const game = await getGame(gameId);
-  // const turn = game.chess.turn();
   const time = turn == "w" ? game.time[0] : game.time[1];
   const now = new Date().getTime();
   const diff = now - tsmp;
@@ -36,39 +33,27 @@ export async function changeTime({
   }
 
   await setTimestamp(gameId, now);
-  console.log("stamp", tsmp, diff);
-  // game.tsmp = now;
+
   if (turn == "w") {
     await setTimeWhite(gameId, returnTime);
-    console.log(returnTime, game.time[0]);
 
-    // game.time[0] = returnTime;
     setGameTimeout(
       gameId,
       async () => {
-        console.log("Время черных вышло");
         await setTimeBlack(gameId, 0);
-        // game.time[1] = 0;
         await setGameOver({ gameId, result: "1-0", game });
       },
       game.time[1]
     );
   } else {
     await setTimeBlack(gameId, returnTime);
-    console.log(game.time[0], returnTime);
-
-    // game.time[1] = returnTime;
     setGameTimeout(
       gameId,
       async () => {
-        console.log("Время белых вышло");
         await setTimeWhite(gameId, 0);
-        // game.time[0] = 0;
         await setGameOver({ gameId, result: "0-1", game });
       },
       game.time[0]
     );
   }
-
-  //   const beforeChangedTime: number = side == "w" ? time[ : time[1];
 }

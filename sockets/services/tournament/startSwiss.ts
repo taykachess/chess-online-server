@@ -76,7 +76,6 @@ export async function startSwiss({
   }
 
   if (pairings[0][3]) {
-    // console.log("tv set");
     await setTournamentTV({ tournamentId, gameId: pairings[0][3] });
   }
   // tournamentSwiss.tv = pairings[0][3];

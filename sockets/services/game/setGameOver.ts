@@ -22,7 +22,6 @@ export async function setGameOver({
   result: Result;
   game: Game;
 }) {
-  console.log(game);
   // const game = await getGame(gameId);
   const { newEloBlack, newEloWhite } = calculateRating({
     eloWhite: game.white.rating,
@@ -35,7 +34,7 @@ export async function setGameOver({
   game.white.ratingNext = newEloWhite;
   game.black.ratingNext = newEloBlack;
 
-  const createGame = await prisma.game.create({
+  const createGame = prisma.game.create({
     data: {
       id: gameId,
       pgn: game.pgn,
@@ -55,15 +54,17 @@ export async function setGameOver({
     },
   });
 
-  const updateRatingWhite = await prisma.user.update({
+  const updateRatingWhite = prisma.user.update({
     where: { username: game.white.username },
     data: { rating: newEloWhite },
   });
 
-  const updateRatingBlack = await prisma.user.update({
+  const updateRatingBlack = prisma.user.update({
     where: { username: game.black.username },
     data: { rating: newEloBlack },
   });
+
+  await Promise.all([createGame, updateRatingBlack, updateRatingWhite]);
 
   // await prisma.$transaction([createGame, updateRatingWhite, updateRatingBlack]);
 
@@ -78,8 +79,6 @@ export async function setGameOver({
   const tournamentId = game.tournamentId;
 
   // Можно удалить сейчас, когда программа доработает сборщик удалит игру из кэша
-
-  // const roun
 
   // await Promise.all([
   redis.SREM(PLAYER_IN_GAME_REDIS(game.white.username), gameId);
@@ -97,13 +96,7 @@ export async function setGameOver({
     match = await addGame(matchId, matchGame, match);
     await runNextGameInMatch({ matchId: matchId, match });
   } else if (tournamentId) {
-    // console.log("1");
     await finishTournamentGame({ game, gameId, tournamentId, result });
-    // console.log("2");
   }
-  // console.log("3");
   await deleteGame(gameId);
-  // console.log("gameDeleted", gameId);
-
-  // ]);
 }

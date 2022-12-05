@@ -39,11 +39,8 @@ export async function createGame({
     result: "*",
     control: data.control,
   };
-  // console.log("gen", gameId);
 
-  // TODO: Узнать что за ошибка с маленьким временем
   const randomTime = Math.floor(Math.random() * 40) * 1000 + 5000;
-  // Set game inside memory
 
   const initialFn = async () => {
     const randomResult = Math.floor(Math.random() * 3);
@@ -55,8 +52,6 @@ export async function createGame({
   };
 
   setGameTimeoutInitial(gameId, initialFn, randomTime);
-
-  // console.log("white", data.white, "black", data.black);
 
   if (data.matchId) game.matchId = data.matchId;
   if (data.tournamentId) {

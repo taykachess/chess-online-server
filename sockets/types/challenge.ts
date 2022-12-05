@@ -16,8 +16,3 @@ export type ChallengeTableRecord = {
   registered?: boolean;
   onClick?: () => any;
 };
-
-// link?: string;
-//     records: string[];
-//     registered?: boolean;
-//     onClick?: () => any;

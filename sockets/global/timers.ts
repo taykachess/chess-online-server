@@ -1,5 +1,3 @@
-import { GAMES_REDIS } from "../variables/redisIndex";
-import { redis } from "./redis";
 const timers: { games: { [id: string]: any } } = {
   games: {},
 };
@@ -17,9 +15,6 @@ export function setGameTimeoutInitial(gameId: string, fn: any, milliseconds: num
 }
 
 export function deleteGameTimer(gameId: string) {
-  //   console.log(timers.games.entries().length);
-  console.log("delete", gameId);
   clearTimeout(timers.games[gameId]);
   delete timers.games[gameId];
-  // delete games[gameId];
 }

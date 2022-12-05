@@ -67,7 +67,6 @@ export async function onMatchAccept(
       },
     });
 
-    console.log("okay");
     const gameId = await createGame({
       data: {
         white,

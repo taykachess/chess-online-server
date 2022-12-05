@@ -21,13 +21,11 @@ export async function onMatchCreate(
   data: { control: string; rounds: number; filters: MatchFilters }
 ) {
   try {
-    console.log("onMatchCreate", data);
     const socket = this;
     if (!socket.data.username) throw Error("User not found");
 
     const { control, rounds, filters } = data;
 
-    console.log("Challenge filters", filters);
     const user = await prisma.user.findFirst({
       where: { id: socket.data.id },
       select: { rating: true, title: true },

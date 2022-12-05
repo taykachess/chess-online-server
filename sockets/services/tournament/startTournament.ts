@@ -4,7 +4,6 @@ import { TOURNAMENT_ROOM } from "../../variables/redisIndex";
 import { io } from "../../global/io";
 
 export async function startTournament(tournamentId: string) {
-  // console.log("start tournament");
   const tournament = await prisma.tournament.update({
     where: { id: tournamentId },
     data: {

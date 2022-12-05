@@ -15,8 +15,6 @@ export async function onMove(
 ) {
   const socket = this;
 
-  console.log(move);
-
   try {
     const [game] = await getGame(gameId);
     if (!game) throw Error("Game not found");

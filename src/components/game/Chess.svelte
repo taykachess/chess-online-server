@@ -27,11 +27,87 @@
 
   import { PromotionDialog } from "cm-chessboard-ts/src/cm-chessboard/extensions/promotion-dialog";
 
+  export let game: GetGame;
+
   let lastTime: number;
   let boardHTML: HTMLElement;
   if (browser) {
+    onGetGame(game);
     console.log("Get game");
-    getGame();
+
+    // getGame();
+  }
+
+  async function onGetGame({
+    white,
+    black,
+    time,
+    pgn,
+    result,
+    increment,
+    lastOfferDraw,
+    matchId,
+  }: GetGame) {
+    const chess = new Chess();
+    // @ts-ignore
+    await chess.loadPgn(pgn);
+    const tmpHistory = chess.history();
+    $info = {
+      chess,
+      tree: {
+        // @ts-ignore
+        history: tmpHistory,
+        // @ts-ignore
+        currentNode: tmpHistory[tmpHistory.length - 1],
+        // @ts-ignore
+        liveNode: tmpHistory[tmpHistory.length - 1],
+      },
+      black,
+      white,
+      time,
+      result,
+      pgn,
+      matchId,
+      increment,
+      role:
+        black.username === $page.data.user?.username
+          ? "b"
+          : white.username === $page.data.user?.username
+          ? "w"
+          : undefined,
+      lastOfferDraw,
+      ply: tmpHistory[tmpHistory.length - 1]
+        ? // @ts-ignore
+          tmpHistory[tmpHistory.length - 1].ply
+        : 0,
+    };
+
+    $info = $info;
+    console.log($board, "board!!!!!!!!");
+    console.log($board);
+    if (!$board) setChessBoardToDOM();
+    else {
+      $board.setPosition(chess.fen());
+      $board.setOrientation(
+        $info.black.username === $page.data.user?.username ? "b" : "w"
+      );
+    }
+
+    if (result == "*") {
+      $socket.emit("game:sub", { gameId: $page.params.id });
+
+      startClock();
+      setSocketListeners();
+      const turn = $info.chess.turn();
+
+      if (white.username === $page.data.user?.username && turn == "w") {
+        return $board.enableMoveInput(inputHandler, COLOR.white);
+      }
+
+      if (black.username === $page.data.user?.username && turn == "b") {
+        return $board.enableMoveInput(inputHandler, COLOR.black);
+      }
+    }
   }
 
   function playClock(time: number) {
@@ -216,7 +292,9 @@
           (move) => move.to == event.squareTo && move.from == event.squareFrom
         )
       ) {
+        // @ts-ignore
         return event.chessboard.showPromotionDialog(
+          // @ts-ignore
           event.squareTo,
           $info.chess.turn(),
           (event: any) => {
@@ -310,81 +388,7 @@
   }
 
   function getGame() {
-    $socket.emit(
-      "game:get",
-      { gameId: $page.params.id },
-      async ({
-        white,
-        black,
-        time,
-        pgn,
-        result,
-        increment,
-        lastOfferDraw,
-        matchId,
-      }: GetGame) => {
-        const chess = new Chess();
-        // @ts-ignore
-        await chess.loadPgn(pgn);
-        const tmpHistory = chess.history();
-        $info = {
-          chess,
-          tree: {
-            // @ts-ignore
-            history: tmpHistory,
-            // @ts-ignore
-            currentNode: tmpHistory[tmpHistory.length - 1],
-            // @ts-ignore
-            liveNode: tmpHistory[tmpHistory.length - 1],
-          },
-          black,
-          white,
-          time,
-          result,
-          pgn,
-          matchId,
-          increment,
-          role:
-            black.username === $page.data.user?.username
-              ? "b"
-              : white.username === $page.data.user?.username
-              ? "w"
-              : undefined,
-          lastOfferDraw,
-          ply: tmpHistory[tmpHistory.length - 1]
-            ? // @ts-ignore
-              tmpHistory[tmpHistory.length - 1].ply
-            : 0,
-        };
-
-        $info = $info;
-        console.log($board, "board!!!!!!!!");
-        console.log($board);
-        if (!$board) setChessBoardToDOM();
-        else {
-          $board.setPosition(chess.fen());
-          $board.setOrientation(
-            $info.black.username === $page.data.user?.username ? "b" : "w"
-          );
-        }
-
-        if (result == "*") {
-          $socket.emit("game:sub", { gameId: $page.params.id });
-
-          startClock();
-          setSocketListeners();
-          const turn = $info.chess.turn();
-
-          if (white.username === $page.data.user?.username && turn == "w") {
-            return $board.enableMoveInput(inputHandler, COLOR.white);
-          }
-
-          if (black.username === $page.data.user?.username && turn == "b") {
-            return $board.enableMoveInput(inputHandler, COLOR.black);
-          }
-        }
-      }
-    );
+    $socket.emit("game:get", { gameId: $page.params.id }, onGetGame);
   }
 
   afterNavigate(({ willUnload, from, to }) => {

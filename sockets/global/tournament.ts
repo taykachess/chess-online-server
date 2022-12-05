@@ -274,7 +274,6 @@ export function setPlayerCoefficientBuchholz({
   username: string;
   buchholz: number;
 }) {
-  console.log(tournamentId, username, buchholz);
   return redis.json.set(
     TOURNAMENTS_IN_PROGRESS_REDIS,
     `$.${tournamentId}.players["${username}"].coefficient.buchholz`,

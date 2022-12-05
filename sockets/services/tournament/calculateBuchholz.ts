@@ -17,7 +17,6 @@ export function calculateBuchholz({
     );
     // Для записи в db
     player.coefficient.buchholz = buchholz;
-    console.log(player.id, buchholz, "buchholz");
 
     queries.push(
       setPlayerCoefficientBuchholz({
