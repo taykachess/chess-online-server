@@ -33,7 +33,6 @@
   let boardHTML: HTMLElement;
   if (browser) {
     onGetGame(game);
-    console.log("Get game");
 
     // getGame();
   }
@@ -83,14 +82,13 @@
     };
 
     $info = $info;
-    console.log($board, "board!!!!!!!!");
-    console.log($board);
+
     if (!$board) setChessBoardToDOM();
     else {
-      $board.setPosition(chess.fen());
       $board.setOrientation(
         $info.black.username === $page.data.user?.username ? "b" : "w"
       );
+      $board.setPosition(chess.fen(), true);
     }
 
     if (result == "*") {
@@ -111,7 +109,6 @@
   }
 
   function playClock(time: number) {
-    // console.log(time);
     if (lastTime) {
       const delta = time - lastTime;
       if ($info.chess.turn() == "w") {
@@ -125,7 +122,6 @@
   }
 
   function startClock() {
-    console.log("Start clock", $info.chess.turn());
     $info.requestId = window.requestAnimationFrame(playClock);
   }
 
@@ -198,7 +194,6 @@
     });
 
     $socket.on("game:end", ({ result, newEloBlack, newEloWhite }) => {
-      console.log("game over", newEloBlack, newEloWhite, $info.role);
       stopClock();
       $info.result = result;
 
@@ -227,7 +222,6 @@
       }
 
       if ($page.data.gameIds) {
-        console.log("delete gameIds");
         const index = $page.data.gameIds.indexOf($page.params.id);
 
         if (index !== -1) $page.data.gameIds.splice(index, 1);
@@ -263,10 +257,8 @@
         // draw dots on possible squares
         event.chessboard.addMarker(MARKER_TYPE.dot, move.to);
       }
-      console.log(moves);
       return moves.length > 0;
     } else if (event.type === INPUT_EVENT_TYPE.validateMoveInput) {
-      console.log("trying", event.squareTo.charAt(1));
       let move: Pick<Move, "from" | "to" | "promotion"> = {
         from: event.squareFrom,
         to: event.squareTo,
@@ -275,13 +267,10 @@
       // Функция синхронная, так делать не разрешает
       // const pos = $board.getPosition();
 
-      // console.log(event);
       const moves = $info.chess.moves({
         square: event.squareFrom,
         verbose: true,
       });
-      // console.log(moves);
-      console.log("event", event);
 
       // const promise = new Promise<string>((resolve, reject) => {
       if (
@@ -298,7 +287,6 @@
           event.squareTo,
           $info.chess.turn(),
           (event: any) => {
-            console.log("48a99d Piece selected", event);
             if (event.piece) {
               // resolve(event.piece[1]);
               move.promotion = event.piece[1];
@@ -307,7 +295,6 @@
               if (result) {
                 $board.disableMoveInput();
                 $board.state.moveInputProcess.then(() => {
-                  console.log("position seted");
                   // wait for the move input process has finished
                   $board.setPosition($info.chess.fen(), false).then(() => {
                     // update position, maybe castled and wait for animation has finished
@@ -342,21 +329,17 @@
         );
       }
 
-      console.log("want to move");
       // });
 
       // const promotionPiece = await promise;
       // if (promotionPiece) move.promotion = promotionPiece;
 
-      console.log("want to move");
       // @ts-ignore
       const result = $info.chess.move(move);
-      console.log("result", result);
 
       if (result) {
         $board.disableMoveInput();
         $board.state.moveInputProcess.then(() => {
-          console.log("position seted");
           // wait for the move input process has finished
           $board.setPosition($info.chess.fen(), false).then(() => {
             // update position, maybe castled and wait for animation has finished
@@ -387,18 +370,20 @@
     }
   }
 
-  function getGame() {
-    $socket.emit("game:get", { gameId: $page.params.id }, onGetGame);
-  }
+  // function getGame() {
+  //   $socket.emit("game:get", { gameId: $page.params.id }, onGetGame);
+  // }
 
-  afterNavigate(({ willUnload, from, to }) => {
+  afterNavigate(async ({ willUnload, from, to }) => {
     if (to?.route.id == from?.route.id && to?.params?.id != from?.params?.id) {
-      getGame();
-      // @ts-ignore
+      onGetGame($page.data.game);
     } else $board = undefined;
   });
 
-  beforeNavigate(({}) => {
+  beforeNavigate(async ({ from, to }) => {
+    // if (to?.route.id == from?.route.id && to?.params?.id != from?.params?.id) {
+
+    // }
     if ($info.result == "*") {
       $socket.emit("game:leave", { gameId: $page.params.id });
     }

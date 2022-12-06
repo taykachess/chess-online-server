@@ -13,6 +13,8 @@
   import type { PageData } from "./$types";
   export let data: PageData;
 
+  console.log("game", data.game);
+
   function removeSocketListerners() {
     $socket.removeListener("game:end");
     $socket.removeListener("game:move");
@@ -56,7 +58,7 @@
 </script>
 
 <div class="chess-bg flex h-screen flex-col items-center justify-center  ">
-  <Chess game={data.game} />
+  <Chess bind:game={data.game} />
 </div>
 
 <style>

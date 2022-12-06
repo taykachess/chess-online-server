@@ -5,6 +5,9 @@
   import PulseAnimatedElement from "$components/common/PulseAnimatedElement.svelte";
   import { socket } from "$store/sockets/socket";
   import { tournament } from "$store/tournament/tournament";
+  import { tournamentTv } from "$store/tournament/tournamentTv";
+  import type { GetGame } from "$types/game";
+  import { Chess } from "cm-chess";
   import { onMount, tick } from "svelte";
 
   const fetchPairings = (round: number) => {
@@ -53,6 +56,88 @@
       await tick();
       // $tournament.players = $tournament.players;
     });
+  }
+
+  let lastTime = 0;
+  let requestId: number;
+  function playClock(time: number) {
+    if (lastTime) {
+      const delta = time - lastTime;
+      if ($tournamentTv.chess.turn() == "w") {
+        $tournamentTv.game.time[0] = $tournamentTv.game.time[0] - delta;
+      } else {
+        $tournamentTv.game.time[1] = $tournamentTv.game.time[1] - delta;
+      }
+    }
+    lastTime = time;
+    requestId = window.requestAnimationFrame(playClock);
+  }
+
+  function startClock() {
+    requestId = window.requestAnimationFrame(playClock);
+  }
+
+  function stopClock() {
+    window.cancelAnimationFrame(requestId);
+  }
+
+  onMount(async () => {
+    console.log("onMount");
+
+    if (!$tournamentTv) return;
+
+    workWithGame($tournamentTv.game, $tournamentTv.tv);
+
+    $socket.on("tournament:tv", ({ game }) => {
+      $tournamentTv.game = game;
+      $tournamentTv.chess = new Chess();
+      $tournamentTv.chess.loadPgn(game.pgn);
+      $tournamentTv.board?.setPosition($tournamentTv.chess.fen());
+      if (game.result == "*") {
+        $socket.removeListener("game:move");
+        $tournamentTv.game.id = game.id;
+        startClock();
+
+        $socket.emit("game:sub", { gameId: game.id });
+        $socket.on("game:move", (move) => {
+          $tournamentTv.chess?.move(move);
+          $tournamentTv.board?.setPosition(
+            $tournamentTv.chess ? $tournamentTv.chess.fen() : "start"
+          );
+        });
+      }
+    });
+  });
+
+  function workWithGame(game: GetGame, gameId: string) {
+    if ($tournamentTv.game && $tournamentTv.game.id)
+      $socket.emit("game:leave", { gameId });
+
+    $tournamentTv.game = game;
+    $tournamentTv.chess = new Chess();
+    $tournamentTv.chess.loadPgn(game.pgn);
+    $tournamentTv.board?.setPosition($tournamentTv.chess.fen());
+    if (game.result == "*") {
+      $socket.removeListener("game:move");
+      $tournamentTv.game.id = gameId;
+      startClock();
+
+      $socket.emit("game:sub", { gameId });
+      $socket.on("game:move", (move) => {
+        $tournamentTv.chess?.move(move);
+        $tournamentTv.board?.setPosition(
+          $tournamentTv.chess ? $tournamentTv.chess.fen() : "start"
+        );
+      });
+    }
+  }
+
+  async function getGame(gameId: string) {
+    const data = await fetch(`/api/game/${gameId}`);
+    const game = (await data.json()) as GetGame;
+    if (!game) return;
+
+    workWithGame(game, gameId);
   }
 
   onMount(async () => {
@@ -109,7 +194,10 @@
     <!-- svelte-ignore a11y-click-events-have-key-events -->
     <div
       on:click={() => {
-        if (game[1]) goto(`/game/${game[3]}`);
+        if (game[1]) {
+          getGame(game[3]);
+        }
+        // goto(`/game/${game[3]}`);
         // goto()
       }}
       class="grid grid-cols-12   {index % 2

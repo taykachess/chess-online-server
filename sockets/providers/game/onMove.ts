@@ -23,6 +23,8 @@ export async function onMove(
     chess.loadPgn(game.pgn);
     const turn = chess.turn();
 
+    console.log(socket.data.username);
+
     if (turn == "w" && game.white.username != socket.data.username)
       throw Error("You have no access to resign");
     if (turn == "b" && game.black.username != socket.data.username)

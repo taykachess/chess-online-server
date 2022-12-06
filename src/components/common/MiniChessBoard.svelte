@@ -16,7 +16,7 @@
   const config: Config = {
     orientation: "w",
     responsive: true,
-    position: chess.fen(),
+    position: chess ? chess.fen() : "empty",
     style: {
       borderType: "none",
       showCoordinates: false,
@@ -44,7 +44,7 @@
   });
 </script>
 
-<div class="relative flex-none  ">
+<div class="relative flex-none overflow-hidden rounded-lg  ">
   <div bind:this={boardHTML} class="   " />
 </div>
 

@@ -50,6 +50,7 @@ export interface ServerToClientEvents {
   })=>void
   "tournament:start": ({pairings, players}:{pairings:MatchSwiss[], players:PlayerSwiss[]})=>void
   "tournament:finish": ()=>void
+  "tournament:tv":({game}:{game: GetGame})=>void
 
 }
 

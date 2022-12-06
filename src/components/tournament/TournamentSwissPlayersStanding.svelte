@@ -42,7 +42,6 @@
       if (players[i].uuid) {
         let j = i;
         const uuid = players[i].uuid;
-        console.log("uuid", uuid, players.length, i, j);
         let counter = 0;
         // players[i].place = `${i}`;
         while (uuid == players[j].uuid) {

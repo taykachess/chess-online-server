@@ -3,9 +3,14 @@ import { redis } from "$lib/db/redis";
 import { TOURNAMENTS_IN_PROGRESS_REDIS } from "$sockets/variables/redisIndex";
 import { error } from "@sveltejs/kit";
 
-import type { GetTournament, MatchSwiss } from "$types/tournament";
+import type {
+  GetTournament,
+  MatchSwiss,
+  TournamentTv,
+} from "$types/tournament";
 import type { PlayerSwiss } from "$types/tournament";
 import type { PageServerLoad } from "./$types";
+import type { GetGame } from "$types/game";
 
 export const load: PageServerLoad = async ({ params, fetch }) => {
   const tournamentWithStatus = await prisma.tournament.findUnique({
@@ -59,6 +64,17 @@ export const load: PageServerLoad = async ({ params, fetch }) => {
       }
     );
 
+    // TV секция
+
+    const [tv] = (await redis.json.get(TOURNAMENTS_IN_PROGRESS_REDIS, {
+      path: `$.${params.id}.tv`,
+    })) as string;
+
+    const gameJson = await fetch(`/api/game/${tv}`);
+    const game = (await gameJson.json()) as GetGame;
+
+    console.log("tv", tv);
+
     const swiss: Omit<GetTournament, "selectedRound" | "participants"> = {
       ...tournament,
       players: Object.values(players),
@@ -66,7 +82,9 @@ export const load: PageServerLoad = async ({ params, fetch }) => {
       matches,
     };
 
-    return { swiss };
+    const tournamentTv: TournamentTv = { tv, game };
+
+    return { swiss, tournamentTv };
   } else if (tournamentWithStatus.status == "registration") {
     const tournament = await prisma.tournament.findUnique({
       where: { id: params.id },
@@ -117,6 +135,14 @@ export const load: PageServerLoad = async ({ params, fetch }) => {
       currentRound: tournament.rounds ? tournament.rounds : 1,
     };
 
-    return { swiss };
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    const tv = tournament.matches[tournament.rounds - 1][0][3] as string;
+
+    const gameJson = await fetch(`/api/game/${tv}`);
+    const game = (await gameJson.json()) as GetGame;
+    const tournamentTv: TournamentTv = { tv, game };
+
+    return { swiss, tournamentTv };
   }
 };

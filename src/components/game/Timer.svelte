@@ -1,20 +1,11 @@
 <script lang="ts">
   import ChessClockSVG from "$components/icons/ChessClockSVG.svelte";
+  import { formatTime } from "$lib/utils/formatTime";
   import { info } from "$store/game/info";
 
   export let side: "w" | "b";
 
   export let time: number;
-  function formatTime(timestamp: number): string {
-    if (timestamp <= 0) {
-      return `0:00:00 `;
-    }
-    const minutes = Math.trunc(timestamp / 60000);
-    const seconds = Math.trunc(timestamp / 1000) % 60;
-    // const mSec = Math.trunc(timestamp % 1000);
-    // :${mSec}
-    return `${minutes}:${seconds < 10 ? `0${seconds}` : seconds}`;
-  }
 </script>
 
 <div

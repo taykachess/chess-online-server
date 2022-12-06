@@ -42,6 +42,7 @@ export interface Games {
 // prettier-ignore
 export interface GetGame extends Pick<Game, "white"| "black"|"time"|"result"|"increment"|"lastOfferDraw"|"matchId"> {
   pgn: string;
+  id?:string;
 }
 
 interface Node {

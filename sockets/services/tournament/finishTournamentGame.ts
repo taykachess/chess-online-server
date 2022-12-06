@@ -14,14 +14,15 @@ import {
   increaseTournamentRound,
   setTournamentActiveGames,
   setTournamentMatchResult,
-  setTournamentTV,
 } from "../../global/tournament";
-import { Game, Result } from "../../types/game";
+import { Game, GetGame, Result } from "../../types/game";
 import { MatchSwiss } from "../../types/tournament";
 import { transformResult } from "../../utils/transformResult";
 import { TOURNAMENT_ROOM } from "../../variables/redisIndex";
+import { getGameForFrontend } from "../game/getGame";
 import { calculateBuchholz } from "./calculateBuchholz";
 import { pairingSwiss } from "./pairingSwiss";
+import { setTournamentTv } from "./setTournamentTv";
 import { startTournamentGame } from "./startTournamentGame";
 import { swissSetResultToPlayers } from "./swissSetResultToPlayers";
 
@@ -85,7 +86,9 @@ export async function finishTournamentGame({
       round: game.round,
     });
 
-    if (games.length) await setTournamentTV({ tournamentId, gameId: games[0] });
+    if (games.length) {
+      await setTournamentTv(tournamentId, games[0]);
+    }
   }
 
   // if(res[0]==ga)
@@ -173,7 +176,7 @@ export async function finishTournamentGame({
       }
 
       if (pairings[0][3]) {
-        await setTournamentTV({ tournamentId, gameId: pairings[0][3] });
+        await setTournamentTv(tournamentId, pairings[0][3]);
       }
 
       // pairings.forEach(async (pair, index) => {

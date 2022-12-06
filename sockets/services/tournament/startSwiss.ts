@@ -1,17 +1,16 @@
 import type { Tournament, User } from "@prisma/client";
 import { io } from "../../global/io";
-import {
-  addTournamentMatch,
-  setTournament,
-  setTournamentTV,
-} from "../../global/tournament";
+import { addTournamentMatch, setTournament } from "../../global/tournament";
+import { GetGame } from "../../types/game";
 import type {
   PlayerSwiss,
   MatchSwiss,
   TournamentSwiss,
 } from "../../types/tournament";
 import { TOURNAMENT_ROOM } from "../../variables/redisIndex";
+import { getGameForFrontend } from "../game/getGame";
 import { pairingSwiss } from "./pairingSwiss";
+import { setTournamentTv } from "./setTournamentTv";
 import { startTournamentGame } from "./startTournamentGame";
 
 export async function startSwiss({
@@ -76,7 +75,7 @@ export async function startSwiss({
   }
 
   if (pairings[0][3]) {
-    await setTournamentTV({ tournamentId, gameId: pairings[0][3] });
+    await setTournamentTv(tournamentId, pairings[0][3]);
   }
   // tournamentSwiss.tv = pairings[0][3];
 

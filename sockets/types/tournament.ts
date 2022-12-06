@@ -1,5 +1,7 @@
 import type { TournamentFormat, TournamentStatus } from "@prisma/client";
-import type { Title, Result } from "./game";
+import { ChessInstance } from "cm-chess";
+import { ChessBoardInstance } from "cm-chessboard-ts";
+import type { Title, Result, GetGame } from "./game";
 
 export interface TournamentTable {
   id: string;
@@ -47,6 +49,16 @@ export type GetTournament = {
   standing?: number;
   matches: MatchSwiss[];
 };
+
+export interface TournamentTv {
+  // game ID
+  tv: string;
+  // Информация об игре
+  game: GetGame;
+
+  chess?: ChessInstance;
+  board?: ChessBoardInstance;
+}
 
 // export interface GetTournamentSwiss extends GetTournament {
 //   rounds: number | null;

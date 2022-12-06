@@ -1,6 +1,8 @@
 <script lang="ts">
+  import { browser } from "$app/environment";
   import { beforeNavigate } from "$app/navigation";
   import { page } from "$app/stores";
+  import ChessTv from "$components/tournament/ChessTv.svelte";
   import GameList from "$components/tournament/GameList.svelte";
   import RoundRobin from "$components/tournament/RoundRobin.svelte";
   import TournamentDescription from "$components/tournament/TournamentDescription.svelte";
@@ -8,7 +10,9 @@
   import TournamentSwissPlayersStanding from "$components/tournament/TournamentSwissPlayersStanding.svelte";
   import { socket } from "$store/sockets/socket";
   import { tournament } from "$store/tournament/tournament";
-  import type { GetTournament } from "$types/tournament";
+  import { tournamentTv } from "$store/tournament/tournamentTv";
+  import type { GetTournament, TournamentTv } from "$types/tournament";
+  import { Chess } from "cm-chess";
   import { onMount } from "svelte";
   import type { PageData } from "./$types";
   export let data: PageData;
@@ -31,6 +35,16 @@
   }
 
   $tournament = data.swiss as GetTournament;
+
+  $tournamentTv = data.tournamentTv as TournamentTv;
+  console.log($tournamentTv);
+  if (browser)
+    if ($tournamentTv) {
+      $tournamentTv.chess = new Chess();
+      $tournamentTv.chess.loadPgn($tournamentTv.game.pgn);
+    }
+
+  console.log($tournamentTv);
 
   onMount(() => {
     $socket.emit("tournament:subscribe", { tournamentId: $page.params.id });
@@ -130,6 +144,8 @@
       {#if $tournament.status == "registration" && $tournament.participants}
         <TournamentPlayersRegister bind:players={$tournament.participants} />
       {:else}
+        <ChessTv />
+
         <TournamentSwissPlayersStanding />
       {/if}
     </div>

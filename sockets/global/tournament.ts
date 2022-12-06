@@ -23,7 +23,7 @@ export function getTournamentTV({tournamentId,gameId}:{tournamentId: string, gam
   }) 
 }
 
-export function setTournamentTV({
+export function setTourTV({
   tournamentId,
   gameId,
 }: {
