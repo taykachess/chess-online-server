@@ -150,7 +150,7 @@
   });
 </script>
 
-<div class="mt-10  rounded-lg  border shadow-lg ">
+<div class="  rounded-lg  border shadow-lg ">
   <div class=" flex justify-center  border-b  ">
     <div
       class="w-1/7 flex h-10 w-full select-none items-center justify-center rounded-tl-lg  bg-slate-800  px-2 text-slate-200"

@@ -8,6 +8,7 @@ import { TIME_TO_CANCEL_GAME } from "../../variables/redisIndex";
 import type { Game, Player } from "../../types/game";
 import { setGameOver } from "./setGameOver";
 import { setGameTimeoutInitial } from "../../global/timers";
+import { changeTime } from "./changeTime";
 
 export async function createGame({
   data,
@@ -44,6 +45,14 @@ export async function createGame({
 
   const initialFn = async () => {
     const randomResult = Math.floor(Math.random() * 3);
+
+    // await changeTime({
+    //   gameId,
+    //   increment: game.increment,
+    //   tsmp: game.tsmp,
+    //   turn: "w",
+    //   game,
+    // });
     await setGameOver({
       gameId,
       result: randomResult == 0 ? "0-1" : randomResult == 1 ? "1-0" : "0.5-0.5",

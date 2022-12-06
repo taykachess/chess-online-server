@@ -8,6 +8,7 @@
   import TournamentDescription from "$components/tournament/TournamentDescription.svelte";
   import TournamentPlayersRegister from "$components/tournament/TournamentPlayersRegister.svelte";
   import TournamentSwissPlayersStanding from "$components/tournament/TournamentSwissPlayersStanding.svelte";
+  import Trophy from "$components/tournament/Trophy.svelte";
   import { socket } from "$store/sockets/socket";
   import { tournament } from "$store/tournament/tournament";
   import { tournamentTv } from "$store/tournament/tournamentTv";
@@ -130,7 +131,7 @@
   });
 </script>
 
-<div class=" mx-auto max-w-6xl  ">
+<!-- <div class=" mx-auto max-w-6xl  ">
   <div class=" mt-4 grid grid-cols-2  ">
     <div class="  ">
       <TournamentDescription />
@@ -146,6 +147,28 @@
       {:else}
         <ChessTv />
 
+        <TournamentSwissPlayersStanding />
+      {/if}
+    </div>
+  </div>
+</div> -->
+
+<div class=" mx-auto max-w-6xl  ">
+  <div class=" mt-4 grid grid-cols-2  ">
+    <div class="  ">
+      <TournamentDescription />
+      <div class=" mt-4">
+        {#if $tournament.rounds && $tournament.matches}
+          <GameList />
+        {/if}
+      </div>
+    </div>
+    <div class=" ml-10  ">
+      {#if $tournament.status == "registration" && $tournament.participants}
+        <TournamentPlayersRegister bind:players={$tournament.participants} />
+      {:else}
+        <Trophy />
+        <ChessTv />
         <TournamentSwissPlayersStanding />
       {/if}
     </div>
