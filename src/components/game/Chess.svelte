@@ -3,41 +3,56 @@
 
   import { page } from "$app/stores";
   import { socket } from "$store/sockets/socket";
-  import type { GetGame } from "$types/game";
-  import { Chess, type Move, type Square } from "cm-chess";
+  import type { GetGame, Result } from "$types/game";
+  import { Chess, type Move, type Square } from "cm-chess-ts";
   import {
     MARKER_TYPE,
     INPUT_EVENT_TYPE,
-    Chessboard,
     COLOR,
     type ChessBoardInstance,
-    type Config,
   } from "cm-chessboard-ts";
   import { info } from "$store/game/info";
   import Timer from "./Timer.svelte";
   import PlayerCard from "./PlayerCard.svelte";
   import Viewer from "./Viewer.svelte";
-  import { browser } from "$app/environment";
   import GameManager from "./GameManager.svelte";
   import { board } from "$store/game/board";
   import { afterNavigate, beforeNavigate } from "$app/navigation";
   import MatchResults from "./MatchResults.svelte";
-  import Badge from "$components/common/Badge.svelte";
   import { match } from "$store/game/match";
 
-  import { PromotionDialog } from "cm-chessboard-ts/src/cm-chessboard/extensions/promotion-dialog";
-  import { tick } from "svelte";
+  import { onMount, tick } from "svelte";
   import { TOURNAMENT_GAME_PREPARE_TIME } from "$sockets/variables/redisIndex";
-  import { isTournamentTimerVisible } from "$store/game/tournament";
+  import {
+    isTournamentTimerVisible,
+    tournamentPrepareTime,
+  } from "$store/game/tournament";
+  import { requestId } from "$store/game/requestId";
+  import { clock } from "$store/game/clock";
 
   export let game: GetGame;
 
   let lastTime: number;
-  let boardHTML: HTMLElement;
-  if (browser) {
-    onGetGame(game);
 
-    // getGame();
+  onMount(() => {
+    onGetGame(game);
+    console.log("GET GAME", game);
+  });
+
+  function enableMoveInputOnNavigate() {
+    if (
+      $info.white.username === $page.data.user?.username &&
+      $info.chess.turn() == "w"
+    ) {
+      return $board.enableMoveInput(inputHandler, COLOR.white);
+    }
+
+    if (
+      $info.black.username === $page.data.user?.username &&
+      $info.chess.turn() == "b"
+    ) {
+      return $board.enableMoveInput(inputHandler, COLOR.black);
+    }
   }
 
   async function onGetGame({
@@ -70,7 +85,7 @@
       },
       black,
       white,
-      time,
+      // time,
       result,
       pgn,
       matchId,
@@ -89,43 +104,44 @@
         : 0,
     };
 
-    $info = $info;
+    $clock = time;
 
-    if (!$board) setChessBoardToDOM();
-    else {
+    if ($board) {
       $board.setOrientation(
         $info.black.username === $page.data.user?.username ? "b" : "w"
       );
       $board.setPosition(chess.fen(), true);
+
+      enableMoveInputOnNavigate();
     }
 
     if (result == "*") {
       $socket.emit("game:sub", { gameId: $page.params.id });
+      $socket.on("game:move", onMoveHandler);
+      $socket.on("game:end", () => {
+        console.log("game over");
+      });
 
-      if ($info.tournamentId && $info.ply == 0) {
-        const tournamentPrepareTime =
+      const isTournamentGameBegins = $info.tournamentId && $info.ply == 0;
+
+      if (isTournamentGameBegins) {
+        $tournamentPrepareTime =
           tsmp + TOURNAMENT_GAME_PREPARE_TIME - new Date().getTime();
-        if (tournamentPrepareTime > 0) {
+        if ($tournamentPrepareTime > 0) {
           $isTournamentTimerVisible = true;
+          setInterval(() => {
+            $tournamentPrepareTime -= 1000;
+          }, 1000);
           setTimeout(() => {
             startClock();
             $isTournamentTimerVisible = false;
-          }, tournamentPrepareTime);
+          }, $tournamentPrepareTime);
         } else startClock();
         // TOURNAMENT_GAME_PREPARE_TIME;
       } else {
         startClock();
       }
-      setSocketListeners();
-      const turn = $info.chess.turn();
-
-      if (white.username === $page.data.user?.username && turn == "w") {
-        return $board.enableMoveInput(inputHandler, COLOR.white);
-      }
-
-      if (black.username === $page.data.user?.username && turn == "b") {
-        return $board.enableMoveInput(inputHandler, COLOR.black);
-      }
+      // const turn = $info.chess.turn();
     }
   }
 
@@ -133,134 +149,115 @@
     if (lastTime) {
       const delta = time - lastTime;
       if ($info.chess.turn() == "w") {
-        $info.time[0] = $info.time[0] - delta;
+        $clock[0] = $clock[0] - delta;
       } else {
-        $info.time[1] = $info.time[1] - delta;
+        $clock[1] = $clock[1] - delta;
       }
     }
     lastTime = time;
-    $info.requestId = window.requestAnimationFrame(playClock);
+    $requestId = window.requestAnimationFrame(playClock);
   }
 
   function startClock() {
-    $info.requestId = window.requestAnimationFrame(playClock);
+    $requestId = window.requestAnimationFrame(playClock);
   }
 
   function stopClock() {
-    window.cancelAnimationFrame($info.requestId);
+    window.cancelAnimationFrame($requestId);
   }
 
-  function increamentTimer(newTurn: "w" | "b") {
+  function incrementTimer(newTurn: "w" | "b") {
     if (!$info.increment) return;
-    if (newTurn == "w") $info.time[1] = $info.time[1] + $info.increment * 1000;
-    else $info.time[0] = $info.time[0] + $info.increment * 1000;
+    if (newTurn == "w") $clock[1] = $clock[1] + $info.increment * 1000;
+    else $clock[0] = $clock[0] + $info.increment * 1000;
   }
 
-  function setChessBoardToDOM() {
-    const config: Config = {
-      orientation:
-        $info.black.username === $page.data.user?.username ? "b" : "w",
-      responsive: true,
-      position: $info.chess.fen(),
-      style: {
-        borderType: "none",
-        showCoordinates: false,
-        aspectRatio: 1,
-        // "fancy-gray"
-        cssClass: "fancy-gray",
-        // cssClass: "black-and-white",
-        moveFromMarker: MARKER_TYPE.square,
-        moveToMarker: MARKER_TYPE.square,
-      },
-      sprite: {
-        // -staunty
-        url: "/assets/images/chessboard-sprite.svg", // pieces and markers are stored in a sprite file
-        size: 40, // the sprite tiles size, defaults to 40x40px
-        cache: true, // cache the sprite
-      },
-      extensions: [{ class: PromotionDialog, props: {} }],
-      // extensions:{}
-    };
-    $board = new Chessboard(boardHTML, config);
+  function onMoveHandler(move: string) {
+    console.log("move", move);
+    const result = $info.chess.move(move);
+    if (result) {
+      $info.tree.history = $info.tree.history;
+      $info.tree.liveNode = $info.tree.history[$info.tree.history.length - 1];
+      $info.tree.currentNode =
+        $info.tree.history[$info.tree.history.length - 1];
+      $info.ply = $info.ply + 1;
+
+      $board.setPosition($info.chess.fen(), true);
+      const newTurn = $info.chess.turn();
+      incrementTimer(newTurn);
+      if (
+        $info.white.username === $page.data.user?.username &&
+        newTurn == "w"
+      ) {
+        return $board.enableMoveInput(inputHandler, COLOR.white);
+      }
+
+      if (
+        $info.black.username === $page.data.user?.username &&
+        newTurn == "b"
+      ) {
+        return $board.enableMoveInput(inputHandler, COLOR.black);
+      }
+    } else {
+      console.warn("invalid move", move, $info.chess.fen());
+    }
   }
-  function setSocketListeners() {
-    $socket.on("game:move", (move: string) => {
-      const result = $info.chess.move(move);
-      if (result) {
-        $info.tree.history = $info.tree.history;
-        $info.tree.liveNode = $info.tree.history[$info.tree.history.length - 1];
-        $info.tree.currentNode =
-          $info.tree.history[$info.tree.history.length - 1];
-        $info.ply = $info.ply + 1;
 
-        $board.setPosition($info.chess.fen(), true);
-        const newTurn = $info.chess.turn();
-        increamentTimer(newTurn);
-        if (
-          $info.white.username === $page.data.user?.username &&
-          newTurn == "w"
-        ) {
-          return $board.enableMoveInput(inputHandler, COLOR.white);
-        }
+  function onEndHandler({
+    result,
+    newEloBlack,
+    newEloWhite,
+  }: {
+    result: Result;
+    newEloBlack: number;
+    newEloWhite: number;
+  }) {
+    console.log("game:end");
+    stopClock();
+    $info.result = result;
 
-        if (
-          $info.black.username === $page.data.user?.username &&
-          newTurn == "b"
-        ) {
-          return $board.enableMoveInput(inputHandler, COLOR.black);
-        }
-      } else {
-        console.warn("invalid move", move, $info.chess.fen());
+    $info.white.ratingNext = newEloWhite;
+    $info.black.ratingNext = newEloBlack;
+
+    if ($match) {
+      $match.games.push({
+        white: $info.white.username,
+        black: $info.black.username,
+        result,
+        gameId: $page.params.id,
+      });
+
+      $match.games = $match.games;
+
+      if ($match.player1 == $info.white.username) {
+        if (result == "1-0") $match.result[0] = $match.result[0] + 1;
+        else if (result == "0-1") $match.result[1] = $match.result[1] + 1;
+        else if (result == "0.5-0.5") $match.result[2] = $match.result[2] + 1;
+      } else if ($match.player1 == $info.black.username) {
+        if (result == "1-0") $match.result[1] = $match.result[1] + 1;
+        else if (result == "0-1") $match.result[0] = $match.result[0] + 1;
+        else if (result == "0.5-0.5") $match.result[2] = $match.result[2] + 1;
       }
-    });
+    }
 
-    $socket.on("game:end", ({ result, newEloBlack, newEloWhite }) => {
-      stopClock();
-      $info.result = result;
+    if ($page.data.gameIds) {
+      const index = $page.data.gameIds.indexOf($page.params.id);
 
-      $info.white.ratingNext = newEloWhite;
-      $info.black.ratingNext = newEloBlack;
+      if (index !== -1) $page.data.gameIds.splice(index, 1);
+    }
+    // $match.games = $match.games;
 
-      if ($match) {
-        $match.games.push({
-          white: $info.white.username,
-          black: $info.black.username,
-          result,
-          gameId: $page.params.id,
-        });
-
-        $match.games = $match.games;
-
-        if ($match.player1 == $info.white.username) {
-          if (result == "1-0") $match.result[0] = $match.result[0] + 1;
-          else if (result == "0-1") $match.result[1] = $match.result[1] + 1;
-          else if (result == "0.5-0.5") $match.result[2] = $match.result[2] + 1;
-        } else if ($match.player1 == $info.black.username) {
-          if (result == "1-0") $match.result[1] = $match.result[1] + 1;
-          else if (result == "0-1") $match.result[0] = $match.result[0] + 1;
-          else if (result == "0.5-0.5") $match.result[2] = $match.result[2] + 1;
-        }
-      }
-
-      if ($page.data.gameIds) {
-        const index = $page.data.gameIds.indexOf($page.params.id);
-
-        if (index !== -1) $page.data.gameIds.splice(index, 1);
-      }
-      // $match.games = $match.games;
-
-      // prettier-ignore
-      // $page.data.user.rating = 5555
-      // page.subscribe((val)=>{
-      //     if(val.data.user)
-      //     val.data.user.rating = 4001
-      //     // $info.role == 'w'? newEloWhite : $info.role == 'b'?newEloBlack: val.data.user.rating
-      //   })
-      // $info.white = $info.white;
-      // $info.black = $info.black;
-      // $info = $info;
-      $board.disableMoveInput();
-    });
+    // prettier-ignore
+    // $page.data.user.rating = 5555
+    // page.subscribe((val)=>{
+    //     if(val.data.user)
+    //     val.data.user.rating = 4001
+    //     // $info.role == 'w'? newEloWhite : $info.role == 'b'?newEloBlack: val.data.user.rating
+    //   })
+    // $info.white = $info.white;
+    // $info.black = $info.black;
+    // $info = $info;
+    $board.disableMoveInput();
   }
   function inputHandler(event: {
     chessboard: ChessBoardInstance;
@@ -271,7 +268,6 @@
     piece: string;
   }) {
     event.chessboard.removeMarkers(MARKER_TYPE.dot);
-    // let moves: Move[];
     if (event.type === INPUT_EVENT_TYPE.moveInputStarted) {
       const moves = $info.chess.moves({ square: event.square, verbose: true });
       for (const move of moves) {
@@ -285,15 +281,11 @@
         to: event.squareTo,
       };
 
-      // Функция синхронная, так делать не разрешает
-      // const pos = $board.getPosition();
-
       const moves = $info.chess.moves({
         square: event.squareFrom,
         verbose: true,
       });
 
-      // const promise = new Promise<string>((resolve, reject) => {
       if (
         (event.squareTo.charAt(1) === "8" ||
           event.squareTo.charAt(1) === "1") &&
@@ -334,7 +326,7 @@
                       $info.tree.history[$info.tree.history.length - 1];
 
                     const newTurn = $info.chess.turn();
-                    increamentTimer(newTurn);
+                    incrementTimer(newTurn);
                   });
                 });
               } else {
@@ -377,7 +369,7 @@
               $info.tree.history[$info.tree.history.length - 1];
 
             const newTurn = $info.chess.turn();
-            increamentTimer(newTurn);
+            incrementTimer(newTurn);
           });
         });
       } else {
@@ -391,8 +383,7 @@
     if (to?.route.id == from?.route.id && to?.params?.id != from?.params?.id) {
       lastTime = 0;
       onGetGame($page.data.game);
-      // @ts-ignore
-    } else $board = undefined;
+    }
   });
 
   beforeNavigate(async ({ from, to }) => {
@@ -411,9 +402,18 @@
   <div class="text-3xl text-slate-900">♕ ♔ ♗ ♘ ♖ ♙</div>
   <div class="text-3xl text-slate-900">♛ ♚ ♝ ♞ ♜ ♟︎ ♟︎</div>
 </div> -->
+
 <div class=" z-0 grid w-full max-w-4xl md:grid-cols-7 ">
   <div class=" col-span-5">
-    <Board bind:boardHTML />
+    {#if $info && $info.chess}
+      <Board
+        {inputHandler}
+        position={$info.chess.fen()}
+        orientation={$info.black.username === $page.data.user?.username
+          ? "b"
+          : "w"}
+      />
+    {/if}
   </div>
 
   {#if $info}
@@ -428,7 +428,7 @@
         <!-- TODO: Get rid of bind -->
 
         <PlayerCard bind:player={$info.black} />
-        <Timer bind:time={$info.time[1]} side="b" />
+        <Timer bind:time={$clock[1]} side="b" />
       </div>
 
       <div class=" ">
@@ -443,7 +443,7 @@
       <div class="flex {orientation == 'w' ? 'flex-col-reverse' : 'flex-col'}">
         <!-- TODO: Get rid of bind -->
         <PlayerCard bind:player={$info.white} />
-        <Timer bind:time={$info.time[0]} side="w" />
+        <Timer bind:time={$clock[0]} side="w" />
       </div>
     </div>
     {#if $info.matchId}

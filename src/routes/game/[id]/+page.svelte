@@ -7,6 +7,7 @@
   import { board } from "$store/game/board";
 
   import { info } from "$store/game/info";
+  import { requestId } from "$store/game/requestId";
   import { socket } from "$store/sockets/socket";
   import { set } from "zod";
 
@@ -16,7 +17,7 @@
   console.log("game", data.game);
 
   function removeSocketListerners() {
-    $socket.removeListener("game:end");
+    // $socket.removeListener("game:end");
     $socket.removeListener("game:move");
     $socket.removeListener("game:offerDraw");
     $socket.removeListener("game:declineDraw");
@@ -30,12 +31,12 @@
     if (willUnload) {
       console.log("Unload", willUnload);
     }
-    window.cancelAnimationFrame($info?.requestId);
+    window.cancelAnimationFrame($requestId);
     // removeSocketListerners();
     // console.log(to, from);
 
     if (to?.route.id == from?.route.id && to?.params?.id != from?.params?.id) {
-      $socket.removeListener("game:end");
+      // $socket.removeListener("game:end");
       $socket.removeListener("game:move");
     } else {
       removeSocketListerners();

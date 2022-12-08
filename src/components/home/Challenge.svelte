@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onDestroy, onMount } from "svelte";
+  import { onDestroy, onMount, tick } from "svelte";
 
   import { page } from "$app/stores";
   import { socket } from "$store/sockets/socket";
@@ -65,11 +65,13 @@
   let records: ChallengeTableRecord[] = [];
 
   onMount(async () => {
+    await tick();
     await getInitialChallenges();
     $socket.emit("challenge:subscribe");
     records = createChallengeRecords($listOfChallenges.challenges);
-
+    console.log("challenge created sub");
     $socket.on("challenge:created", (challenge) => {
+      console.log("challenge created");
       const index = $listOfChallenges.challenges.findIndex(
         (chal) => chal.user == challenge.user
       );

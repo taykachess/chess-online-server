@@ -1,8 +1,10 @@
 import type { LayoutServerLoad } from "./$types";
 import { prisma } from "$lib/db/prisma";
 import { redis } from "$lib/db/redis";
+import { io } from "socket.io-client";
 
 import { PLAYER_IN_GAME_REDIS } from "../../sockets/variables/redisIndex";
+import { socket } from "$store/sockets/socket";
 
 export const load: LayoutServerLoad = async ({ locals, cookies }) => {
   if (!locals.user) return {};
@@ -16,6 +18,12 @@ export const load: LayoutServerLoad = async ({ locals, cookies }) => {
     where: { username: locals.user?.username },
     select: { rating: true, title: true },
   });
+
+  // socket.set(
+  //   io("http://localhost:3000", {
+  //     auth: { token: cookies.get("token") },
+  //   })
+  // );
 
   return {
     user: {

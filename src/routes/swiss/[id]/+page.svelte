@@ -13,7 +13,7 @@
   import { tournament } from "$store/tournament/tournament";
   import { tournamentTv } from "$store/tournament/tournamentTv";
   import type { GetTournament, TournamentTv } from "$types/tournament";
-  import { Chess } from "cm-chess";
+  import { Chess } from "cm-chess-ts";
   import { onMount } from "svelte";
   import type { PageData } from "./$types";
   export let data: PageData;

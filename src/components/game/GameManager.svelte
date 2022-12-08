@@ -6,6 +6,7 @@
 
   let countClick = 0;
   if (browser) {
+    console.log("sub on game:offerDraw");
     $socket.on("game:offerDraw", ({ username, ply }) => {
       console.log("draw offered", { username, ply });
       console.log("info", $info.chess.pgn);

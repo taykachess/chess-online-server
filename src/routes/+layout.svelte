@@ -13,10 +13,23 @@
   import { currentChallengeControl } from "$store/home/challenges";
   import { currentMatchControl } from "$store/home/match";
   import { tournament } from "$store/tournament/tournament";
+  import { io } from "socket.io-client";
 
   export let data: LayoutData;
+  let visible = false;
 
   onMount(() => {
+    console.log($socket);
+    $socket = io("http://localhost:3000", {
+      auth: { token: localStorage.getItem("token") },
+    });
+
+    $socket.on("connect", () => {
+      console.log("connected");
+      visible = true;
+    });
+    // $socket = io("");
+    // $socket.auth.token = localStorage.getItem("token");
     $socket.on("game:started", ({ gameId }) => {
       data.gameIds?.push(gameId);
       goto(`/game/${gameId}`);
@@ -37,7 +50,9 @@
   <Header games={data.gameIds} />
 </div>
 <main class="  text-slate-500  ">
-  <slot />
+  {#if visible}
+    <slot />
+  {/if}
 </main>
 
 <div

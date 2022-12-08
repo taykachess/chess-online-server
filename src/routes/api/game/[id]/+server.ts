@@ -6,7 +6,7 @@ import {
 } from "$sockets/variables/redisIndex";
 import type { Game, GetGame } from "$types/game";
 import { json } from "@sveltejs/kit";
-import { Chess } from "cm-chess";
+import { Chess } from "cm-chess-ts";
 import type { RequestHandler } from "./$types";
 
 export const GET: RequestHandler = async ({ params }) => {

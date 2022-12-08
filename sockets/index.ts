@@ -44,21 +44,13 @@ io.on("connection", async (socket) => {
 
 Promise.all([pubClient.connect(), subClient.connect()]).then(() => {
   io.adapter(createAdapter(pubClient, subClient));
-  // io.of("/").adapter.on("create-room", (room) => {
-  //   console.log(`room ${room} was created`);
-  // });
-
   // io.of("/").adapter.on("join-room", (room, id) => {
-  //   console.log(`socket ${id} has joined room ${room}`);
+  //   console.log(`${id} joined ${room}`);
   // });
 
-  io.of("/").adapter.on("join-room", (room, id) => {
-    console.log(`${id} joined ${room}`);
-  });
-
-  io.of("/").adapter.on("leave-room", (room, id) => {
-    console.log(`${id} leave ${room}`);
-  });
+  // io.of("/").adapter.on("leave-room", (room, id) => {
+  //   console.log(`${id} leave ${room}`);
+  // });
   // io.listen(3000);
   app.listen(3000, (token: any) => {
     console.log("Server is connected");
@@ -68,22 +60,20 @@ Promise.all([pubClient.connect(), subClient.connect()]).then(() => {
   });
 });
 
-// console.log(new Date(new Date().getTime() + 1000 * 60 * 3));
-// prisma.tournament
-//   .update({
-//     where: {
-//       id: "clav5lj9q0000p13dg45de9ix",
-//     },
-//     data: {
-//       status: "registration",
-//       startTime: new Date(new Date().getTime() + 1000 * 60 * 0.2),
-//     },
-//   })
-//   .then((tournament) => {
-//     const diff = tournament.startTime.getTime() - new Date().getTime();
+prisma.tournament
+  .update({
+    where: {
+      id: "clav5lj9q0000p13dg45de9ix",
+    },
+    data: {
+      status: "registration",
+      startTime: new Date(new Date().getTime() + 1000 * 60 * 0.2),
+    },
+  })
+  .then((tournament) => {
+    const diff = tournament.startTime.getTime() - new Date().getTime();
 
-//     console.log(diff);
-//     setTimeout(async () => {
-//       await startTournament("clav5lj9q0000p13dg45de9ix");
-//     }, diff);
-//   });
+    setTimeout(async () => {
+      await startTournament("clav5lj9q0000p13dg45de9ix");
+    }, diff);
+  });

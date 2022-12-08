@@ -7,16 +7,15 @@ import type {
 } from "$types/sockets";
 import { writable, type Writable } from "svelte/store";
 import { browser } from "$app/environment";
+// import {coki} from "svelte"
 
 export const socket: Writable<
   Socket<ServerToClientEvents, ClientToServerEvents>
-> = writable(
-  browser
-    ? io("http://localhost:3000", {
-        auth: { token: localStorage.getItem("token") },
-      })
-    : undefined
-);
+> =
+  writable();
+  // io("http://localhost:3000", {
+  //   auth: { token:  },
+  // })
 
 // export const deleteSocketListenersHome = () => {
 //   socket.subscribe((value) => value.removeListener());

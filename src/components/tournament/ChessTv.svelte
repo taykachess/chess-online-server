@@ -7,7 +7,7 @@
   import { tournament } from "$store/tournament/tournament";
   import { tournamentTv } from "$store/tournament/tournamentTv";
   import type { GetGame } from "$types/game";
-  import { Chess } from "cm-chess";
+  import { Chess } from "cm-chess-ts";
   import type { ChessBoardInstance } from "cm-chessboard-ts";
   import { onMount } from "svelte";
 

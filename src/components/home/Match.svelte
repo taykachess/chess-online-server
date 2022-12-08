@@ -66,9 +66,7 @@
 
   onMount(async () => {
     await getInitialMatches();
-    $socket.emit("match:subscribe", (matches: any) => {
-      console.log(matches);
-    });
+    $socket.emit("match:subscribe");
     records = createMatchesRecords($listOfMatches.matches);
 
     $socket.on("match:created", (match) => {
