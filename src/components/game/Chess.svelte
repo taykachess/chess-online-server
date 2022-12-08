@@ -26,6 +26,9 @@
   import { match } from "$store/game/match";
 
   import { PromotionDialog } from "cm-chessboard-ts/src/cm-chessboard/extensions/promotion-dialog";
+  import { tick } from "svelte";
+  import { TOURNAMENT_GAME_PREPARE_TIME } from "$sockets/variables/redisIndex";
+  import { isTournamentTimerVisible } from "$store/game/tournament";
 
   export let game: GetGame;
 
@@ -46,7 +49,11 @@
     increment,
     lastOfferDraw,
     matchId,
+    tournamentId,
+    tsmp,
   }: GetGame) {
+    console.log("Game get", time);
+    // await tick();
     const chess = new Chess();
     // @ts-ignore
     await chess.loadPgn(pgn);
@@ -68,6 +75,7 @@
       pgn,
       matchId,
       increment,
+      tournamentId,
       role:
         black.username === $page.data.user?.username
           ? "b"
@@ -94,7 +102,20 @@
     if (result == "*") {
       $socket.emit("game:sub", { gameId: $page.params.id });
 
-      startClock();
+      if ($info.tournamentId && $info.ply == 0) {
+        const tournamentPrepareTime =
+          tsmp + TOURNAMENT_GAME_PREPARE_TIME - new Date().getTime();
+        if (tournamentPrepareTime > 0) {
+          $isTournamentTimerVisible = true;
+          setTimeout(() => {
+            startClock();
+            $isTournamentTimerVisible = false;
+          }, tournamentPrepareTime);
+        } else startClock();
+        // TOURNAMENT_GAME_PREPARE_TIME;
+      } else {
+        startClock();
+      }
       setSocketListeners();
       const turn = $info.chess.turn();
 
@@ -317,8 +338,6 @@
                   });
                 });
               } else {
-                // Must work without it, but does'not ! Maybe bug of the last version!
-                // $board.setPosition(pos);
                 console.warn("invalid move", move, $info.chess.fen());
               }
               // event.chessboard.setPiece(event.square, event.piece, true);
@@ -362,28 +381,23 @@
           });
         });
       } else {
-        // Must work without it, but does'not ! Maybe bug of the last version!
-        // $board.setPosition(pos);
         console.warn("invalid move", move, $info.chess.fen());
       }
       return result;
     }
   }
 
-  // function getGame() {
-  //   $socket.emit("game:get", { gameId: $page.params.id }, onGetGame);
-  // }
-
-  afterNavigate(async ({ willUnload, from, to }) => {
+  afterNavigate(async ({ from, to }) => {
     if (to?.route.id == from?.route.id && to?.params?.id != from?.params?.id) {
+      lastTime = 0;
       onGetGame($page.data.game);
+      // @ts-ignore
     } else $board = undefined;
   });
 
   beforeNavigate(async ({ from, to }) => {
-    // if (to?.route.id == from?.route.id && to?.params?.id != from?.params?.id) {
-
-    // }
+    // Нужно выйти их игры, только если партия продолжается
+    // потому что иначе выход из комнаты осуществляется на сервере
     if ($info.result == "*") {
       $socket.emit("game:leave", { gameId: $page.params.id });
     }
@@ -423,6 +437,7 @@
         >
           <Viewer />
         </div>
+
         <GameManager />
       </div>
       <div class="flex {orientation == 'w' ? 'flex-col-reverse' : 'flex-col'}">

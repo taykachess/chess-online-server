@@ -40,7 +40,7 @@ export interface Games {
 
 // Frontend and Backend
 // prettier-ignore
-export interface GetGame extends Pick<Game, "white"| "black"|"time"|"result"|"increment"|"lastOfferDraw"|"matchId"> {
+export interface GetGame extends Pick<Game, "white"| "black"|"time"|"result"|"increment"|"lastOfferDraw"|"matchId"|"tournamentId"|"tsmp"> {
   pgn: string;
   id?:string;
 }
@@ -55,7 +55,7 @@ interface Node {
 }
 
 // prettier-ignore
-export interface GameInfo extends Pick<GetGame, "white"| "black"|"time"|"result"|"pgn"|"increment"|"lastOfferDraw"|"matchId"> {
+export interface GameInfo extends Pick<GetGame, "white"| "black"|"time"|"result"|"pgn"|"increment"|"lastOfferDraw"|"matchId"|"tournamentId"> {
   requestId?: any;
   ply: number;
   role?: "w" | "b";

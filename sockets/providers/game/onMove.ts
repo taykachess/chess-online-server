@@ -4,7 +4,10 @@ import { changeTime } from "../../services/game/changeTime";
 import { isGameOver } from "../../services/game/isGameOver";
 import { setGameOver } from "../../services/game/setGameOver";
 
-import { GAME_ROOM } from "../../variables/redisIndex";
+import {
+  GAME_ROOM,
+  TOURNAMENT_GAME_PREPARE_TIME,
+} from "../../variables/redisIndex";
 
 import type { SocketType } from "../../types/sockets";
 import { Chess } from "chess.js";
@@ -39,12 +42,16 @@ export async function onMove(
     const resultMove = chess.move(move);
 
     if (!resultMove) throw Error("Move is incorrect");
+    const now = new Date().getTime();
+    if (game.tournamentId && now < TOURNAMENT_GAME_PREPARE_TIME + game.tsmp)
+      throw Error("No time yet");
     await changeTime({
       gameId,
       increment: game.increment,
       tsmp: game.tsmp,
       turn,
       game,
+      now,
     });
 
     const result = isGameOver({ chess });

@@ -1,5 +1,5 @@
 import { SocketType } from "../types/sockets";
-import { onGameGet } from "../providers/game/onGameGet";
+// import { onGameGet } from "../providers/game/onGameGet";
 import { onMove } from "../providers/game/onMove";
 import { onResign } from "../providers/game/onResign";
 import { onDrawOffer } from "../providers/game/onDrawOffer";
@@ -10,7 +10,7 @@ import { onGameSub } from "../providers/game/onGameSub";
 
 export function gameController(socket: SocketType) {
   try {
-    socket.on("game:get", onGameGet);
+    // socket.on("game:get", onGameGet);
 
     // Only for room challenges
     socket.on("game:leave", onGameLeave);

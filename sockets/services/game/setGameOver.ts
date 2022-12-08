@@ -68,6 +68,7 @@ export async function setGameOver({
 
   // await prisma.$transaction([createGame, updateRatingWhite, updateRatingBlack]);
 
+  console.log("game:end send");
   io.to(GAME_ROOM(gameId)).emit("game:end", {
     result,
     newEloWhite,

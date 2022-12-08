@@ -6,6 +6,7 @@ import {
 } from "../../global/games";
 import { setGameTimeout } from "../../global/timers";
 import { Game } from "../../types/game";
+import { TOURNAMENT_GAME_PREPARE_TIME } from "../../variables/redisIndex";
 
 import { setGameOver } from "./setGameOver";
 
@@ -15,15 +16,21 @@ export async function changeTime({
   tsmp,
   turn,
   game,
+  now,
 }: {
   gameId: string;
   increment: number;
   tsmp: number;
   turn: "w" | "b";
   game: Game;
+  now: number;
 }) {
+  if (game.tournamentId && game.ply == 0) {
+    tsmp = tsmp + TOURNAMENT_GAME_PREPARE_TIME;
+  }
+
   const time = turn == "w" ? game.time[0] : game.time[1];
-  const now = new Date().getTime();
+  // const now = new Date().getTime();
   const diff = now - tsmp;
   const newTime = time - diff;
   const isLostOnTime = newTime <= 0;

@@ -7,10 +7,11 @@ import {
   setPlayerReceivedBye,
 } from "../../global/tournament";
 import { MatchSwiss } from "../../types/tournament";
-import { PLAYER_IN_GAME_REDIS } from "../../variables/redisIndex";
+import { PLAYER_IN_GAME_REDIS, USER_ROOM } from "../../variables/redisIndex";
 import { createGame } from "../game/createGame";
 
 import type { PlayerSwiss } from "../../types/tournament";
+import { io } from "../../global/io";
 export async function startTournamentGame({
   pair,
   tournamentId,
@@ -64,6 +65,10 @@ export async function startTournamentGame({
       round,
       board,
     },
+  });
+
+  io.to([USER_ROOM(pair[0].id), USER_ROOM(pair[1].id)]).emit("game:started", {
+    gameId,
   });
 
   // matches[gameId] = pair

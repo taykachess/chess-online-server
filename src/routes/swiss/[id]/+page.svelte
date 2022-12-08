@@ -42,6 +42,7 @@
   if (browser)
     if ($tournamentTv) {
       $tournamentTv.chess = new Chess();
+      // @ts-ignore
       $tournamentTv.chess.loadPgn($tournamentTv.game.pgn);
     }
 

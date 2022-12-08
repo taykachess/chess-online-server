@@ -12,6 +12,7 @@ export const GAME_ROOM = (gameId: string) => `game${gameId}`;
 export const MATCH_ROOM = (matchId: string) => `match${matchId}`;
 export const TOURNAMENT_ROOM = (tournamentId: string) =>
   `tournament${tournamentId}`;
+export const USER_ROOM = (username: string) => `user${username}`;
 
 // export const TOURNAMENT_IN_PROGRESS_ROOM = (tournamentId: string) =>
 //   `tournamentsInProgress${tournamentId}`;
@@ -23,5 +24,6 @@ export const CHALLENGES_ROOM = "challenges";
 // Const
 // 20000000
 export const TIME_TO_CANCEL_GAME = 5000;
+export const TOURNAMENT_GAME_PREPARE_TIME = 20000;
 
 // Tournament

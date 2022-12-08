@@ -59,6 +59,7 @@ export async function onGameGet(
       result,
       increment: game.increment,
       lastOfferDraw: game.lastOfferDraw,
+      tsmp: game.tsmp,
     };
 
     if (game.matchId) callbackData.matchId = game.matchId;

@@ -3,7 +3,10 @@ import { v4 as uuid } from "uuid";
 
 import { deleteGame, setGame } from "../../global/games";
 
-import { TIME_TO_CANCEL_GAME } from "../../variables/redisIndex";
+import {
+  TIME_TO_CANCEL_GAME,
+  TOURNAMENT_GAME_PREPARE_TIME,
+} from "../../variables/redisIndex";
 
 import type { Game, Player } from "../../types/game";
 import { setGameOver } from "./setGameOver";
@@ -44,6 +47,14 @@ export async function createGame({
   const randomTime = Math.floor(Math.random() * 40) * 1000 + 5000;
 
   const initialFn = async () => {
+    if (data.tournamentId) {
+      await setGameOver({
+        gameId,
+        result: "0-1",
+        game,
+      });
+      return;
+    }
     const randomResult = Math.floor(Math.random() * 3);
 
     // await changeTime({
@@ -60,7 +71,8 @@ export async function createGame({
     });
   };
 
-  setGameTimeoutInitial(gameId, initialFn, randomTime);
+  if (data.tournamentId) setGameTimeoutInitial(gameId, initialFn, game.time[0]);
+  else setGameTimeoutInitial(gameId, initialFn, randomTime);
 
   if (data.matchId) game.matchId = data.matchId;
   if (data.tournamentId) {
