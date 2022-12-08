@@ -118,9 +118,7 @@
     if (result == "*") {
       $socket.emit("game:sub", { gameId: $page.params.id });
       $socket.on("game:move", onMoveHandler);
-      $socket.on("game:end", () => {
-        console.log("game over");
-      });
+      $socket.on("game:end", onEndHandler);
 
       const isTournamentGameBegins = $info.tournamentId && $info.ply == 0;
 

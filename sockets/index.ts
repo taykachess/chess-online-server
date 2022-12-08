@@ -27,13 +27,14 @@ io.use((socket, next) => {
       socket.data.id = decoded?.id;
       // @ts-ignore
       socket.data.username = decoded?.username;
-      if (socket.data.username) socket.join(USER_ROOM(socket.data.username));
       next();
     });
   }
 });
 
 io.on("connection", async (socket) => {
+  if (socket.data.username) socket.join(USER_ROOM(socket.data.username));
+
   challengeController(socket);
   gameController(socket);
   matchController(socket);
