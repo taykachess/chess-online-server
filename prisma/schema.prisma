@@ -141,3 +141,24 @@ model Game {
   time    Int[]
   control String
 }
+
+// model Chat {
+//   id Int @id @default(autoincrement())
+//   messages Message[]
+//   type ChatType
+// }
+
+// enum ChatType {
+//   public
+//   private
+// }
+
+// model Message {
+//   id        Int      @id @default(autoincrement())
+//   from      User     @relation(fields: [fromId], references: [id])
+//   to        User?    @relation(fields: [userId], references: [id])
+//   fromId    Int
+//   toId      Int
+//   text      String
+//   createdAt DateTime @default(now())
+// }
