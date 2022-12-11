@@ -11,17 +11,21 @@ datasource db {
 }
 
 model User {
-  id             Int          @id @default(autoincrement())
-  username       String       @unique
-  email          String       @unique
-  hashedPassword String
-  rating         Float        @default(2000)
-  title          Title?
-  roles          Role[]
+  // id             Int          @id @default(autoincrement())
+  username    String       @id
+  rating      Float        @default(2000)
+  title       Title?
+  roles       Role[]
   // participant         Player[]
-  games          Game[]
-  orginizer      Tournament[] @relation(name: "orginizer")
-  participant    Tournament[]
+  games       Game[]
+  orginizer   Tournament[] @relation(name: "orginizer")
+  participant Tournament[]
+
+  // AUTH
+  email          String?
+  hashedPassword String?
+  yandex         String?
+  lichess        String?
 }
 
 enum Title {
@@ -52,8 +56,8 @@ model Tournament {
   playoffs     String?
   bestOf       Int?
   double       Boolean?
-  organizer    User             @relation(fields: [organizerId], references: [id], name: "orginizer")
-  organizerId  Int
+  organizer    User             @relation(fields: [organizerId], references: [username], name: "orginizer")
+  organizerId  String
 }
 
 enum TournamentStatus {

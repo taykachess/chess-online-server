@@ -20,11 +20,13 @@ io.use((socket, next) => {
   const token = socket.handshake.auth.token;
   if (!token) next();
   if (token) {
+    console.log(token);
     // @ts-ignore
     verify(token, process.env.JWT_SECRET, async (err, decoded) => {
       // console.log("decoded", decoded);
       // @ts-ignore
-      socket.data.id = decoded?.id;
+      // socket.data.id = decoded?.id;
+      console.log(decoded?.username);
       // @ts-ignore
       socket.data.username = decoded?.username;
       next();

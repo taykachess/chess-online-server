@@ -86,6 +86,5 @@ export interface InterServerEvents {
 }
 
 export interface SocketData {
-  id: number;
   username: string;
 }

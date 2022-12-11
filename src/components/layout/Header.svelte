@@ -11,6 +11,8 @@
   import CreateUserForm from "$components/home/CreateUserForm.svelte";
   import LoginForm from "$components/home/LoginForm.svelte";
   import ChessClockSVG from "$components/icons/ChessClockSVG.svelte";
+  import { deleteCookie } from "$lib/utils/cookie";
+  import { socket } from "$store/sockets/socket";
 
   export let games: string[] | undefined;
 
@@ -92,14 +94,12 @@
           use:enhance={({ form, data, action, cancel }) => {
             console.log(data);
             return async ({ result, update }) => {
-              // confirm(result.type);
-
-              console.log(result);
-              console.log(form);
               await update();
-              console.log("Success", $page.form?.success);
               if ($page.form?.success) {
-                localStorage.removeItem("token");
+                deleteCookie("token");
+                $socket.disconnect();
+                $socket.auth = {};
+                $socket.connect();
                 isOpen = false;
               }
             };

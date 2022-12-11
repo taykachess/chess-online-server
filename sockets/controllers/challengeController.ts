@@ -9,7 +9,7 @@ export function challengeController(socket: SocketType) {
     socket.on("challenge:subscribe", onChallengeSub);
 
     // Auth only
-    if (!socket.data?.id) return console.log("Next auth is required");
+    if (!socket.data?.username) return console.log("Next auth is required");
     socket.on("challenge:create", onChallengeCreate);
     socket.on("challenge:cancel", onChallengeDelete);
     socket.on("challenge:accept", onChallengeAccept);

@@ -25,7 +25,7 @@ export async function onChallengeCreate(
 
     console.log("Challenge filters", filters);
     const user = await prisma.user.findFirst({
-      where: { id: socket.data.id },
+      where: { username: socket.data.username },
       select: { rating: true, title: true },
     });
     if (!user) throw Error("User not found");

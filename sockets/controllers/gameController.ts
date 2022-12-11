@@ -24,7 +24,7 @@ export function gameController(socket: SocketType) {
     socket.on("game:drawDecline", onDrawDecline);
 
     // Auth only
-    if (!socket.data.id) return console.log("Next auth is required");
+    if (!socket.data.username) return console.log("Next auth is required");
     // socket.on("challenge:create", onChallengeCreate);
     // socket.on("challenge:cancel", onChallengeDelete);
   } catch (error) {

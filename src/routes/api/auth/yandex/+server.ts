@@ -1,10 +1,11 @@
 import type { RequestHandler } from "./$types";
-import { YANDEX_SECRET } from "$env/static/private";
+import { JWT_SECRET, YANDEX_SECRET } from "$env/static/private";
 import base64 from "base-64";
-import { error } from "@sveltejs/kit";
+import { error, redirect } from "@sveltejs/kit";
 import { prisma } from "$lib/db/prisma";
+import { sign } from "jsonwebtoken";
 
-export const GET: RequestHandler = async ({ url, fetch }) => {
+export const GET: RequestHandler = async ({ url, fetch, cookies }) => {
   const code = url.searchParams.get("code");
   const username = url.searchParams.get("state");
 
@@ -68,15 +69,21 @@ export const GET: RequestHandler = async ({ url, fetch }) => {
   // }
   const infoJson = await info.json();
 
-  console.log(infoJson);
-  // const userYandexId = infoJson.id;
-  // const email = infoJson.default_email;
+  const createdUser = await prisma.user.create({
+    data: {
+      username,
+      email: infoJson.default_email,
+      yandex: infoJson.id,
+    },
+    select: { username: true, roles: { select: { name: true } } },
+  });
 
-  // console.log("info status", await info.json());
-  // await data.json();
+  if (!createdUser) throw Error("Something wrong with user creation");
 
-  // const info = await data.json();
-
-  // console.log(JSON.parse(JSON.stringify(data)));
-  return new Response();
+  const token = sign(createdUser, JWT_SECRET);
+  cookies.set("token", token, {
+    path: "/",
+    httpOnly: false,
+  });
+  throw redirect(302, "/");
 };

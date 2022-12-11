@@ -19,6 +19,8 @@ export const load: LayoutServerLoad = async ({ locals, cookies }) => {
     select: { rating: true, title: true },
   });
 
+  // const token = cookies.get("token");
+
   // socket.set(
   //   io("http://localhost:3000", {
   //     auth: { token: cookies.get("token") },

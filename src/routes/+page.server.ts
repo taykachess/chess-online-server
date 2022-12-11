@@ -37,15 +37,6 @@ export const actions: Actions = {
       // return invalid(400);
     }
 
-    const userWithEmail = await prisma.user.findUnique({
-      where: { email },
-    });
-
-    if (userWithEmail)
-      return invalid(400, {
-        errors: { email: ["User with this email exists"] },
-      });
-
     const userWithUsername = await prisma.user.findUnique({
       where: { username },
     });
@@ -62,10 +53,12 @@ export const actions: Actions = {
         username,
         hashedPassword,
       },
-      select: { id: true, username: true, roles: { select: { name: true } } },
+      select: { username: true, roles: { select: { name: true } } },
     });
     const token = sign(user, JWT_SECRET);
-    cookies.set("token", token);
+    cookies.set("token", token, {
+      httpOnly: false,
+    });
 
     return { success: true, token };
   },
@@ -90,12 +83,11 @@ export const actions: Actions = {
       select: {
         hashedPassword: true,
         username: true,
-        id: true,
         roles: { select: { name: true } },
       },
     });
 
-    if (!user) {
+    if (!user || !user.hashedPassword) {
       return invalid(400, {
         errors: {
           username: ["User with this username and password not found"],
@@ -116,15 +108,22 @@ export const actions: Actions = {
     }
 
     const token = sign(
-      { id: user.id, username: user.username, roles: user.roles },
+      { username: user.username, roles: user.roles },
       JWT_SECRET
     );
-    cookies.set("token", token);
+    cookies.set("token", token, {
+      path: "/",
+      httpOnly: false,
+    });
 
     return { success: true, token };
   },
   logout: async ({ request, cookies }) => {
-    cookies.delete("token");
+    cookies.delete("token", {
+      path: "/",
+    });
+
+    // console.log("cookie deleted");
     return { success: true };
   },
 };

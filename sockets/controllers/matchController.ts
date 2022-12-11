@@ -10,7 +10,7 @@ export function matchController(socket: SocketType) {
     socket.on("match:subscribe", onMatchSub);
 
     // Auth only
-    if (!socket.data?.id) return console.log("Next auth is required");
+    if (!socket.data?.username) return console.log("Next auth is required");
     socket.on("match:create", onMatchCreate);
     socket.on("match:cancel", onMatchDelete);
     socket.on("match:accept", onMatchAccept);

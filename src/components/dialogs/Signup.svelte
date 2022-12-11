@@ -1,17 +1,20 @@
 <script lang="ts">
   import Lichess from "$components/icons/Lichess.svelte";
+  // import {} from "svelte/"
+  // import base64url from "base64-url";
 
+  // import cr from "crypto";
+  // import {} from "crypto-js"
   let username = "";
   $: isValidUsernameLong = (username.match(/^.{5,18}$/g) || []).length == 1;
   $: isValidUsernameString =
     (username.match(/^[a-zA-Z0-9]{0,}$/g) || []).length == 1;
 
   const yandexClientID = "8e344c0640bf44988536c700491a911a";
-  function yandexAuth() {
-    `https://oauth.yandex.ru/authorize?
-   response_type=code
- & client_id=${yandexClientID}`;
-  }
+  const lichessRedirect = "http://localhost:5173/api/auth/lichess";
+  // const code_challenge = "dfs";
+
+  const code_challenge = "mQMOoD93XTahZHU4OtTwImi_0soQ_maBmVnIIjcCQ4Y";
 
   // $: isValidUsernameTotal = (username.match(/^[a-zA-Z0-9]{5,18}$/g) || [])
 </script>
@@ -124,14 +127,15 @@
         <div class="">Регистрация с Яндекс ID</div>
       </a>
 
-      <div
+      <a
+        href="https://lichess.org/oauth?response_type=code&code_challenge_method=S256&code_challenge={code_challenge}&redirect_uri={lichessRedirect}&client_id=svelte-chess&scope=email:read&state={username}"
         class=" flex items-center justify-center space-x-2  border border-black p-2"
       >
         <div class=" h-5 w-5">
           <Lichess />
         </div>
         <div class="">Регистрация с lichess.org</div>
-      </div>
+      </a>
     </div>
   </div>
 </div>
