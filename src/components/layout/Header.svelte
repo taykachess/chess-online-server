@@ -7,7 +7,8 @@
   import Dialog from "$components/common/Dialog.svelte";
   import Popover from "$components/common/Popover.svelte";
   import PulseAnimatedElement from "$components/common/PulseAnimatedElement.svelte";
-  import Signup from "$components/dialogs/Signup.svelte";
+  import Login from "$components/dialogs/Auth/Login.svelte";
+  import Signup from "$components/dialogs/Auth/Signup.svelte";
   import CreateUserForm from "$components/home/CreateUserForm.svelte";
   import LoginForm from "$components/home/LoginForm.svelte";
   import ChessClockSVG from "$components/icons/ChessClockSVG.svelte";
@@ -21,11 +22,12 @@
 </script>
 
 <Dialog bind:isOpen>
-  <Signup />
+  <Signup bind:isOpen />
   <!-- <CreateUserForm bind:isOpen /> -->
 </Dialog>
 <Dialog bind:isOpen={isOpenLogin}>
-  <LoginForm bind:isOpen={isOpenLogin} />
+  <Login bind:isOpen={isOpenLogin} />
+  <!-- <LoginForm bind:isOpen={isOpenLogin} /> -->
 </Dialog>
 
 <div class="border-b">

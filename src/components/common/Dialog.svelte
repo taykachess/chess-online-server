@@ -11,7 +11,7 @@
 
 <Transition
   class=" fixed"
-  show={isOpen}
+  bind:show={isOpen}
   on:afterLeave={() => console.log("done")}
 >
   <!-- on:close={() => (isOpen = false)} -->
@@ -29,7 +29,9 @@
           leaveTo="opacity-0"
           entered="opacity-75"
         >
-          <DialogOverlay class="fixed inset-0 bg-gray-500 transition-opacity" />
+          <DialogOverlay
+            class="fixed inset-0 bg-gray-500/80 transition-opacity duration-500"
+          />
         </TransitionChild>
 
         <TransitionChild

@@ -7,23 +7,6 @@ import { sign } from "jsonwebtoken";
 
 export const GET: RequestHandler = async ({ url, fetch, cookies }) => {
   const code = url.searchParams.get("code");
-  const username = url.searchParams.get("state");
-
-  if (!username) throw error(403, "Username not defined");
-  const userValidation =
-    (username.match(/^[a-zA-Z0-9]{5,18}$/g) || []).length == 1;
-
-  if (!userValidation) throw error(400, "Validation wrong");
-
-  const user = await prisma.user.findUnique({
-    where: {
-      username,
-    },
-  });
-
-  if (user) throw error(400, "User with the same username was found");
-
-  console.log("code", code);
 
   const yandexClient = "8e344c0640bf44988536c700491a911a";
 
@@ -42,15 +25,6 @@ export const GET: RequestHandler = async ({ url, fetch, cookies }) => {
 
   const dataJson = await data.json();
 
-  // {
-  //   "token_type": "bearer",
-  //   "access_token": "AQAAAACy1C6ZAAAAfa6vDLuItEy8pg-iIpnDxIs",
-  //   "expires_in": 124234123534,
-  //   "refresh_token": "1:GN686QVt0mmakDd9:A4pYuW9LGk0_UnlrMIWklkAuJkUWbq27loFekJVmSYrdfzdePBy7:A-2dHOmBxiXgajnD-kYOwQ",
-  //   "scope": "login:info login:email login:avatar"
-  // }
-  dataJson.access_token;
-
   const info = await fetch(`https://login.yandex.ru/info`, {
     headers: {
       Authorization: `OAuth ${dataJson.access_token}`,
@@ -59,31 +33,22 @@ export const GET: RequestHandler = async ({ url, fetch, cookies }) => {
 
   if (info.status != 200) throw error(404, "Info not found");
 
-  // {
-  //   id: '128504982',
-  //   login: 'mvkvol',
-  //   client_id: '8e344c0640bf44988536c700491a911a',
-  //   default_email: 'mvkvol@yandex.ru',
-  //   emails: [ 'mvkvol@yandex.ru' ],
-  //   psuid: '1.AAjcTg.Xj6K1DCafDyH-sJwGdYbYg.aJLtrPTPRXI29u252LayHw'
-  // }
   const infoJson = await info.json();
 
-  const createdUser = await prisma.user.create({
-    data: {
-      username,
-      email: infoJson.default_email,
+  const user = await prisma.user.findUnique({
+    where: {
       yandex: infoJson.id,
     },
     select: { username: true, roles: { select: { name: true } } },
   });
 
-  if (!createdUser) throw Error("Something wrong with user creation");
+  if (!user) throw Error("Something wrong with user creation");
 
-  const token = sign(createdUser, JWT_SECRET);
+  const token = sign(user, JWT_SECRET);
   cookies.set("token", token, {
     path: "/",
     httpOnly: false,
   });
+
   throw redirect(302, "/");
 };

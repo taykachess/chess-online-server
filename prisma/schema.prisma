@@ -12,20 +12,19 @@ datasource db {
 
 model User {
   // id             Int          @id @default(autoincrement())
-  username    String       @id
-  rating      Float        @default(2000)
-  title       Title?
-  roles       Role[]
+  username       String       @id
+  rating         Float        @default(2000)
+  title          Title?
+  roles          Role[]
   // participant         Player[]
-  games       Game[]
-  orginizer   Tournament[] @relation(name: "orginizer")
-  participant Tournament[]
-
+  games          Game[]
+  orginizer      Tournament[] @relation(name: "orginizer")
+  participant    Tournament[]
   // AUTH
   email          String?
   hashedPassword String?
-  yandex         String?
-  lichess        String?
+  yandex         String?      @unique
+  lichess        String?      @unique
 }
 
 enum Title {

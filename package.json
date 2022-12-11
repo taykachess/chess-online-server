@@ -21,7 +21,6 @@
     "@socket.io/redis-emitter": "^5.0.0",
     "@sveltejs/adapter-node": "^1.0.0-next.102",
     "@sveltejs/adapter-static": "^1.0.0-next.48",
-
     "base-64": "^1.0.0",
     "bcrypt": "^5.1.0",
     "cm-chess-ts": "^2.4.4",

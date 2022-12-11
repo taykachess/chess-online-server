@@ -4,12 +4,12 @@ import { error, redirect } from "@sveltejs/kit";
 import { prisma } from "$lib/db/prisma";
 import { sign } from "jsonwebtoken";
 import type { Title } from "@prisma/client";
+import { dev } from "$app/environment";
+import { PUBLIC_APP_DEV_URL, PUBLIC_APP_PROD_URL } from "$env/static/public";
 
 export const GET: RequestHandler = async ({ url, fetch, cookies }) => {
   const code = url.searchParams.get("code");
   const username = url.searchParams.get("state");
-
-  console.log("got request");
   console.log(code, username);
 
   if (!username) throw error(403, "Username not defined");
@@ -26,27 +26,13 @@ export const GET: RequestHandler = async ({ url, fetch, cookies }) => {
 
   if (user) throw error(400, "User with the same username was found");
 
-  // console.log("code", code);
-
-  // const yandexClient = "8e344c0640bf44988536c700491a911a";
-
-  const redirect_uri = "http://localhost:5173/api/auth/lichess";
+  const redirect_uri = `${
+    dev ? PUBLIC_APP_DEV_URL : PUBLIC_APP_PROD_URL
+  }/api/auth/lichess/signup`;
   const code_verifier = "jGzNmyHmiVzpFL8HPebJkZ0y1e_9_8WbOrVilg4Q8YI";
-  // const hash =
-  //   "b593deeb62bb5eb039533e45b5bfe70d90d7123db5b88f569d2a1b558977e77b";
 
-  // const urlHash =
-  //   "YjU5M2RlZWI2MmJiNWViMDM5NTMzZTQ1YjViZmU3MGQ5MGQ3MTIzZGI1Yjg4ZjU2OWQyYTFiNTU4OTc3ZTc3Yg";
   const client_id = "svelte-chess";
   const grant_type = "authorization_code";
-
-  // const data = await fetch(`https://lichess.org/api/token`, {
-  //   method: "POST",
-  //   headers: {
-  //     "Content-type": "application/x-www-form-urlencoded",
-  //   },
-  //   body: `grant_type=${grant_type}&code=${code}&code_verifier=${code_verifier}&redirect_uri=${redirect_uri}&client_id=${client_id}`,
-  // });
 
   const data = await fetch("https://lichess.org/api/token", {
     method: "POST",
@@ -60,9 +46,7 @@ export const GET: RequestHandler = async ({ url, fetch, cookies }) => {
     }),
   });
 
-  // console.log(data);
   const dataJson = await data.json();
-
   console.log(dataJson);
 
   if (data.status != 200) throw error(403, "Something wrong");
