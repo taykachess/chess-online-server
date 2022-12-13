@@ -147,10 +147,10 @@ export async function finishTournamentGame({
       pairings.sort((a, b) => {
         if (!b[1] || !a[1]) return 0;
         const diff =
-          Math.max(b[0].score, b[1]?.score) - Math.max(a[0].score, a[1]?.score);
+          Math.max(b[0].score, b[1].score) - Math.max(a[0].score, a[1].score);
         if (diff > 0) return 1;
         if (diff == 0) {
-          const summa = b[0].score + b[0].score - a[0].score - a[1]?.score;
+          const summa = b[0].score + b[1].score - a[0].score - a[1].score;
           if (summa > 0) {
             return 1;
           }

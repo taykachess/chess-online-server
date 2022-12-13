@@ -44,7 +44,7 @@ export async function createGame({
     control: data.control,
   };
 
-  const randomTime = Math.floor(Math.random() * 40) * 1000 + 5000;
+  const randomTime = Math.floor(Math.random() * 5) * 1000 + 3000;
 
   const initialFn = async () => {
     if (data.tournamentId) {
@@ -70,8 +70,8 @@ export async function createGame({
       game,
     });
   };
-
-  if (data.tournamentId) setGameTimeoutInitial(gameId, initialFn, game.time[0]);
+  //  В турнире должно быть game.time[0]
+  if (data.tournamentId) setGameTimeoutInitial(gameId, initialFn, randomTime);
   else setGameTimeoutInitial(gameId, initialFn, randomTime);
 
   if (data.matchId) game.matchId = data.matchId;
