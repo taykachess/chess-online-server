@@ -38,7 +38,7 @@
 </script>
 
 <!-- prettier-ignore -->
-<div class="overflow-hidden bg-white shadow sm:rounded-lg border">
+<div class="overflow-hidden bg-white shadow sm:rounded-lg border flex flex-col">
     <div class="px-4 py-5 sm:px-6 flex justify-between items-center">
       <h3 class="text-lg font-medium leading-6 text-gray-900">Турнирная информация</h3>
 
@@ -60,8 +60,7 @@
 
       <!-- <p class="mt-1 max-w-2xl text-sm text-gray-500">Personal details and application.</p> -->
     </div>
-    <div class="border-t border-gray-200">
-      <dl>
+    
         <div class="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
           <dt class="text-sm font-medium text-gray-500">Название турнира</dt>
           <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">{$tournament.name}</dd>
@@ -98,11 +97,11 @@
             </div>
           </dd>
         </div>
-        <div class="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+        <div class="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 flex-1">
           <dt class="text-sm font-medium text-gray-500">Описание</dt>
-          <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0 max-h-40 overflow-y-scroll">{$tournament.description}</dd>
+          <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0 max-h-24 min-h-[6rem] overflow-y-scroll">{$tournament.description}</dd>
         </div>
-        <div class="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+        <div class="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 ">
           <dt class="text-sm font-medium text-gray-500">Организатор</dt>
           <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
             {#if $tournament.organizer.title}
@@ -111,6 +110,5 @@
          {$tournament.organizer.username}
         </dd>
         </div>
-      </dl>
-    </div>
+     
   </div>

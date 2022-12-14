@@ -90,17 +90,15 @@ export function pairingSwiss(
         Math.log10(
           scoreSums.findIndex((s) => s === curr.score + opp.score) + 1
         );
-      const scoreGroupDiff = Math.abs(
-        scoreGroups.findIndex((s) => s === curr.score) -
-          scoreGroups.findIndex((s) => s === opp.score)
-      );
-      wt +=
-        scoreGroupDiff < 2
-          ? 5 / (2 * Math.log10(scoreGroupDiff + 2))
-          : 1 / Math.log10(scoreGroupDiff + 2);
+      const scoreGroupDiff = Math.abs(curr.score - opp.score);
+
+      wt += -Math.pow(scoreGroupDiff + 10, 3);
+      // scoreGroupDiff < 2
+      //   ? 5 / (2 * Math.log10(scoreGroupDiff + 2))
+      //   : 1 / Math.log10(scoreGroupDiff + 2);
 
       if (!scoreGroupDiff) wt += Math.abs(curr.colors - opp.colors) * 0.01;
-      if (scoreGroupDiff === 1 && curr.pairedUpDown && opp.pairedUpDown) {
+      if (scoreGroupDiff === 0.5 && curr.pairedUpDown && opp.pairedUpDown) {
         wt += 1.1;
       }
       if (rated) {

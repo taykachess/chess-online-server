@@ -47,15 +47,16 @@ export async function createGame({
   const randomTime = Math.floor(Math.random() * 5) * 1000 + 3000;
 
   const initialFn = async () => {
+    const randomResult = Math.floor(Math.random() * 3);
     if (data.tournamentId) {
       await setGameOver({
         gameId,
-        result: "0-1",
+        result:
+          randomResult == 0 ? "0-1" : randomResult == 1 ? "1-0" : "0.5-0.5",
         game,
       });
       return;
     }
-    const randomResult = Math.floor(Math.random() * 3);
 
     // await changeTime({
     //   gameId,

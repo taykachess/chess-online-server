@@ -19,7 +19,7 @@
   //   const chess = new Chess();
 </script>
 
-<div class=" px-12 pb-12 text-gray-800 ">
+<div class="  text-gray-800 ">
   {#if $tournamentTv && $tournamentTv.game}
     <!-- prettier-ignore -->
     <div class=" flex">

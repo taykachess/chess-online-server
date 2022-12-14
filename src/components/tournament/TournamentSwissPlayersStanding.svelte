@@ -1,6 +1,7 @@
 <script lang="ts">
   import { goto } from "$app/navigation";
   import BadgeTitle from "$components/common/BadgeTitle.svelte";
+  import Pagination from "$components/common/Pagination.svelte";
   import { tournament } from "$store/tournament/tournament";
 
   import type { PlayerSwissFrontend } from "$types/tournament";
@@ -105,98 +106,113 @@
 
     return buchholz;
   }
-  $: sortedPlayers = transformPlayers($tournament.players);
+  $: sortedPlayers = transformPlayers($tournament.players).slice(
+    (currentPage - 1) * 10,
+    10 * currentPage
+  );
+
+  let currentPage = 1;
 </script>
 
-<div class=" shadow-lg">
-  <!-- prettier-ignore -->
-  <div class=" grid grid-cols-7 bg-white rounded-tr-md rounded-tl-md  w-full text-center text-sm border">
-          <div class=" col-span-1  py-2  border-r  border-gray-300 text-gray-700"> Место </div>
-          <div class=" col-span-4  py-2  border-r  border-gray-300 text-gray-700"> Игроки </div>
-          <div class=" col-span-1  py-2 border-r  border-gray-300 text-gray-700"> Очки </div>
-          <div class=" col-span-1  py-2  border-gray-300 text-gray-700"> Бухгольц </div>
-
-      </div>
-
-  {#each sortedPlayers as player, index}
+<div class="">
+  <div class=" rounded-lg shadow-lg ">
     <!-- prettier-ignore -->
-    <div class=" grid grid-cols-7 bg-white border-b  border-x  w-full text-center">
-              <div class="relative text-center border-r col-span-1   border-gray-300  py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">
-                {#if player.active}
-                  {player.place}
-                {:else}
-                <div class=" flex items-center justify-center">
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M14.25 9v6m-4.5 0V9M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
+    <div class=" grid grid-cols-7 bg-white rounded-tr-md rounded-tl-md  w-full text-center text-sm border">
+            <div class=" col-span-1  py-2  border-r  border-gray-300 text-gray-700"> Место </div>
+            <div class=" col-span-4  py-2  border-r  border-gray-300 text-gray-700"> Игроки </div>
+            <div class=" col-span-1  py-2 border-r  border-gray-300 text-gray-700"> Очки </div>
+            <div class=" col-span-1  py-2  border-gray-300 text-gray-700"> Бухгольц </div>
+  
+        </div>
 
+    {#each sortedPlayers as player, index}
+      <!-- prettier-ignore -->
+      <div class=" grid grid-cols-7 bg-white border-b {index==sortedPlayers.length-1?' rounded-b-lg':''}  border-x  w-full text-center">
+                <div class="relative text-center border-r col-span-1   border-gray-300  py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">
+                  {#if player.active}
+                    {player.place}
+                  {:else}
+                  <div class=" flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M14.25 9v6m-4.5 0V9M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+  
+                  </div>
+                  {/if}
                 </div>
-                {/if}
-              </div>
-              <div class="relative col-span-4 flex   border-r border-gray-300  py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">
-                <div class=" ml-2 ">
-                  {#if player.title}
-                    <BadgeTitle title={player.title} />
-                  {/if}  
-                    {player.id}  <span class=" text-xs text-orange-700"> {player.rating}</span>
-
-                </div>
-
-                  <!-- svelte-ignore a11y-click-events-have-key-events -->
-                  <div on:mousedown|stopPropagation={()=>{}} class="ml-auto">
-
-                    <div on:click|stopPropagation={()=>{ selectedPlayerGames == index?selectedPlayerGames=-1: selectedPlayerGames = index }} class="   mr-2 hover:scale-110 cursor-pointer relative">
-                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 6.75h12M8.25 12h12m-12 5.25h12M3.75 6.75h.007v.008H3.75V6.75zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zM3.75 12h.007v.008H3.75V12zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm-.375 5.25h.007v.008H3.75v-.008zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
-                      </svg>   
-                      
-                    </div>
-                    {#if selectedPlayerGames == index}
-                      <div class=" absolute right-0 bg-slate-900  z-20 border-8 border-slate-300  w-[20rem]  ">
-
-                        {#if player.matches}
-                          
-                        {#each player.matches as game, index}
-                        <!-- svelte-ignore a11y-click-events-have-key-events -->
-                        <div
-                          on:click={() => {
-                            goto(`/game/${game[1]}`);
-                            // goto()
-                          }}
-                          class="grid grid-cols-7   {index % 2
-                            ? 'bg-slate-50'
-                            : 'bg-white'} cursor-pointer text-center text-sm hover:bg-slate-100 "
-                        >
+                <div class="relative col-span-4 flex   border-r border-gray-300  py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">
+                  <div class=" ml-2 ">
+                    {#if player.title}
+                      <BadgeTitle title={player.title} />
+                    {/if}  
+                      {player.id}  <span class=" text-xs text-orange-700"> {player.rating}</span>
+  
+                  </div>
+  
+                    <!-- svelte-ignore a11y-click-events-have-key-events -->
+                    <div on:mousedown|stopPropagation={()=>{}} class="ml-auto">
+  
+                      <div on:click|stopPropagation={()=>{ selectedPlayerGames == index?selectedPlayerGames=-1: selectedPlayerGames = index }} class="   mr-2 hover:scale-110 cursor-pointer relative">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 6.75h12M8.25 12h12m-12 5.25h12M3.75 6.75h.007v.008H3.75V6.75zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zM3.75 12h.007v.008H3.75V12zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm-.375 5.25h.007v.008H3.75v-.008zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+                        </svg>   
+                        
+                      </div>
+                      {#if selectedPlayerGames == index}
+                        <div class=" absolute right-0 bg-slate-900  z-20 border-8 border-slate-300  w-[20rem]  ">
+  
+                          {#if player.matches}
+                            
+                          {#each player.matches as game, index}
+                          <!-- svelte-ignore a11y-click-events-have-key-events -->
                           <div
-                            class=" col-span-1 flex items-center justify-center border-r border-gray-300 font-medium text-gray-700"
+                            on:click={() => {
+                              goto(`/game/${game[1]}`);
+                              // goto()
+                            }}
+                            class="grid grid-cols-7   {index % 2
+                              ? 'bg-slate-50'
+                              : 'bg-white'} cursor-pointer text-center text-sm hover:bg-slate-100 "
                           >
-                            {index + 1}
-                          </div>
-                          <div class=" col-span-5 flex border-gray-300   px-4 py-2 text-gray-700">
-                            <div class=" mx-auto">
-                              {#if game[0].title}
-                                <BadgeTitle title={game[0].title} />
-                              {/if}
-                              <span class=" font-medium text-slate-800">{ game[0].id }</span>
-                              <span class=" text-xs text-orange-700"> {game[0].rating}</span>
+                            <div
+                              class=" col-span-1 flex items-center justify-center border-r border-gray-300 font-medium text-gray-700"
+                            >
+                              {index + 1}
+                            </div>
+                            <div class=" col-span-5 flex border-gray-300   px-4 py-2 text-gray-700">
+                              <div class=" mx-auto">
+                                {#if game[0].title}
+                                  <BadgeTitle title={game[0].title} />
+                                {/if}
+                                <span class=" font-medium text-slate-800">{ game[0].id }</span>
+                                <span class=" text-xs text-orange-700"> {game[0].rating}</span>
+                              </div>
+                            </div>
+                            <div
+                              class=" col-span-1 flex items-center justify-center border-x border-gray-300 font-medium text-gray-700"
+                            >
+                            {game[0].res}
                             </div>
                           </div>
-                          <div
-                            class=" col-span-1 flex items-center justify-center border-x border-gray-300 font-medium text-gray-700"
-                          >
-                          {game[0].res}
-                          </div>
+                        {/each}
+                          {/if}
                         </div>
-                      {/each}
-                        {/if}
-                      </div>
-                    {/if}
-                  </div>
+                      {/if}
+                    </div>
+                </div>
+                <div class="relative text-center col-span-1 border-r border-gray-300  py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">{stringPoints(player)}</div>
+                <div class="relative text-center col-span-1  border-gray-300  py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">{calculateBuchholz(player)}</div>
               </div>
-              <div class="relative text-center col-span-1 border-r border-gray-300  py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">{stringPoints(player)}</div>
-              <div class="relative text-center col-span-1  border-gray-300  py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">{calculateBuchholz(player)}</div>
-            </div>
-  {/each}
+    {/each}
+  </div>
+
+  <div class=" mt-2">
+    <Pagination
+      count={$tournament.players.length}
+      cb={(page) => (currentPage = page)}
+      title="игроков"
+    />
+  </div>
 </div>
 
 <svelte:window on:mousedown={() => (selectedPlayerGames = -1)} />

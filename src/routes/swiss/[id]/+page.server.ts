@@ -79,12 +79,12 @@ export const load: PageServerLoad = async ({ params, fetch }) => {
       ...tournament,
       players: Object.values(players),
       currentRound: currentRoundValue,
-      matches,
+      // matches,
     };
 
     const tournamentTv: TournamentTv = { tv, game };
 
-    return { swiss, tournamentTv };
+    return { swiss, tournamentTv, matches };
   } else if (tournamentWithStatus.status == "registration") {
     const tournament = await prisma.tournament.findUnique({
       where: { id: params.id },
@@ -130,7 +130,7 @@ export const load: PageServerLoad = async ({ params, fetch }) => {
       ...tournament,
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
-      matches: tournament.matches[tournament.rounds - 1],
+      // matches: tournament.matches[tournament.rounds - 1],
       // players: tournament.players as PlayerSwiss[],
       currentRound: tournament.rounds ? tournament.rounds : 1,
     };
@@ -143,6 +143,10 @@ export const load: PageServerLoad = async ({ params, fetch }) => {
     const game = (await gameJson.json()) as GetGame;
     const tournamentTv: TournamentTv = { tv, game };
 
-    return { swiss, tournamentTv };
+    return {
+      swiss,
+      tournamentTv,
+      matches: tournament.matches[tournament.rounds - 1],
+    };
   }
 };

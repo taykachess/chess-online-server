@@ -1,5 +1,5 @@
 import type { TournamentFormat, TournamentStatus } from "@prisma/client";
-import { ChessInstance } from "cm-chess";
+import { ChessInstance } from "cm-chess-ts";
 import { ChessBoardInstance } from "cm-chessboard-ts";
 import type { Title, Result, GetGame } from "./game";
 
@@ -44,10 +44,10 @@ export type GetTournament = {
   players: PlayerSwiss[];
   rounds: number | null;
   currentRound: number;
-  selectedRound: number;
+  // selectedRound: number;
 
   standing?: number;
-  matches: MatchSwiss[];
+  // matches: MatchSwiss[];
 };
 
 export interface TournamentTv {
