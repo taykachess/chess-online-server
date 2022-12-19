@@ -1,13 +1,18 @@
 import type { Tournament, User } from "@prisma/client";
 import { io } from "../../global/io";
 import { addTournamentMatch, setTournament } from "../../global/tournament";
+import { onGameStartRandomMode } from "../../providers/game/dev/onGameStartRandomMode";
 import { GetGame } from "../../types/game";
 import type {
   PlayerSwiss,
   MatchSwiss,
   TournamentSwiss,
 } from "../../types/tournament";
-import { TOURNAMENT_ROOM } from "../../variables/redisIndex";
+import {
+  TIME_TO_CANCEL_GAME,
+  TOURNAMENT_ROOM,
+  TOURNAMENT_GAME_PREPARE_TIME,
+} from "../../variables/redisIndex";
 import { getGameForFrontend } from "../game/getGame";
 import { pairingSwiss } from "./pairingSwiss";
 import { setTournamentTv } from "./setTournamentTv";
@@ -71,6 +76,12 @@ export async function startSwiss({
       control: tournament.control,
       round: 1,
     });
+
+    if (gameId && process.env.NODE_ENV == "dev")
+      setTimeout(() => {
+        onGameStartRandomMode({ gameId });
+      }, TOURNAMENT_GAME_PREPARE_TIME);
+
     pair[3] = `${gameId}`;
   }
 

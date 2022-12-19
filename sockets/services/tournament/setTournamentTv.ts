@@ -7,6 +7,7 @@ import { getGameForFrontend } from "../game/getGame";
 export async function setTournamentTv(tournamentId: string, gameId: string) {
   await setTourTV({ tournamentId, gameId });
   const game = (await getGameForFrontend({ gameId })) as GetGame;
+  console.log(game);
   if (game)
     io.to(TOURNAMENT_ROOM(tournamentId)).emit("tournament:tv", {
       game: { ...game, id: gameId },

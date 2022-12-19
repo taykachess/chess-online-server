@@ -9,11 +9,22 @@
   import TournamentPlayersRegister from "$components/tournament/TournamentPlayersRegister.svelte";
   import TournamentSwissPlayersStanding from "$components/tournament/TournamentSwissPlayersStanding.svelte";
   import Trophy from "$components/tournament/Trophy.svelte";
+  import { TOURNAMENT_GAME_PREPARE_TIME } from "$sockets/variables/redisIndex";
   import { socket } from "$store/sockets/socket";
   import { pairings } from "$store/tournament/pairings";
   import { selectedRound } from "$store/tournament/swiss/selectedRound";
   import { tournament } from "$store/tournament/tournament";
-  import { tournamentTv } from "$store/tournament/tournamentTv";
+  import {
+    board,
+    chess,
+    intervalId,
+    isTournamentTimerVisible,
+    liveTournamentGameId,
+    requestId,
+    selectedTournamentGameId,
+    tournamentPrepareTime,
+    tournamentTv,
+  } from "$store/tournament/tournamentTv";
   import type { GetGame } from "$types/game";
   import type {
     GetTournament,
@@ -21,9 +32,11 @@
     TournamentTv,
   } from "$types/tournament";
   import { Chess } from "cm-chess-ts";
-  import { onMount } from "svelte";
+  import { onMount, tick } from "svelte";
   import type { PageData } from "./$types";
   export let data: PageData;
+
+  let tournamentPrepareTimeout: NodeJS.Timeout;
 
   function setBye({ id }: { id: string }) {
     const indexW = $tournament.players.findIndex((player) => player.id == id);
@@ -45,32 +58,46 @@
   $tournament = data.swiss as GetTournament;
 
   $tournamentTv = data.tournamentTv as TournamentTv;
+  if (data.liveGameId) {
+    $liveTournamentGameId = data.liveGameId;
+    $selectedTournamentGameId = $liveTournamentGameId;
+
+    console.log("onLoad", $selectedTournamentGameId, $liveTournamentGameId);
+  }
+
+  console.log("tournament", $tournamentTv);
   $pairings = data.matches as MatchSwiss[];
   console.log($tournamentTv);
   if (browser)
     if ($tournamentTv) {
-      $tournamentTv.chess = new Chess();
+      $chess = new Chess();
       // @ts-ignore
-      $tournamentTv.chess.loadPgn($tournamentTv.game.pgn);
+      $chess.loadPgn($tournamentTv.game.pgn);
     }
 
   let lastTime = 0;
-  let requestId: number;
+  // let requestId: number;
+
   function playClock(time: number) {
     if (lastTime) {
       const delta = time - lastTime;
-      if ($tournamentTv.chess.turn() == "w") {
+      if ($chess.turn() == "w") {
         $tournamentTv.game.time[0] = $tournamentTv.game.time[0] - delta;
       } else {
         $tournamentTv.game.time[1] = $tournamentTv.game.time[1] - delta;
       }
     }
     lastTime = time;
-    requestId = window.requestAnimationFrame(playClock);
+    $requestId = window.requestAnimationFrame(playClock);
   }
 
   function startClock() {
-    requestId = window.requestAnimationFrame(playClock);
+    window.cancelAnimationFrame($requestId);
+    $requestId = window.requestAnimationFrame(playClock);
+  }
+
+  function stopClock() {
+    window.cancelAnimationFrame($requestId);
   }
 
   function setTournamentTv(game: GetGame, gameId: string) {
@@ -80,31 +107,63 @@
       $tournamentTv.game.id &&
       $tournamentTv.game.result == "*"
     )
-      $socket.emit("game:leave", { gameId });
+      $socket.emit("game:leave", { gameId: $tournamentTv.game.id });
 
-    $tournamentTv.tv = gameId;
-    $tournamentTv.game = game;
-    $tournamentTv.chess = new Chess();
-    $tournamentTv.chess.loadPgn(game.pgn);
-    $tournamentTv.board?.setPosition($tournamentTv.chess.fen());
+    if ($intervalId) clearInterval($intervalId);
+    if (tournamentPrepareTimeout) clearTimeout(tournamentPrepareTimeout);
+    lastTime = 0;
+
+    $socket.removeListener("game:move");
+
+    $tournamentTv = { game };
+
+    $chess.loadPgn(game.pgn);
+    $board.setPosition($chess.fen());
+
+    // console.log("setTournamentTv", game);
     if (game.result == "*") {
-      // $socket.removeListener("game:move");
+      if (!game.pgn) {
+        $tournamentPrepareTime =
+          game.tsmp + TOURNAMENT_GAME_PREPARE_TIME - new Date().getTime();
+        console.log("ply", $tournamentPrepareTime);
+        if ($tournamentPrepareTime > 0) {
+          $isTournamentTimerVisible = true;
+          $intervalId = setInterval(() => {
+            $tournamentPrepareTime -= 1000;
+          }, 1000);
+          tournamentPrepareTimeout = setTimeout(() => {
+            startClock();
+            $isTournamentTimerVisible = false;
+          }, $tournamentPrepareTime);
+        } else startClock();
+      } else startClock();
+
       $tournamentTv.game.id = gameId;
-      startClock();
 
       $socket.emit("game:sub", { gameId });
       $socket.on("game:move", (move) => {
-        $tournamentTv.chess?.move(move);
-        $tournamentTv.board?.setPosition(
-          $tournamentTv.chess ? $tournamentTv.chess.fen() : "start"
-        );
+        console.log(move, "from Page");
+        $chess.move(move);
+        $board.setPosition($chess.fen());
       });
+      $socket.on("game:end", ({ newEloBlack, newEloWhite, result }) => {
+        console.log("game ended");
+        stopClock();
+      });
+    } else {
+      $isTournamentTimerVisible = false;
     }
+
+    console.log(
+      "onSetTournamentTv",
+      $selectedTournamentGameId,
+      $liveTournamentGameId
+    );
   }
 
   console.log($tournamentTv);
 
-  onMount(() => {
+  onMount(async () => {
     $socket.emit("tournament:subscribe", { tournamentId: $page.params.id });
     $socket.on("tournament:register", (participant) => {
       if (!$tournament.participants) return;
@@ -174,18 +233,15 @@
       $tournament.players = $tournament.players;
     });
 
-    $socket.on("tournament:tv", ({ game }) => {
-      console.log("tournamentTv", $tournamentTv);
-
-      // @ts-ignore
-      $tournamentTv = {};
-      // @ts-ignore
-      setTournamentTv(game, game.id);
+    $socket.on("tournament:tv", async ({ game }) => {
+      console.log("tournament:tv");
+      if (!game.id) return;
+      if ($selectedTournamentGameId == $liveTournamentGameId) {
+        $liveTournamentGameId = game.id;
+        $selectedTournamentGameId = game.id;
+        setTournamentTv(game, game.id);
+      } else $liveTournamentGameId = game.id;
     });
-    if ($tournamentTv) {
-      console.log("tournamentTv", $tournamentTv);
-      setTournamentTv($tournamentTv.game, $tournamentTv.tv);
-    }
   });
 
   beforeNavigate(() => {
@@ -257,11 +313,28 @@
   <div class="my-8 grid grid-cols-5 space-x-8">
     {#if $tournament.rounds && $pairings}
       <div class="  col-span-3">
-        <GameList />
+        <GameList
+          on:getGame={(event) => {
+            $selectedTournamentGameId = event.detail.id;
+            stopClock();
+            setTournamentTv(event.detail, event.detail.id);
+          }}
+        />
       </div>
       <div class=" col-span-2 ">
-        <ChessTv />
+        <ChessTv
+          on:boardMounted={() => {
+            if ($tournamentTv) {
+              // $selectedTournamentGameId = $liveTournamentGameId;
+              console.log("tournamentTv", $tournamentTv);
+              setTournamentTv($tournamentTv.game, $liveTournamentGameId);
+            }
+            console.log("board mounted");
+          }}
+        />
       </div>
+      {$selectedTournamentGameId}
+      {$liveTournamentGameId}
     {/if}
   </div>
 </div>

@@ -1,22 +1,24 @@
 <script lang="ts">
-  import { onMount } from "svelte";
+  import { createEventDispatcher, onMount } from "svelte";
   import {
     Chessboard,
     MARKER_TYPE,
     type ChessBoardInstance,
     type Config,
   } from "cm-chessboard-ts";
-  import type { ChessInstance } from "cm-chess";
+  import type { ChessInstance } from "cm-chess-ts";
+  import { board, chess, tournamentTv } from "$store/tournament/tournamentTv";
 
-  export let chess: ChessInstance;
-  export let board: ChessBoardInstance;
+  const dispatcher = createEventDispatcher();
+  // export let chess: ChessInstance;
+  // export let board: ChessBoardInstance;
 
   let boardHTML: HTMLElement;
 
   const config: Config = {
     orientation: "w",
     responsive: true,
-    position: chess ? chess.fen() : "empty",
+    position: $chess.fen(),
     style: {
       borderType: "none",
       showCoordinates: false,
@@ -34,13 +36,15 @@
     // extensions:{}
   };
 
-  function onMove(move: string) {
-    const result = chess.move(move);
-    if (result) board.setPosition(chess.fen());
-  }
+  // function onMove(move: string) {
+  //   const result = chess.move(move);
+  //   if (result) board.setPosition(chess.fen());
+  // }
 
   onMount(() => {
-    board = new Chessboard(boardHTML, config);
+    $board = new Chessboard(boardHTML, config);
+
+    dispatcher("boardMounted");
   });
 </script>
 

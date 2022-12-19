@@ -15,10 +15,14 @@ import {
   setTournamentActiveGames,
   setTournamentMatchResult,
 } from "../../global/tournament";
+import { onGameStartRandomMode } from "../../providers/game/dev/onGameStartRandomMode";
 import { Game, GetGame, Result } from "../../types/game";
 import { MatchSwiss } from "../../types/tournament";
 import { transformResult } from "../../utils/transformResult";
-import { TOURNAMENT_ROOM } from "../../variables/redisIndex";
+import {
+  TOURNAMENT_GAME_PREPARE_TIME,
+  TOURNAMENT_ROOM,
+} from "../../variables/redisIndex";
 import { getGameForFrontend } from "../game/getGame";
 import { calculateBuchholz } from "./calculateBuchholz";
 import { pairingSwiss } from "./pairingSwiss";
@@ -172,6 +176,10 @@ export async function finishTournamentGame({
           control: game.control,
           round,
         });
+        if (gameId && process.env.NODE_ENV == "dev")
+          setTimeout(() => {
+            onGameStartRandomMode({ gameId });
+          }, TOURNAMENT_GAME_PREPARE_TIME);
         pair[3] = `${gameId}`;
       }
 

@@ -3,14 +3,29 @@
   import { page } from "$app/stores";
   import BadgeTitle from "$components/common/BadgeTitle.svelte";
   import PulseAnimatedElement from "$components/common/PulseAnimatedElement.svelte";
+  import IconChessboard from "$components/icons/IconChessboard.svelte";
+  import IconTv from "$components/icons/IconTv.svelte";
+  import { TOURNAMENT_GAME_PREPARE_TIME } from "$sockets/variables/redisIndex";
   import { socket } from "$store/sockets/socket";
   import { pairings } from "$store/tournament/pairings";
   import { selectedRound } from "$store/tournament/swiss/selectedRound";
   import { tournament } from "$store/tournament/tournament";
-  import { tournamentTv } from "$store/tournament/tournamentTv";
+  import {
+    isTournamentTimerVisible,
+    requestId,
+    tournamentPrepareTime,
+    tournamentTv,
+    intervalId,
+    board,
+    chess,
+    liveTournamentGameId,
+    selectedTournamentGameId,
+  } from "$store/tournament/tournamentTv";
   import type { GetGame } from "$types/game";
   import { Chess } from "cm-chess-ts";
-  import { onMount, tick } from "svelte";
+  import { createEventDispatcher, onMount, tick } from "svelte";
+
+  const dispatch = createEventDispatcher();
 
   const fetchPairings = (round: number) => {
     return fetch(`/api/tournament/${$page.params.id}/pairings?round=${round}`);
@@ -60,77 +75,12 @@
     });
   }
 
-  let lastTime = 0;
-  let requestId: number;
-  function playClock(time: number) {
-    if (lastTime) {
-      const delta = time - lastTime;
-      // @ts-ignore
-      if ($tournamentTv.chess.turn() == "w") {
-        $tournamentTv.game.time[0] = $tournamentTv.game.time[0] - delta;
-      } else {
-        $tournamentTv.game.time[1] = $tournamentTv.game.time[1] - delta;
-      }
-    }
-    lastTime = time;
-    requestId = window.requestAnimationFrame(playClock);
-  }
-
-  function startClock() {
-    requestId = window.requestAnimationFrame(playClock);
-  }
-
-  function stopClock() {
-    window.cancelAnimationFrame(requestId);
-  }
-
-  onMount(async () => {
-    console.log("onMount");
-
-    // if (!$tournamentTv) return;
-
-    // setTournamentTv($tournamentTv.game, $tournamentTv.tv);
-
-    // $socket.on("tournament:tv", ({ game }) => {
-    //   setTournamentTv(game, game.id);
-    // });
-  });
-
-  function setTournamentTv(game: GetGame, gameId: string) {
-    if (
-      $tournamentTv.game &&
-      $tournamentTv.game.id &&
-      $tournamentTv.game.result == "*"
-    )
-      $socket.emit("game:leave", { gameId });
-
-    $tournamentTv.tv = gameId;
-    $tournamentTv.game = game;
-    $tournamentTv.chess = new Chess();
-    $tournamentTv.chess.loadPgn(game.pgn);
-    $tournamentTv.board?.setPosition($tournamentTv.chess.fen());
-    if (game.result == "*") {
-      // $socket.removeListener("game:move");
-      $tournamentTv.game.id = gameId;
-      startClock();
-
-      $socket.emit("game:sub", { gameId });
-      $socket.on("game:move", (move) => {
-        $tournamentTv.chess?.move(move);
-        $tournamentTv.board?.setPosition(
-          $tournamentTv.chess ? $tournamentTv.chess.fen() : "start"
-        );
-      });
-    }
-  }
-
   async function getGame(gameId: string) {
     const data = await fetch(`/api/game/${gameId}`);
     const game = (await data.json()) as GetGame;
     if (!game) return;
-    stopClock();
-
-    setTournamentTv(game, gameId);
+    game.id = gameId;
+    dispatch("getGame", game);
   }
 
   onMount(async () => {
@@ -141,6 +91,34 @@
   beforeNavigate(() => {
     $socket.removeListener("tournament:pairings");
   });
+
+  function returnCssClass(gameId: string | null, index: number) {
+    if (
+      gameId == $selectedTournamentGameId &&
+      gameId == $liveTournamentGameId
+    ) {
+      return "bg-gradient-to-r from-sky-100 to-green-100";
+    }
+    if (gameId == $selectedTournamentGameId) {
+      return "bg-sky-100";
+    }
+
+    if (gameId == $liveTournamentGameId) {
+      return "bg-green-100";
+    }
+
+    if (index % 2) {
+      return "bg-slate-50 hover:bg-slate-100";
+    } else {
+      return "bg-white hover:bg-slate-100";
+    }
+    // {game[3] == $selectedTournamentGameId
+    //     ? 'bg-sky-100'
+    //     : index % 2
+    //     ? 'bg-slate-50 hover:bg-slate-100'
+    //     : 'bg-white hover:bg-slate-100'}
+    return "";
+  }
 </script>
 
 <div class="  rounded-lg  border shadow-lg ">
@@ -183,7 +161,7 @@
     {/each}
   </div>
 
-  <!-- {JSON.stringify($tournamentTv.tv)} -->
+  <!-- {JSON.stringify($liveTournamentGameId)} -->
   {#each $pairings as game, index}
     <!-- svelte-ignore a11y-click-events-have-key-events -->
     <div
@@ -194,18 +172,39 @@
         // goto(`/game/${game[3]}`);
         // goto()
       }}
-      class="grid grid-cols-12   {game[3] == $tournamentTv.tv
+      class="grid grid-cols-12   
+      {game[3] == $selectedTournamentGameId && game[3] == $liveTournamentGameId
+        ? 'bg-gradient-to-r from-sky-100 to-green-100'
+        : game[3] == $selectedTournamentGameId && game[3]
         ? 'bg-sky-100'
+        : game[3] == $liveTournamentGameId
+        ? 'bg-green-100'
         : index % 2
         ? 'bg-slate-50 hover:bg-slate-100'
-        : 'bg-white hover:bg-slate-100'} cursor-pointer text-center text-sm  "
+        : 'bg-white hover:bg-slate-100'}
+      
+      cursor-pointer text-center text-sm  "
     >
       <div
         class=" col-span-1 flex items-center justify-center border-r border-gray-300 font-medium text-gray-700"
       >
-        {#if game[3] == $tournamentTv.tv}
-          <!-- prettier-ignore -->
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5"  viewBox="0 0 448 512"><path d="M64 96v64h64V96H64zM256 96H192v64h64V96zM192 416h64v-64H192V416zM64 416h64v-64H64V416zM64 224v64h64V224H64zM384 288V224h-64v64H384zM384 416v-64h-64v64H384zM320 160h64V96h-64V160zM256 224h64V160h-64V224zM384 32H64C28.8 32 0 60.8 0 96v320c0 35.2 28.8 64 64 64h320c35.2 0 64-28.8 64-64V96C448 60.8 419.2 32 384 32zM400 416c0 8.674-7.326 16-16 16H64c-8.672 0-16-7.326-16-16V96c0-8.674 7.328-16 16-16h320c8.674 0 16 7.326 16 16V416zM192 160H128v64h64V160zM192 288h64V224H192V288zM128 288v64h64V288H128zM256 352h64V288h-64V352z"/></svg>
+        {#if game[3] == $selectedTournamentGameId && game[3] == $liveTournamentGameId}
+          <div class=" flex items-center space-x-1">
+            <div class=" h-5 w-5">
+              <IconChessboard />
+            </div>
+            <div class=" h-5 w-5">
+              <IconTv />
+            </div>
+          </div>
+        {:else if game[3] == $selectedTournamentGameId}
+          <div class=" h-5 w-5">
+            <IconChessboard />
+          </div>
+        {:else if game[3] == $liveTournamentGameId}
+          <div class="h-5 w-5">
+            <IconTv />
+          </div>
         {:else}
           <span class="">
             {index + 1}

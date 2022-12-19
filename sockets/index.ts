@@ -70,7 +70,8 @@ prisma.tournament
     },
     data: {
       status: "registration",
-      startTime: new Date(new Date().getTime() + 1000 * 60 * 0.2),
+      control: "0.2+0",
+      startTime: new Date(new Date().getTime() + 1000 * 60 * 0.1),
     },
   })
   .then((tournament) => {

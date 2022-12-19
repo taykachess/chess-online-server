@@ -72,7 +72,12 @@ export async function createGame({
     });
   };
   //  В турнире должно быть game.time[0]
-  if (data.tournamentId) setGameTimeoutInitial(gameId, initialFn, randomTime);
+  if (data.tournamentId)
+    setGameTimeoutInitial(
+      gameId,
+      initialFn,
+      randomTime + TOURNAMENT_GAME_PREPARE_TIME
+    );
   else setGameTimeoutInitial(gameId, initialFn, randomTime);
 
   if (data.matchId) game.matchId = data.matchId;

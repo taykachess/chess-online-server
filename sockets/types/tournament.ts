@@ -52,12 +52,12 @@ export type GetTournament = {
 
 export interface TournamentTv {
   // game ID
-  tv: string;
+  // tv: string;
   // Информация об игре
   game: GetGame;
 
-  chess?: ChessInstance;
-  board?: ChessBoardInstance;
+  // chess?: ChessInstance;
+  // board?: ChessBoardInstance;
 }
 
 // export interface GetTournamentSwiss extends GetTournament {

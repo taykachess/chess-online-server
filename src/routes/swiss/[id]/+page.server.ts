@@ -82,9 +82,9 @@ export const load: PageServerLoad = async ({ params, fetch }) => {
       // matches,
     };
 
-    const tournamentTv: TournamentTv = { tv, game };
+    const tournamentTv: TournamentTv = { game };
 
-    return { swiss, tournamentTv, matches };
+    return { swiss, tournamentTv, matches, liveGameId: tv };
   } else if (tournamentWithStatus.status == "registration") {
     const tournament = await prisma.tournament.findUnique({
       where: { id: params.id },
@@ -141,11 +141,12 @@ export const load: PageServerLoad = async ({ params, fetch }) => {
 
     const gameJson = await fetch(`/api/game/${tv}`);
     const game = (await gameJson.json()) as GetGame;
-    const tournamentTv: TournamentTv = { tv, game };
+    const tournamentTv: TournamentTv = { game };
 
     return {
       swiss,
       tournamentTv,
+      liveGameId: tv,
       matches: tournament.matches[tournament.rounds - 1],
     };
   }
