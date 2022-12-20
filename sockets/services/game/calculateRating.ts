@@ -16,15 +16,15 @@ export function calculateRating({
   const K = calculateK(control);
 
   switch (result) {
-    case "1-0":
+    case "1":
       actualPointWhite = 1;
       actualPointBlack = 0;
       break;
-    case "0.5-0.5":
+    case "0.5":
       actualPointWhite = 0.5;
       actualPointBlack = 0.5;
       break;
-    case "0-1":
+    case "0":
       actualPointWhite = 0;
       actualPointBlack = 1;
       break;

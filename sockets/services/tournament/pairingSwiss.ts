@@ -184,7 +184,7 @@ export function pairingSwiss(
         score: byeArray[i].score,
       },
       null,
-      "+-",
+      "+",
       null,
     ]);
     delete byeArray[i].index;

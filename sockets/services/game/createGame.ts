@@ -51,8 +51,7 @@ export async function createGame({
     if (data.tournamentId) {
       await setGameOver({
         gameId,
-        result:
-          randomResult == 0 ? "0-1" : randomResult == 1 ? "1-0" : "0.5-0.5",
+        result: randomResult == 0 ? "0" : randomResult == 1 ? "1" : "0.5",
         game,
       });
       return;
@@ -67,7 +66,7 @@ export async function createGame({
     // });
     await setGameOver({
       gameId,
-      result: randomResult == 0 ? "0-1" : randomResult == 1 ? "1-0" : "0.5-0.5",
+      result: randomResult == 0 ? "0" : randomResult == 1 ? "1" : "0.5",
       game,
     });
   };

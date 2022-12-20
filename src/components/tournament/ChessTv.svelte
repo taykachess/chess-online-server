@@ -28,7 +28,19 @@
   {#if $tournamentTv && $tournamentTv.game}
     <!-- prettier-ignore -->
     <div class=" flex">
-      <span class=" mr-2 text-red-800 font-bold  ">{$tournamentTv.game.result=="*"?'':$tournamentTv.game.result.split('-')[1]}</span>
+      <span class=" mr-2 text-red-800 font-bold  ">{
+        $tournamentTv.game.result=="*"
+        ?''
+        :$tournamentTv.game.result=='1'
+        ?'0'
+        :$tournamentTv.game.result=='0.5'
+        ?'0.5'
+        :$tournamentTv.game.result=='0'
+        ?'1'
+        :$tournamentTv.game.result=="+"
+        ?'-'
+        :'+'
+        }</span>
       <div class="">
         {#if $tournamentTv.game.black.title}
           <BadgeTitle title={$tournamentTv.game.black.title} />
@@ -59,7 +71,7 @@
     <!-- prettier-ignore -->
     <div class=" flex">
       <div class="">
-        <span class=" mr-2 text-green-800 font-bold">{$tournamentTv.game.result=="*"?'':$tournamentTv.game.result.split('-')[0]}</span>
+        <span class=" mr-2 text-green-800 font-bold">{$tournamentTv.game.result=="*"?'':$tournamentTv.game.result}</span>
         {#if $tournamentTv.game.white.title}
           <BadgeTitle title={$tournamentTv.game.white.title} />
         {/if}

@@ -3,6 +3,7 @@
   import { page } from "$app/stores";
   import { info } from "$store/game/info";
   import { socket } from "$store/sockets/socket";
+  import type { Result } from "$types/game";
 
   let countClick = 0;
   if (browser) {
@@ -41,15 +42,15 @@
     if (countClick == 2)
       $socket.emit("game:resign", { gameId: $page.params.id });
   }
-  function stringResult(result: "1-0" | "0.5-0.5" | "0-1" | "*" | "+-" | "-+") {
+  function stringResult(result: Result) {
     switch (result) {
-      case "1-0": {
+      case "1": {
         return "Белые выиграли";
       }
-      case "0-1": {
+      case "0": {
         return "Черные выиграли";
       }
-      case "0.5-0.5": {
+      case "0.5": {
         return "Ничья";
       }
     }

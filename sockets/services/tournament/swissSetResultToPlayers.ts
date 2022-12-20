@@ -100,15 +100,15 @@ export async function swissSetResultToPlayers({
   });
 
   const q8: Promise<any>[] = [];
-  if (result == "1-0" || result == "+-") {
+  if (result == "1" || result == "+") {
     q8.push(
       increasePlayerScore({ tournamentId, username: white.id, point: 1 })
     );
-  } else if (result == "0-1" || result == "-+") {
+  } else if (result == "0" || result == "-") {
     q8.push(
       increasePlayerScore({ tournamentId, username: black.id, point: 1 })
     );
-  } else if (result == "0.5-0.5") {
+  } else if (result == "0.5") {
     q8.push(
       increasePlayerScore({ tournamentId, username: white.id, point: 0.5 })
     );

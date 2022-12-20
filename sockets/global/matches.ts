@@ -19,13 +19,13 @@ export async function addGame(
 ): Promise<Match> {
   function returnIndex(match: Match, game: MatchGame) {
     if (match.player1 == game.white) {
-      if (game.result == "1-0") return 0;
-      else if (game.result == "0-1") return 1;
-      else if (game.result == "0.5-0.5") return 2;
+      if (game.result == "1") return 0;
+      else if (game.result == "0") return 1;
+      else if (game.result == "0.5") return 2;
     } else if (match.player1 == game.black) {
-      if (game.result == "1-0") return 1;
-      else if (game.result == "0-1") return 0;
-      else if (game.result == "0.5-0.5") return 2;
+      if (game.result == "1") return 1;
+      else if (game.result == "0") return 0;
+      else if (game.result == "0.5") return 2;
     }
     return -1;
   }

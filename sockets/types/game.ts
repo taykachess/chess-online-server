@@ -1,4 +1,4 @@
-import type { ChessInstance } from "cm-chess";
+import type { ChessInstance } from "cm-chess-ts";
 import { Chess } from "chess.js";
 
 export type Title = "GM" | "IM";
@@ -9,7 +9,7 @@ export interface Player {
   title?: Title | null;
 }
 
-export type Result = "1-0" | "0.5-0.5" | "0-1" | "*" | "+-" | "-+";
+export type Result = "1" | "0.5" | "0" | "*" | "+" | "-";
 
 type OfferedDrawPlayer = { username: string; ply: number; status?: "declined" };
 

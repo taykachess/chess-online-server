@@ -24,7 +24,7 @@ export async function onDrawAccept(
       throw Error("Draw was declined");
     if (game.lastOfferDraw.ply + 2 < game.ply) throw Error("Too late");
 
-    await setGameOver({ gameId, result: "0.5-0.5", game });
+    await setGameOver({ gameId, result: "0.5", game });
 
     // await onGameOver({ gameId, result });
   } catch (error) {

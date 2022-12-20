@@ -19,7 +19,7 @@ export async function onResign(
       throw Error("You have no access to resign");
 
     // const turn = game.chess.turn();
-    const result = game.white.username == socket.data.username ? "0-1" : "1-0";
+    const result = game.white.username == socket.data.username ? "0" : "1";
     await setGameOver({ gameId, result, game });
   } catch (error) {
     console.log(error);

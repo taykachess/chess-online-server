@@ -49,7 +49,7 @@ export async function changeTime({
       async () => {
         // await setTimeBlack(gameId, 0);
         game.time[1] = 0;
-        await setGameOver({ gameId, result: "1-0", game });
+        await setGameOver({ gameId, result: "1", game });
       },
       game.time[1]
     );
@@ -61,7 +61,7 @@ export async function changeTime({
       async () => {
         // await setTimeWhite(gameId, 0);
         game.time[0] = 0;
-        await setGameOver({ gameId, result: "0-1", game });
+        await setGameOver({ gameId, result: "0", game });
       },
       game.time[0]
     );

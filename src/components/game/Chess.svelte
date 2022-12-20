@@ -228,13 +228,13 @@
       $match.games = $match.games;
 
       if ($match.player1 == $info.white.username) {
-        if (result == "1-0") $match.result[0] = $match.result[0] + 1;
-        else if (result == "0-1") $match.result[1] = $match.result[1] + 1;
-        else if (result == "0.5-0.5") $match.result[2] = $match.result[2] + 1;
+        if (result == "1") $match.result[0] = $match.result[0] + 1;
+        else if (result == "0") $match.result[1] = $match.result[1] + 1;
+        else if (result == "0.5") $match.result[2] = $match.result[2] + 1;
       } else if ($match.player1 == $info.black.username) {
-        if (result == "1-0") $match.result[1] = $match.result[1] + 1;
-        else if (result == "0-1") $match.result[0] = $match.result[0] + 1;
-        else if (result == "0.5-0.5") $match.result[2] = $match.result[2] + 1;
+        if (result == "1") $match.result[1] = $match.result[1] + 1;
+        else if (result == "0") $match.result[0] = $match.result[0] + 1;
+        else if (result == "0.5") $match.result[2] = $match.result[2] + 1;
       }
     }
 

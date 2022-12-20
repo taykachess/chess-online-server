@@ -224,7 +224,15 @@
       <div
         class=" col-span-1 flex items-center justify-center border-x border-gray-300 font-medium text-gray-700"
       >
-        {game[2] == "0.5-0.5" ? "=" : game[2] == "+-" ? "Bye" : game[2]}
+        {game[2] == "0.5"
+          ? "="
+          : game[2] == "+"
+          ? "+-"
+          : game[2] == "1"
+          ? "1-0"
+          : game[2] == "0"
+          ? "0-1"
+          : "*"}
       </div>
       <div class=" col-span-5 flex border-gray-300   px-4 py-2 text-gray-700">
         {#if game[1]}
