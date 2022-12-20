@@ -58,11 +58,14 @@
   $tournament = data.swiss as GetTournament;
 
   $tournamentTv = data.tournamentTv as TournamentTv;
-  if (data.liveGameId) {
-    $liveTournamentGameId = data.liveGameId;
-    $selectedTournamentGameId = $liveTournamentGameId;
 
-    console.log("onLoad", $selectedTournamentGameId, $liveTournamentGameId);
+  if (browser) {
+    if (data.liveGameId) {
+      $liveTournamentGameId = data.liveGameId;
+      $selectedTournamentGameId = $liveTournamentGameId;
+
+      console.log("onLoad", $selectedTournamentGameId, $liveTournamentGameId);
+    }
   }
 
   console.log("tournament", $tournamentTv);

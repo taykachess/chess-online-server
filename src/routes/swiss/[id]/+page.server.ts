@@ -143,6 +143,8 @@ export const load: PageServerLoad = async ({ params, fetch }) => {
     const game = (await gameJson.json()) as GetGame;
     const tournamentTv: TournamentTv = { game };
 
+    console.log("good", tournamentTv.game);
+
     return {
       swiss,
       tournamentTv,

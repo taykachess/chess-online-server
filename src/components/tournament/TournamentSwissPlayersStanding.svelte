@@ -69,6 +69,7 @@
 
   function transformPlayers(players: PlayerSwissFrontend[]) {
     resetUUID(players);
+    console.log(players);
     players.sort(sortFunction);
     transformUUIDtoPlace(players);
 
@@ -130,7 +131,7 @@
       <div class=" grid grid-cols-7 bg-white border-b {index==sortedPlayers.length-1?' rounded-b-lg':''}  border-x  w-full text-center">
                 <div class="relative text-center border-r col-span-1   border-gray-300  py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">
                   {#if player.active}
-                    {player.place}
+                    {player.place} {player.uuid}
                   {:else}
                   <div class=" flex items-center justify-center">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">

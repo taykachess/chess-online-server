@@ -167,17 +167,19 @@
     <div
       on:click={() => {
         if (game[1] && game[3]) {
-          getGame(game[3]);
+          if ($selectedTournamentGameId != game[3]) getGame(game[3]);
         }
         // goto(`/game/${game[3]}`);
         // goto()
       }}
       class="grid grid-cols-12   
-      {game[3] == $selectedTournamentGameId && game[3] == $liveTournamentGameId
+      {game[3] == $selectedTournamentGameId &&
+      game[3] == $liveTournamentGameId &&
+      $tournament.status != 'finished'
         ? 'bg-gradient-to-r from-sky-100 to-green-100'
         : game[3] == $selectedTournamentGameId && game[3]
         ? 'bg-sky-100'
-        : game[3] == $liveTournamentGameId
+        : game[3] == $liveTournamentGameId && $tournament.status != 'finished'
         ? 'bg-green-100'
         : index % 2
         ? 'bg-slate-50 hover:bg-slate-100'
@@ -188,7 +190,7 @@
       <div
         class=" col-span-1 flex items-center justify-center border-r border-gray-300 font-medium text-gray-700"
       >
-        {#if game[3] == $selectedTournamentGameId && game[3] == $liveTournamentGameId}
+        {#if game[3] == $selectedTournamentGameId && game[3] == $liveTournamentGameId && $tournament.status != "finished"}
           <div class=" flex items-center space-x-1">
             <div class=" h-5 w-5">
               <IconChessboard />
@@ -201,7 +203,7 @@
           <div class=" h-5 w-5">
             <IconChessboard />
           </div>
-        {:else if game[3] == $liveTournamentGameId}
+        {:else if game[3] == $liveTournamentGameId && $tournament.status != "finished"}
           <div class="h-5 w-5">
             <IconTv />
           </div>

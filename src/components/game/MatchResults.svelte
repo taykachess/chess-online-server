@@ -26,13 +26,13 @@
     else return results[1];
   }
 
-  function transformToWhiteResult(result: Result) {
-    if (result == "0-1" || "1-0" || "0.5-0.5") return result.split("-")[0];
-  }
+  // function transformToWhiteResult(result: Result) {
+  //   if (result == "0-1" || "1-0" || "0.5-0.5") return result.split("-")[0];
+  // }
 
-  function transformToBlackResult(result: Result) {
-    if (result == "0-1" || "1-0" || "0.5-0.5") return result.split("-")[1];
-  }
+  // function transformToBlackResult(result: Result) {
+  //   if (result == "0-1" || "1-0" || "0.5-0.5") return result.split("-")[1];
+  // }
 
   function player1ScoreFn(match: Match | undefined) {
     if (!match) return 0;
