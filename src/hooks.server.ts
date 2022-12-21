@@ -1,6 +1,6 @@
 import { JWT_SECRET } from "$env/static/private";
 import type { Handle } from "@sveltejs/kit";
-import { verify } from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 import type { DecodedUser } from "$types/user";
 export const handle: Handle = async ({ event, resolve }) => {
   const token = event.cookies.get("token");
@@ -8,7 +8,7 @@ export const handle: Handle = async ({ event, resolve }) => {
     return await resolve(event);
   }
   try {
-    const decodedUser = verify(token, JWT_SECRET) as DecodedUser;
+    const decodedUser = jwt.verify(token, JWT_SECRET) as DecodedUser;
     event.locals.user = decodedUser;
   } catch (error) {
     event.cookies.delete("token");

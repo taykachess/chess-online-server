@@ -2,15 +2,11 @@
   import BadgeTitle from "$components/common/BadgeTitle.svelte";
   import type { Title } from "$types/game";
 
-  import type { Prisma } from "@prisma/client";
   export let players: {
     username: string;
     title?: Title | null;
     rating?: number;
-    // seed: number;
   }[];
-
-  console.log(players);
 </script>
 
 <div class=" shadow-lg">

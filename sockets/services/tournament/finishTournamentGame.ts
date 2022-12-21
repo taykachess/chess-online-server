@@ -62,12 +62,14 @@ export async function finishTournamentGame({
       rating: game.white.rating,
       title: game.white.title,
       res: transformResult(result, "b"),
+      color: "w",
     },
     b: {
       id: game.black.username,
       rating: game.black.rating,
       title: game.black.title,
       res: transformResult(result, "w"),
+      color: "b",
     },
   });
 

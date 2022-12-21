@@ -1,15 +1,12 @@
 <script lang="ts">
-  import exp from "constants";
-
   export let count: number = 67;
   export let currentPage: number = 1;
   export let cb: (page: number) => any = () => {};
   export let title: string;
   export let textClass: string = "text-slate-800";
 
-  const STEP = 10;
+  export let STEP = 10;
 
-  console.log(count, STEP);
   const PAGES = Math.ceil(count / STEP);
 
   function arrayPages(length: number) {
@@ -19,8 +16,6 @@
     }
     return pages;
   }
-
-  console.log("PAGES", PAGES);
 </script>
 
 <div
@@ -68,18 +63,19 @@
     </a>
 
     {#each arrayPages(PAGES) as page}
-      <a
-        href="#"
+      <div
         on:click={() => {
           cb(page);
           currentPage = page;
         }}
         aria-current="page"
-        class="relative   inline-flex items-center  {page === currentPage
+        class="relative inline-flex  cursor-pointer items-center  {page ===
+        currentPage
           ? 'border-indigo-500 bg-indigo-50 text-indigo-600'
           : 'border-gray-300 bg-white hover:bg-gray-50'}   px-4 py-2 text-sm font-medium  focus:z-20"
-        >{page}</a
       >
+        {page}
+      </div>
     {/each}
     <!-- Current: "z-10 bg-indigo-50 border-indigo-500 text-indigo-600", Default: "bg-white border-gray-300 text-gray-500 hover:bg-gray-50" -->
 

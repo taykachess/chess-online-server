@@ -9,7 +9,7 @@
   } from "$store/game/tournament";
   import type { Config } from "@sveltejs/kit";
   import { Chessboard, COLOR, MARKER_TYPE } from "cm-chessboard-ts";
-  import { afterUpdate, onDestroy, onMount } from "svelte";
+  import { onMount } from "svelte";
   import { PromotionDialog } from "cm-chessboard-ts/src/cm-chessboard/extensions/promotion-dialog";
 
   let boardHTML: HTMLElement;
@@ -25,9 +25,7 @@
         borderType: "none",
         showCoordinates: false,
         aspectRatio: 1,
-        // "fancy-gray"
         cssClass: "fancy-gray",
-        // cssClass: "black-and-white",
         moveFromMarker: MARKER_TYPE.square,
         moveToMarker: MARKER_TYPE.square,
       },
@@ -37,8 +35,8 @@
         size: 40, // the sprite tiles size, defaults to 40x40px
         cache: true, // cache the sprite
       },
+      // @ts-ignore
       extensions: [{ class: PromotionDialog, props: {} }],
-      // extensions:{}
     };
     $board = new Chessboard(boardHTML, config);
   }
@@ -61,20 +59,10 @@
       return $board.enableMoveInput(inputHandler, COLOR.black);
     }
   });
-
-  afterUpdate(() => {
-    console.log("After update");
-  });
-
-  onDestroy(() => {
-    // $board = undefined;
-  });
-
-  // import { info } from "console";
 </script>
 
 <!-- 40rem is standart, so if make w-full is going to be problem -->
-<div class="     relative flex-none  ">
+<div class=" relative flex-none  ">
   <div bind:this={boardHTML} class=" relative ">
     {#if $isTournamentTimerVisible}
       <div
@@ -86,10 +74,9 @@
       </div>
     {/if}
   </div>
-  >
 </div>
 
 <style>
-  @import "/assets/styles/cm-chessboard.css";
-  @import "/assets/styles/promotion-dialog.css";
+  @import "../../../static/assets/styles/cm-chessboard.css";
+  @import "../../../static/assets/styles/promotion-dialog.css";
 </style>

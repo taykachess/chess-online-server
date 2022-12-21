@@ -12,6 +12,7 @@
 
   import { formatDate } from "$lib/utils/formatDate";
   import { time } from "$store/global/time";
+  import TournamentList from "./TournamentList.svelte";
 
   async function getAllTournaments({
     page,
@@ -183,4 +184,10 @@
       />
     </div>
   {/if}
+
+  <div class=" mt-4">
+    {#if $listOfTournaments.tournaments}
+      <TournamentList tournaments={$listOfTournaments.tournaments} />
+    {/if}
+  </div>
 </div>

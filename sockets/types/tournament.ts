@@ -9,7 +9,7 @@ export interface TournamentTable {
   _count: {
     participants: number;
   };
-  format: string;
+  format: TournamentFormat;
   control: string;
   playerLimit: number;
   status: TournamentStatus;
@@ -100,7 +100,7 @@ export type PlayerInsideMatch = {
   score: number;
   title?: Title | null;
 };
-// White, Black, Result, gameId
+// White, Black, Result, gameId, color
 export type MatchSwiss = [
   PlayerInsideMatch,
   PlayerInsideMatch | null,
@@ -108,10 +108,16 @@ export type MatchSwiss = [
   string | null
 ];
 
-export type MatchSwissShort = [
-  { id: string; rating: number; title?: Title | null; res: 1 | 0 | 0.5 | "*" },
-  string | null
-];
+export type MatchSwissShortPlayer = {
+  id: string;
+  rating: number;
+  title?: Title | null;
+  res: 1 | 0 | 0.5 | "*";
+  color: "w" | "b";
+};
+
+// Opponent, gameId
+export type MatchSwissShort = [MatchSwissShortPlayer, string | null];
 
 export interface MatchRobin extends Match {
   player1: string | null;

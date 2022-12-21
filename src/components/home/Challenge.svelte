@@ -69,9 +69,8 @@
     await getInitialChallenges();
     $socket.emit("challenge:subscribe");
     records = createChallengeRecords($listOfChallenges.challenges);
-    console.log("challenge created sub");
+
     $socket.on("challenge:created", (challenge) => {
-      console.log("challenge created");
       const index = $listOfChallenges.challenges.findIndex(
         (chal) => chal.user == challenge.user
       );
@@ -114,7 +113,6 @@
         if (index2 !== -1) {
           records.splice(index2, 1);
           records = records;
-          console.log(records);
         }
         $listOfChallenges.challenges.splice(index, 1);
       }
@@ -135,7 +133,6 @@
       count = count + 1;
       if (count == 1) {
       } else {
-        console.log($filters);
         localStorage.setItem("challengeFilters", JSON.stringify($filters));
       }
     }

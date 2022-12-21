@@ -3,7 +3,7 @@ import type { ChallengeFilters, GetChallenge } from "./challenge";
 import type { MatchFilters } from "./match";
 import type { GetGame, Result, Title } from "./game";
 import { GetMatch } from "./match";
-import { MatchSwiss, PlayerSwiss } from "./tournament";
+import { MatchSwiss, MatchSwissShortPlayer, PlayerSwiss } from "./tournament";
 
 export type SocketServer = Server<
   ClientToServerEvents,
@@ -45,8 +45,8 @@ export interface ServerToClientEvents {
   "tournament:gameOver": ({gameId, result, w, b}:{
     gameId:string, 
     result:Result, 
-    w:{ id: string; rating: number; title?: Title | null; res: 1 | 0 | 0.5 | "*" }, 
-    b:{ id: string; rating: number; title?: Title | null; res: 1 | 0 | 0.5 | "*" }
+    w:MatchSwissShortPlayer, 
+    b:MatchSwissShortPlayer
   })=>void
   "tournament:start": ({pairings, players}:{pairings:MatchSwiss[], players:PlayerSwiss[]})=>void
   "tournament:finish": ()=>void

@@ -1,18 +1,10 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { goto } from "$app/navigation";
-
   import Header from "$components/layout/Header.svelte";
-
   import { socket } from "$store/sockets/socket";
-
   import "../app.postcss";
-
   import type { LayoutData } from "./$types";
-  import { page } from "$app/stores";
-  import { currentChallengeControl } from "$store/home/challenges";
-  import { currentMatchControl } from "$store/home/match";
-  import { tournament } from "$store/tournament/tournament";
   import { io } from "socket.io-client";
   import { browser } from "$app/environment";
   export let data: LayoutData;
@@ -25,13 +17,6 @@
   }
 
   onMount(() => {
-    console.log($socket);
-
-    $socket.on("connect", () => {
-      console.log("connected");
-    });
-    // $socket = io("");
-    // $socket.auth.token = localStorage.getItem("token");
     $socket.on("game:started", ({ gameId }) => {
       data.gameIds?.push(gameId);
       goto(`/game/${gameId}`);

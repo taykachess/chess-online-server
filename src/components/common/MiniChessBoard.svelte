@@ -53,6 +53,6 @@
 </div>
 
 <style>
-  @import "/assets/styles/cm-chessboard.css";
-  @import "/assets/styles/promotion-dialog.css";
+  @import "../../../static/assets/styles/cm-chessboard.css";
+  @import "../../../static/assets/styles/promotion-dialog.css";
 </style>

@@ -63,11 +63,12 @@
       Регистрация
     </h2>
     <p class="mt-2 text-center text-sm text-gray-600">
-      Уже имеется аккаунт? <a
+      Уже имеется аккаунт?
+      <!-- <a
         href="#"
         class="text-blue-600 hover:text-blue-700 hover:underline"
         title="Sign In">Вход</a
-      >
+      > -->
     </p>
 
     <form class="my-8 text-sm">

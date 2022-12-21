@@ -50,6 +50,7 @@
             rating: b.rating,
             title: b.title,
             res: b.res,
+            color: b.color,
           },
           gameId,
         ]);
@@ -64,6 +65,7 @@
             rating: w.rating,
             title: w.title,
             res: w.res,
+            color: w.color,
           },
           gameId,
         ]);
@@ -132,10 +134,11 @@
       <!-- svelte-ignore a11y-click-events-have-key-events -->
       <div
         on:click={async () => {
+          if ($tournament.currentRound <= index) return console.log("no");
+          if ($selectedRound == index + 1)
+            return console.log("you are already there");
           const data = await fetchPairings(index);
           const matches = await data.json();
-
-          // console.log("pairings", pairings);
           $pairings = matches;
 
           $selectedRound = index + 1;

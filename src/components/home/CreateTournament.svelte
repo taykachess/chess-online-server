@@ -19,7 +19,6 @@
   };
 
   async function createTournament() {
-    console.log("Tournament");
     const response = await fetch("/api/tournament/create", {
       method: "POST",
       body: JSON.stringify(formData),

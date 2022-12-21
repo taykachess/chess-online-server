@@ -2,6 +2,7 @@
   import { goto } from "$app/navigation";
   import BadgeTitle from "$components/common/BadgeTitle.svelte";
   import Pagination from "$components/common/Pagination.svelte";
+  import IconTrophy from "$components/icons/IconTrophy.svelte";
   import { tournament } from "$store/tournament/tournament";
 
   import type { PlayerSwissFrontend } from "$types/tournament";
@@ -25,7 +26,6 @@
         b.uuid = uuid;
 
         return 0;
-        // console.log()
       }
     }
     return -1;
@@ -68,8 +68,12 @@
   }
 
   function transformPlayers(players: PlayerSwissFrontend[]) {
+    // if (players.length == 0) return [];
+    // console.log(players);
     resetUUID(players);
-    console.log(players);
+    players.forEach((player) => {
+      calculateBuchholz(player);
+    });
     players.sort(sortFunction);
     transformUUIDtoPlace(players);
 
@@ -81,38 +85,40 @@
   let selectedPlayerGames = -1;
 
   function stringPoints(player: PlayerSwissFrontend) {
-    let summa = 0;
-    let rounds = 0;
-    player.matches?.forEach((match) => {
-      if (match[0].res == "*") {
-        rounds++;
-        return;
-      }
-      summa = summa + match[0].res;
-      rounds++;
-    });
+    return `${player.score} / ${player.matches.length}`;
+  }
 
-    return `${summa} / ${rounds}`;
+  function averageRating(player: PlayerSwissFrontend) {
+    let summa = player.matches.reduce((acc, curr) => {
+      return acc + curr[0].rating;
+    }, 0);
+
+    return summa / player.matches.length;
   }
 
   function calculateBuchholz(player: PlayerSwissFrontend) {
     let buchholz = 0;
     player.matches.forEach((match) => {
+      // console.log(match);
       const opponent = match[0].id;
-      const index = sortedPlayers.findIndex((p) => p.id == opponent);
-      if (index != -1) buchholz += sortedPlayers[index].score;
+      const index = $tournament.players.findIndex((p) => p.id == opponent);
+      if (index != -1) buchholz += $tournament.players[index].score;
     });
 
     player.coefficient.buchholz = buchholz;
 
     return buchholz;
   }
-  $: sortedPlayers = transformPlayers($tournament.players).slice(
-    (currentPage - 1) * 10,
-    10 * currentPage
-  );
+  $: sortedPlayers = transformPlayers($tournament.players);
+
+  // .slice(
+  //   (currentPage - 1) * 10,
+  //   10 * currentPage
+  // )
 
   let currentPage = 1;
+
+  const playersOnPage = 10;
 </script>
 
 <div class="">
@@ -126,12 +132,25 @@
   
         </div>
 
-    {#each sortedPlayers as player, index}
+    {#each sortedPlayers.slice((currentPage - 1) * playersOnPage, playersOnPage * currentPage) as player, index}
       <!-- prettier-ignore -->
-      <div class=" grid grid-cols-7 bg-white border-b {index==sortedPlayers.length-1?' rounded-b-lg':''}  border-x  w-full text-center">
+      <div class=" grid grid-cols-7 bg-white border-b {index==playersOnPage-1?' rounded-b-lg':''}  border-x  w-full text-center">
                 <div class="relative text-center border-r col-span-1   border-gray-300  py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">
                   {#if player.active}
-                    {player.place} {player.uuid}
+                    {#if $tournament.status=='finished'&&currentPage==1}
+                      {#if index<3} 
+                  <div class=" flex items-center justify-center">
+                    <div class=" w-6 h-6 fill-current {index==0?' text-yellow-500  ':index==1?"text-zinc-400":index==2?" text-amber-700":''} " >
+                      <IconTrophy></IconTrophy>
+                    </div>
+
+                  </div>
+                      {:else}
+                      {player.place} 
+                      {/if}
+                    {:else}
+                      {player.place} 
+                    {/if}
                   {:else}
                   <div class=" flex items-center justify-center">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
@@ -160,8 +179,16 @@
                         
                       </div>
                       {#if selectedPlayerGames == index}
-                        <div class=" absolute right-0 bg-slate-900  z-20 border-8 border-slate-300  w-[20rem]  ">
-  
+                        <div class=" absolute right-0   z-20 border-8 border-slate-300  w-[20rem]  ">
+                            <div class=" bg-white border-b py-2 flex justify-between px-3 items-baseline">
+                              {player.id} 
+                              
+                              <div class=" text-xs">
+                                  средний рейтинг:
+                                {Math.floor(averageRating(player))}
+
+                              </div>
+                            </div>
                           {#if player.matches}
                             
                           {#each player.matches as game, index}
@@ -173,7 +200,7 @@
                             }}
                             class="grid grid-cols-7   {index % 2
                               ? 'bg-slate-50'
-                              : 'bg-white'} cursor-pointer text-center text-sm hover:bg-slate-100 "
+                              : 'bg-white'} cursor-pointer text-center text-sm hover:bg-sky-100 "
                           >
                             <div
                               class=" col-span-1 flex items-center justify-center border-r border-gray-300 font-medium text-gray-700"
@@ -190,9 +217,12 @@
                               </div>
                             </div>
                             <div
-                              class=" col-span-1 flex items-center justify-center border-x border-gray-300 font-medium text-gray-700"
+                              class=" col-span-1 flex  items-center justify-center  border-gray-300 font-medium text-gray-700"
                             >
-                            {game[0].res}
+                            <div class="{game[0].color=='w'?" bg-slate-100":" bg-slate-800 text-slate-200 "} w-5 h-5 rounded text-sm font-mono">
+                              {game[0].res}
+
+                            </div>
                             </div>
                           </div>
                         {/each}
@@ -202,7 +232,7 @@
                     </div>
                 </div>
                 <div class="relative text-center col-span-1 border-r border-gray-300  py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">{stringPoints(player)}</div>
-                <div class="relative text-center col-span-1  border-gray-300  py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">{calculateBuchholz(player)}</div>
+                <div class="relative text-center col-span-1  border-gray-300  py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">{player.coefficient.buchholz}</div>
               </div>
     {/each}
   </div>
@@ -211,6 +241,7 @@
     <Pagination
       count={$tournament.players.length}
       cb={(page) => (currentPage = page)}
+      STEP={playersOnPage}
       title="игроков"
     />
   </div>

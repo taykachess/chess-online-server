@@ -73,13 +73,10 @@ export const load: PageServerLoad = async ({ params, fetch }) => {
     const gameJson = await fetch(`/api/game/${tv}`);
     const game = (await gameJson.json()) as GetGame;
 
-    console.log("tv", tv);
-
     const swiss: Omit<GetTournament, "selectedRound" | "participants"> = {
       ...tournament,
       players: Object.values(players),
       currentRound: currentRoundValue,
-      // matches,
     };
 
     const tournamentTv: TournamentTv = { game };
@@ -130,8 +127,6 @@ export const load: PageServerLoad = async ({ params, fetch }) => {
       ...tournament,
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
-      // matches: tournament.matches[tournament.rounds - 1],
-      // players: tournament.players as PlayerSwiss[],
       currentRound: tournament.rounds ? tournament.rounds : 1,
     };
 
@@ -142,8 +137,6 @@ export const load: PageServerLoad = async ({ params, fetch }) => {
     const gameJson = await fetch(`/api/game/${tv}`);
     const game = (await gameJson.json()) as GetGame;
     const tournamentTv: TournamentTv = { game };
-
-    console.log("good", tournamentTv.game);
 
     return {
       swiss,

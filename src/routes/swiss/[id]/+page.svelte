@@ -8,7 +8,6 @@
   import TournamentDescription from "$components/tournament/TournamentDescription.svelte";
   import TournamentPlayersRegister from "$components/tournament/TournamentPlayersRegister.svelte";
   import TournamentSwissPlayersStanding from "$components/tournament/TournamentSwissPlayersStanding.svelte";
-  import Trophy from "$components/tournament/Trophy.svelte";
   import { TOURNAMENT_GAME_PREPARE_TIME } from "$sockets/variables/redisIndex";
   import { socket } from "$store/sockets/socket";
   import { pairings } from "$store/tournament/pairings";
@@ -48,6 +47,7 @@
           rating: 0,
           // title: b.title,
           res: 1,
+          color: "w",
         },
         "",
       ]);
@@ -63,14 +63,10 @@
     if (data.liveGameId) {
       $liveTournamentGameId = data.liveGameId;
       $selectedTournamentGameId = $liveTournamentGameId;
-
-      console.log("onLoad", $selectedTournamentGameId, $liveTournamentGameId);
     }
   }
 
-  console.log("tournament", $tournamentTv);
   $pairings = data.matches as MatchSwiss[];
-  console.log($tournamentTv);
   if (browser)
     if ($tournamentTv) {
       $chess = new Chess();
@@ -123,12 +119,10 @@
     $chess.loadPgn(game.pgn);
     $board.setPosition($chess.fen());
 
-    // console.log("setTournamentTv", game);
     if (game.result == "*") {
       if (!game.pgn) {
         $tournamentPrepareTime =
           game.tsmp + TOURNAMENT_GAME_PREPARE_TIME - new Date().getTime();
-        console.log("ply", $tournamentPrepareTime);
         if ($tournamentPrepareTime > 0) {
           $isTournamentTimerVisible = true;
           $intervalId = setInterval(() => {
@@ -145,26 +139,16 @@
 
       $socket.emit("game:sub", { gameId });
       $socket.on("game:move", (move) => {
-        console.log(move, "from Page");
         $chess.move(move);
         $board.setPosition($chess.fen());
       });
       $socket.on("game:end", ({ newEloBlack, newEloWhite, result }) => {
-        console.log("game ended");
         stopClock();
       });
     } else {
       $isTournamentTimerVisible = false;
     }
-
-    console.log(
-      "onSetTournamentTv",
-      $selectedTournamentGameId,
-      $liveTournamentGameId
-    );
   }
-
-  console.log($tournamentTv);
 
   onMount(async () => {
     $socket.emit("tournament:subscribe", { tournamentId: $page.params.id });
@@ -189,7 +173,6 @@
 
     $socket.on("tournament:finish", () => {
       $tournament.status = "finished";
-      console.log("tournament finnished");
     });
 
     $socket.on("tournament:start", async ({ pairings: matches, players }) => {
@@ -237,7 +220,6 @@
     });
 
     $socket.on("tournament:tv", async ({ game }) => {
-      console.log("tournament:tv");
       if (!game.id) return;
       if ($selectedTournamentGameId == $liveTournamentGameId) {
         $liveTournamentGameId = game.id;
@@ -328,16 +310,11 @@
         <ChessTv
           on:boardMounted={() => {
             if ($tournamentTv) {
-              // $selectedTournamentGameId = $liveTournamentGameId;
-              console.log("tournamentTv", $tournamentTv);
               setTournamentTv($tournamentTv.game, $liveTournamentGameId);
             }
-            console.log("board mounted");
           }}
         />
       </div>
-      {$selectedTournamentGameId}
-      {$liveTournamentGameId}
     {/if}
   </div>
 </div>

@@ -3,7 +3,7 @@ import { JWT_SECRET, YANDEX_SECRET } from "$env/static/private";
 import base64 from "base-64";
 import { error, redirect } from "@sveltejs/kit";
 import { prisma } from "$lib/db/prisma";
-import { sign } from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 
 export const GET: RequestHandler = async ({ url, fetch, cookies }) => {
   const code = url.searchParams.get("code");
@@ -61,7 +61,7 @@ export const GET: RequestHandler = async ({ url, fetch, cookies }) => {
 
   if (!createdUser) throw Error("Something wrong with user creation");
 
-  const token = sign(createdUser, JWT_SECRET);
+  const token = jwt.sign(createdUser, JWT_SECRET);
   cookies.set("token", token, {
     path: "/",
     httpOnly: false,

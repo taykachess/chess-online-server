@@ -79,6 +79,23 @@ async function main() {
       id: "clav5lj9q0000p13dg45de9ix",
     },
   });
+
+  await prisma.tournament.upsert({
+    create: {
+      name: "Мой второй турнир",
+      description: "",
+      control: "3+0",
+      format: "swiss",
+      startTime: new Date(),
+      rounds: 11,
+      organizer: { connect: { username: "tayka" } },
+    },
+    update: {},
+    where: {
+      id: "clav5lj9q0000p13dg45de9ix",
+    },
+  });
+
   const prismaQueriesUser: Promise<User>[] = [];
 
   users.forEach((user) => {

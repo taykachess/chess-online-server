@@ -2,7 +2,7 @@ import type { RequestHandler } from "./$types";
 import { JWT_SECRET } from "$env/static/private";
 import { error, redirect } from "@sveltejs/kit";
 import { prisma } from "$lib/db/prisma";
-import { sign } from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 import type { Title } from "@prisma/client";
 import { dev } from "$app/environment";
 import { PUBLIC_APP_DEV_URL, PUBLIC_APP_PROD_URL } from "$env/static/public";
@@ -53,7 +53,7 @@ export const GET: RequestHandler = async ({ url, fetch, cookies }) => {
 
   if (!user) throw Error("Something wrong with user creation");
 
-  const token = sign(user, JWT_SECRET);
+  const token = jwt.sign(user, JWT_SECRET);
   cookies.set("token", token, {
     path: "/",
     httpOnly: false,

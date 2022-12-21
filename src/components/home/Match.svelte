@@ -33,7 +33,6 @@
     for (const property in matchesJSON) {
       matches.push(matchesJSON[property]);
     }
-    console.log("matches", matches);
     $listOfMatches.matches = matches;
     $listOfMatches.count = count;
   }
@@ -120,7 +119,6 @@
         if (index2 !== -1) {
           records.splice(index2, 1);
           records = records;
-          console.log(records);
         }
         $listOfMatches.matches.splice(index, 1);
       }

@@ -11,7 +11,6 @@
 
     const matches = (await data.json()) as Match[];
     $match = matches[0];
-    // console.log(data);
   }
 
   getMatch(matchId);

@@ -36,7 +36,6 @@
 
   onMount(() => {
     onGetGame(game);
-    console.log("GET GAME", game);
   });
 
   function enableMoveInputOnNavigate() {
@@ -67,7 +66,6 @@
     tournamentId,
     tsmp,
   }: GetGame) {
-    console.log("Game get", time);
     // await tick();
     const chess = new Chess();
     // @ts-ignore
@@ -124,7 +122,7 @@
 
       if (isTournamentGameBegins) {
         $tournamentPrepareTime =
-          tsmp + TOURNAMENT_GAME_PREPARE_TIME - new Date().getTime();
+          tsmp + TOURNAMENT_GAME_PREPARE_TIME - Date.now();
         if ($tournamentPrepareTime > 0) {
           $isTournamentTimerVisible = true;
           setInterval(() => {
@@ -171,7 +169,6 @@
   }
 
   function onMoveHandler(move: string) {
-    console.log("move", move);
     const result = $info.chess.move(move);
     if (result) {
       $info.tree.history = $info.tree.history;
@@ -210,7 +207,6 @@
     newEloBlack: number;
     newEloWhite: number;
   }) {
-    console.log("game:end");
     stopClock();
     $info.result = result;
 

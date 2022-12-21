@@ -9,8 +9,6 @@
   import PulseAnimatedElement from "$components/common/PulseAnimatedElement.svelte";
   import Login from "$components/dialogs/Auth/Login.svelte";
   import Signup from "$components/dialogs/Auth/Signup.svelte";
-  import CreateUserForm from "$components/home/CreateUserForm.svelte";
-  import LoginForm from "$components/home/LoginForm.svelte";
   import ChessClockSVG from "$components/icons/ChessClockSVG.svelte";
   import { deleteCookie } from "$lib/utils/cookie";
   import { socket } from "$store/sockets/socket";
@@ -23,18 +21,15 @@
 
 <Dialog bind:isOpen>
   <Signup bind:isOpen />
-  <!-- <CreateUserForm bind:isOpen /> -->
 </Dialog>
 <Dialog bind:isOpen={isOpenLogin}>
   <Login bind:isOpen={isOpenLogin} />
-  <!-- <LoginForm bind:isOpen={isOpenLogin} /> -->
 </Dialog>
 
 <div class="border-b">
   <div
     class="  flex h-16 max-w-6xl  items-center  justify-between sm:mx-auto   "
   >
-    <!-- <div class=" ml-4">Chess</div> -->
     <!-- svelte-ignore a11y-click-events-have-key-events -->
     <div
       on:click={() => {
@@ -94,7 +89,6 @@
             }
           }}
           use:enhance={({ form, data, action, cancel }) => {
-            console.log(data);
             return async ({ result, update }) => {
               await update();
               if ($page.form?.success) {

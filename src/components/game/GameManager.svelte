@@ -7,17 +7,13 @@
 
   let countClick = 0;
   if (browser) {
-    console.log("sub on game:offerDraw");
     $socket.on("game:offerDraw", ({ username, ply }) => {
-      console.log("draw offered", { username, ply });
-      console.log("info", $info.chess.pgn);
       $info.lastOfferDraw = { username, ply };
     });
 
     $socket.on("game:declineDraw", () => {
       if (!$info.lastOfferDraw) return;
       $info.lastOfferDraw.status = "declined";
-      console.log("draw declined");
     });
   }
 
@@ -34,7 +30,6 @@
   }
 
   function resign() {
-    console.log("resign");
     countClick = countClick + 1;
     setTimeout(() => {
       countClick = 0;

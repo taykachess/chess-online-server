@@ -8,7 +8,6 @@
   <li
     on:click={() => {
       $tab = "challenge";
-      console.log("Cool");
     }}
   >
     <TabWithSVG title="Игра" active={$tab === "challenge" ? true : false}>
