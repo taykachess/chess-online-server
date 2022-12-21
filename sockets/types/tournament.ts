@@ -13,6 +13,7 @@ export interface TournamentTable {
   control: string;
   playerLimit: number;
   status: TournamentStatus;
+  rounds: number;
   // participants: Prisma.UserSelect;
   // players: { id: string }[];
   startTime: Date;

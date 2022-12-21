@@ -27,9 +27,9 @@
       },
     });
 
-    const id = await response.json();
+    const { id, format } = await response.json();
 
-    goto(`/tournament/${id}`);
+    goto(`/${format}/${id}`);
   }
 </script>
 

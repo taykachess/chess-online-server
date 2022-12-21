@@ -121,7 +121,7 @@
   const playersOnPage = 10;
 </script>
 
-<div class="">
+<div class=" ">
   <div class=" rounded-lg shadow-lg ">
     <!-- prettier-ignore -->
     <div class=" grid grid-cols-7 bg-white rounded-tr-md rounded-tl-md  w-full text-center text-sm border">

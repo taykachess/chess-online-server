@@ -27,16 +27,20 @@ model User {
   lichess        String?      @unique
 }
 
+enum Role {
+  ADMIN
+}
+
 enum Title {
   GM
   IM
 }
 
-model Role {
-  id    Int    @id @default(autoincrement())
-  name  String @unique
-  users User[]
-}
+// model Role {
+//   id    Int    @id @default(autoincrement())
+//   name  String @unique
+//   users User[]
+// }
 
 model Tournament {
   id           String           @id @default(cuid())

@@ -4,13 +4,12 @@ import type { TournamentStatus } from "@prisma/client";
 
 export function formatDate(
   date: number,
-  now: Date,
+  now: number,
   tournamentStatus: TournamentStatus
 ): string {
-  const diff = date - now.getTime();
-  // if (diff < 0) {
-
-  // }
+  console.log(date);
+  console.log(date, now, tournamentStatus);
+  const diff = date - now;
 
   const SECOND = 1000;
   const MINUTE = SECOND * 60;

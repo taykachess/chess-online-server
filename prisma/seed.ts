@@ -1,15 +1,15 @@
 import { PrismaClient, type User } from "@prisma/client";
 const prisma = new PrismaClient();
 async function main() {
-  await prisma.role.upsert({
-    create: {
-      name: "ADMIN",
-    },
-    update: {},
-    where: {
-      name: "ADMIN",
-    },
-  });
+  // await prisma.role.upsert({
+  //   create: {
+  //     name: "ADMIN",
+  //   },
+  //   update: {},
+  //   where: {
+  //     name: "ADMIN",
+  //   },
+  // });
 
   //   User with role ADMIN
   await prisma.user.upsert({
@@ -19,7 +19,9 @@ async function main() {
       hashedPassword:
         "$2b$10$FXPVAxuA5ByTC1lonJxY9.DJrWiPY4PHc1qLWM9a7nXnxHF4sTBuO",
       title: "GM",
-      roles: { connect: { name: "ADMIN" } },
+      roles: {
+        set: "ADMIN",
+      },
     },
     update: {},
     where: {
@@ -80,21 +82,24 @@ async function main() {
     },
   });
 
-  await prisma.tournament.upsert({
-    create: {
-      name: "Мой второй турнир",
-      description: "",
-      control: "3+0",
-      format: "swiss",
-      startTime: new Date(),
-      rounds: 11,
-      organizer: { connect: { username: "tayka" } },
-    },
-    update: {},
-    where: {
-      id: "clav5lj9q0000p13dg45de9ix",
-    },
-  });
+  for (let i = 0; i < 10; i++) {
+    await prisma.tournament.upsert({
+      create: {
+        id: `clav5lj9q0000p13dg45de9ix${i}`,
+        name: `Мой ${i} турнир`,
+        description: "",
+        control: "3+0",
+        format: "swiss",
+        startTime: new Date(),
+        rounds: 11,
+        organizer: { connect: { username: "tayka" } },
+      },
+      update: {},
+      where: {
+        id: `clav5lj9q0000p13dg45de9ix${i}`,
+      },
+    });
+  }
 
   const prismaQueriesUser: Promise<User>[] = [];
 

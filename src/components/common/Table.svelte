@@ -62,7 +62,12 @@
   </div>
   <div class="">
     {#if count > 10}
-      <Pagination {count} bind:currentPage cb={onClickPagination} />
+      <Pagination
+        {count}
+        bind:currentPage
+        cb={onClickPagination}
+        title="Турниров"
+      />
     {/if}
   </div>
 </div>

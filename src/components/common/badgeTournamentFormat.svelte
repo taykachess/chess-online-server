@@ -7,8 +7,8 @@
     switch (format) {
       case "swiss": {
         return {
-          text: "text-slate-100 ",
-          bg: "bg-red-800 p-px px-2",
+          text: "text-slate-800 ",
+          bg: "bg-sky-100 p-px px-2",
         };
       }
       //   case "IM": {
@@ -22,7 +22,7 @@
   function badgeTitle(format?: TournamentFormat) {
     switch (format) {
       case "swiss": {
-        return "Щвейцарская система";
+        return `Щвейцарка`;
       }
       //   case "IM": {
       //     return { text: "text-slate-100", bg: "bg-green-600" };

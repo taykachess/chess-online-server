@@ -1,8 +1,9 @@
+import { Role } from "@prisma/client";
 import { Title } from "./game";
 
 export interface DecodedUser {
   username: string;
-  roles: { name: string }[];
+  roles: Role[];
   rating: number;
   title?: Title;
 }

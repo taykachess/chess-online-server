@@ -10,7 +10,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       ...data,
       organizer: { connect: { username: locals.user.username } },
     },
-    select: { id: true },
+    select: { id: true, format: true },
   });
-  return json(tournament.id);
+  return json({ ...tournament });
 };

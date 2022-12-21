@@ -44,7 +44,7 @@
     $listOfTournaments.tournaments = tournaments;
   }
 
-  async function onClickPaginationRegisted(page: number) {
+  async function onClickPaginationRegistered(page: number) {
     const response = await getAllTournaments({ page, register: "yes" });
     const tournaments: TournamentTable[] = await response.json();
     $listOfTournaments.tournaments = tournaments;
@@ -67,7 +67,7 @@
     $listOfTournaments.count = count;
   }
 
-  async function getInitialRegistedTournaments() {
+  async function getInitialRegisteredTournaments() {
     const [tournamentsData, countData] = await Promise.all([
       getAllTournaments({ page: 1, register: "yes" }),
       getCountAllTournaments({ register: "yes" }),
@@ -87,46 +87,17 @@
     const count: number = await countData.json();
     $listOfTournaments.tournaments = tournaments;
     $listOfTournaments.count = count;
+
+    console.log(count);
   }
 
-  function createTournamentRecords(
-    tournaments: TournamentTable[] | null
-  ): TournamentTableRecord[] {
-    const arrayRecords: TournamentTableRecord[] = [];
-    if (!tournaments) return [];
-    tournaments.forEach((tournament) => {
-      arrayRecords.push({
-        link: `/${tournament.format}/${tournament.id}`,
-        registered: false,
-        records: [
-          tournament.name,
-          formatDate(
-            new Date(tournament.startTime).getTime(),
-            $time,
-            tournament.status
-          ),
-          tournament.format,
-          tournament.control,
-          ` ${
-            tournament.playerLimit
-              ? `${tournament._count.participants}/${tournament.playerLimit}`
-              : `${tournament._count.participants}`
-          }`,
-        ],
-      });
-    });
-
-    return arrayRecords;
-  }
-  const titles = ["Турнир", "Дата", "Тип", "Контроль", "Участники"];
-
-  $: isAdmin = $page?.data?.user?.roles.some((role) => role.name === "ADMIN");
-  $: records = createTournamentRecords($listOfTournaments.tournaments);
+  $: isAdmin = $page?.data?.user?.roles.some((role) => role == "ADMIN");
+  // $: records = createTournamentRecords($listOfTournaments.tournaments);
 
   if ($tournamentTab == "all") {
     getInitialTournaments();
   } else if ($tournamentTab == "IRegistered") {
-    getInitialRegistedTournaments();
+    getInitialRegisteredTournaments();
   } else if ($tournamentTab == "ICreated") {
     getInitialMyTournaments();
   }
@@ -144,7 +115,7 @@
       {
         active: "IRegistered",
         title: "Зарегестрирован",
-        load: getInitialRegistedTournaments,
+        load: getInitialRegisteredTournaments,
         disabled: $page.data?.user ? false : true,
       },
       {
@@ -155,39 +126,22 @@
       },
     ]}
   />
-  {#if $tournamentTab === "all"}
-    <Table
-      {titles}
-      {records}
-      {onClickPagination}
-      count={$listOfTournaments.count}
-    />
-  {:else if $tournamentTab === "IRegistered"}
-    {#if $page?.data?.user}
-      <Table
-        {titles}
-        {records}
-        onClickPagination={onClickPaginationRegisted}
-        count={$listOfTournaments.count}
-      />
-    {:else}
-      <div class=" w-[40rem] text-white">Зарегестрируйся</div>
-    {/if}
-  {:else if $tournamentTab == "ICreated"}
+
+  {#if $tournamentTab == "ICreated"}
     <TournamentCreateButton />
-    <div class=" mt-2">
-      <Table
-        {titles}
-        {records}
-        onClickPagination={onClickPaginationMy}
-        count={$listOfTournaments.count}
-      />
-    </div>
   {/if}
 
   <div class=" mt-4">
     {#if $listOfTournaments.tournaments}
-      <TournamentList tournaments={$listOfTournaments.tournaments} />
+      <TournamentList
+        tournaments={$listOfTournaments.tournaments}
+        onClickPagination={$tournamentTab === "all"
+          ? onClickPagination
+          : $tournamentTab === "IRegistered"
+          ? onClickPaginationRegistered
+          : onClickPaginationMy}
+        count={$listOfTournaments.count}
+      />
     {/if}
   </div>
 </div>

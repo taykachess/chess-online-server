@@ -43,7 +43,7 @@ export const GET: RequestHandler = async ({ request, locals, url }) => {
       status: true,
       // participants: { orderBy: { rating: "asc" } },
       _count: { select: { participants: true } },
-
+      rounds: true,
       // players: {
       //   where: { alies: locals.user?.username ? locals.user?.username : "" },
       //   select: { id: true },
