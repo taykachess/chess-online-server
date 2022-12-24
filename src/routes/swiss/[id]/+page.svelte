@@ -299,7 +299,7 @@
       <TournamentSwissPlayersStanding />
     {/if}
   </div>
-  <div class="my-8 grid grid-cols-5 space-x-8">
+  <div class="sticky top-0 my-8 grid grid-cols-5 space-x-8">
     {#if $tournament.rounds && $pairings}
       <div class="  col-span-3">
         <GameList
@@ -310,14 +310,16 @@
           }}
         />
       </div>
-      <div class=" col-span-2 ">
-        <ChessTv
-          on:boardMounted={() => {
-            if ($tournamentTv) {
-              setTournamentTv($tournamentTv.game, $liveTournamentGameId);
-            }
-          }}
-        />
+      <div class=" relative col-span-2 ">
+        <div class=" sticky top-10">
+          <ChessTv
+            on:boardMounted={() => {
+              if ($tournamentTv) {
+                setTournamentTv($tournamentTv.game, $liveTournamentGameId);
+              }
+            }}
+          />
+        </div>
       </div>
     {/if}
   </div>
