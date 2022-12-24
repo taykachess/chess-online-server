@@ -33,6 +33,8 @@
   export let game: GetGame;
 
   let lastTime: number;
+  let timerPrepareTournamentId: NodeJS.Timeout;
+  let timerTournamentPrepareTime: NodeJS.Timeout;
 
   onMount(() => {
     onGetGame(game);
@@ -125,10 +127,10 @@
           tsmp + TOURNAMENT_GAME_PREPARE_TIME - Date.now();
         if ($tournamentPrepareTime > 0) {
           $isTournamentTimerVisible = true;
-          setInterval(() => {
+          timerPrepareTournamentId = setInterval(() => {
             $tournamentPrepareTime -= 1000;
           }, 1000);
-          setTimeout(() => {
+          timerTournamentPrepareTime = setTimeout(() => {
             startClock();
             $isTournamentTimerVisible = false;
           }, $tournamentPrepareTime);
@@ -381,6 +383,9 @@
   });
 
   beforeNavigate(async ({ from, to }) => {
+    if (timerPrepareTournamentId) clearInterval(timerPrepareTournamentId);
+    if (timerTournamentPrepareTime) clearInterval(timerTournamentPrepareTime);
+    if ($isTournamentTimerVisible) $isTournamentTimerVisible = false;
     // Нужно выйти их игры, только если партия продолжается
     // потому что иначе выход из комнаты осуществляется на сервере
     if ($info.result == "*") {

@@ -11,6 +11,7 @@ import {
 
 import type { SocketType } from "../../types/sockets";
 import { Chess } from "chess.js";
+import { onGameStartRandomMode } from "./dev/onGameStartRandomMode";
 
 export async function onMove(
   this: SocketType,
@@ -19,14 +20,13 @@ export async function onMove(
   const socket = this;
 
   try {
+    console.log("move", move, "gameId", gameId);
     const [game] = await getGame(gameId);
     if (!game) throw Error("Game not found");
 
     const chess = new Chess();
     chess.loadPgn(game.pgn);
     const turn = chess.turn();
-
-    console.log(socket.data.username);
 
     if (turn == "w" && game.white.username != socket.data.username)
       throw Error("You have no access to resign");
@@ -43,7 +43,11 @@ export async function onMove(
 
     if (!resultMove) throw Error("Move is incorrect");
     const now = new Date().getTime();
-    if (game.tournamentId && now < TOURNAMENT_GAME_PREPARE_TIME + game.tsmp)
+    if (
+      game.tournamentId &&
+      game.ply == 0 &&
+      now < TOURNAMENT_GAME_PREPARE_TIME + game.tsmp
+    )
       throw Error("No time yet");
     await changeTime({
       gameId,
@@ -57,6 +61,18 @@ export async function onMove(
     const result = isGameOver({ chess });
     if (result != "*") {
       await setGameOver({ gameId, result, game });
+    }
+
+    // console.log("On move", chess.turn() == "w", game.white.bot, game.black.bot);
+
+    if (
+      (chess.turn() == "w" && game.white.bot) ||
+      (chess.turn() == "b" && game.black.bot)
+    ) {
+      const randomTime = Math.round(Math.random() * 5) * 1000;
+      setTimeout(() => {
+        onGameStartRandomMode({ gameId });
+      }, randomTime);
     }
 
     // prettier-ignore

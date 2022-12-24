@@ -58,8 +58,12 @@ export const GET: RequestHandler = async ({ url, fetch, cookies }) => {
   });
 
   const infoJson = await info.json();
+  let title = undefined;
+  if (infoJson.title) {
+    title = (infoJson.title as string).toUpperCase() as Title;
+  }
 
-  const title = (infoJson.title as string).toUpperCase() as Title;
+  // title = (infoJson.title as string).toUpperCase() as Title;
   const lichessId = infoJson.id;
 
   const { email } = await (
@@ -77,7 +81,7 @@ export const GET: RequestHandler = async ({ url, fetch, cookies }) => {
       lichess: lichessId,
       email,
     },
-    select: { username: true, roles: { select: { name: true } } },
+    select: { username: true, roles: true },
   });
 
   if (!createdUser) throw Error("Something wrong with user creation");

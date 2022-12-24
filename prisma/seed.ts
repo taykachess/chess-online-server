@@ -22,8 +22,11 @@ async function main() {
       roles: {
         set: "ADMIN",
       },
+      lichess: "tayka",
     },
-    update: {},
+    update: {
+      lichess: "tayka",
+    },
     where: {
       username: "tayka",
     },
@@ -42,21 +45,25 @@ async function main() {
     },
   });
 
+  const amountOfBots = 100;
+
   const prismaQueries: Promise<User>[] = [];
-  for (let i = 0; i < 18; i++) {
+  for (let i = 0; i < amountOfBots; i++) {
     const qe = prisma.user.upsert({
       create: {
-        username: `taykas${i}`,
+        username: `bot${i}`,
         email: `mvkvols${i}@yandex.ru`,
         hashedPassword:
           "$2b$10$FXPVAxuA5ByTC1lonJxY9.DJrWiPY4PHc1qLWM9a7nXnxHF4sTBuO",
         rating: 2020 + i,
+        bot: true,
       },
       update: {
         rating: 2020 + i,
+        bot: true,
       },
       where: {
-        username: `taykas${i}`,
+        username: `bot${i}`,
       },
     });
 
@@ -93,6 +100,7 @@ async function main() {
         startTime: new Date(),
         rounds: 11,
         organizer: { connect: { username: "tayka" } },
+        status: "registration",
       },
       update: {},
       where: {

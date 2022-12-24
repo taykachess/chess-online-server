@@ -171,6 +171,7 @@
       $tournament.participants = $tournament.participants;
     });
 
+    // if (!$socket.hasListeners("tournament:finish"))
     $socket.on("tournament:finish", () => {
       $tournament.status = "finished";
     });
@@ -240,6 +241,9 @@
     $socket.removeListener("tournament:pause");
 
     $socket.emit("tournament:leave", { tournamentId: $page.params.id });
+
+    if ($tournament.status == "registration")
+      $socket.emit("game:leave", { gameId: $selectedTournamentGameId });
   });
 </script>
 

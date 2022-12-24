@@ -7,6 +7,7 @@ export interface Player {
   rating: number;
   ratingNext?: number;
   title?: Title | null;
+  bot?: boolean | null;
 }
 
 export type Result = "1" | "0.5" | "0" | "*" | "+" | "-";

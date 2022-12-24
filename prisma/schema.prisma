@@ -25,6 +25,8 @@ model User {
   hashedPassword String?
   yandex         String?      @unique
   lichess        String?      @unique
+  // For Dev and seldom cases
+  bot            Boolean?
 }
 
 enum Role {

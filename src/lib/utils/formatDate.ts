@@ -7,8 +7,6 @@ export function formatDate(
   now: number,
   tournamentStatus: TournamentStatus
 ): string {
-  console.log(date);
-  console.log(date, now, tournamentStatus);
   const diff = date - now;
 
   const SECOND = 1000;

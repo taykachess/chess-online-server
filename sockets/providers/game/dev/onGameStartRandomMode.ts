@@ -49,6 +49,11 @@ export async function onGameStartRandomMode({ gameId }: { gameId: string }) {
     io.to(GAME_ROOM(gameId)).emit("game:move", resultMove.san);
     const randomTime = Math.round(Math.random() * 5) * 1000;
     if (result == "*")
+      console.log("Is bot", game.white.bot, game.black.bot, chess.turn());
+    if (
+      (chess.turn() == "w" && game.white.bot) ||
+      (chess.turn() == "b" && game.black.bot)
+    )
       setTimeout(() => {
         onGameStartRandomMode({ gameId });
       }, randomTime);

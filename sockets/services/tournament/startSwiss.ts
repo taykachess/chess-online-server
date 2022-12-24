@@ -77,10 +77,10 @@ export async function startSwiss({
       round: 1,
     });
 
-    if (gameId && process.env.NODE_ENV == "dev")
-      setTimeout(() => {
-        onGameStartRandomMode({ gameId });
-      }, TOURNAMENT_GAME_PREPARE_TIME);
+    // if (gameId && process.env.NODE_ENV == "dev")
+    //   setTimeout(() => {
+    //     onGameStartRandomMode({ gameId });
+    //   }, TOURNAMENT_GAME_PREPARE_TIME);
 
     pair[3] = `${gameId}`;
   }

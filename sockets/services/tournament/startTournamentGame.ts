@@ -7,11 +7,17 @@ import {
   setPlayerReceivedBye,
 } from "../../global/tournament";
 import { MatchSwiss } from "../../types/tournament";
-import { PLAYER_IN_GAME_REDIS, USER_ROOM } from "../../variables/redisIndex";
+import {
+  PLAYER_IN_GAME_REDIS,
+  TOURNAMENT_GAME_PREPARE_TIME,
+  USER_ROOM,
+} from "../../variables/redisIndex";
 import { createGame } from "../game/createGame";
 
 import type { PlayerSwiss } from "../../types/tournament";
 import { io } from "../../global/io";
+import { prisma } from "../../global/prisma";
+import { onGameStartRandomMode } from "../../providers/game/dev/onGameStartRandomMode";
 export async function startTournamentGame({
   pair,
   tournamentId,
@@ -39,6 +45,7 @@ export async function startTournamentGame({
           rating: 0,
           // title: black.title,
           res: 1,
+          color: "w",
         },
         "",
       ],
@@ -48,17 +55,32 @@ export async function startTournamentGame({
     return;
   }
 
+  const [white, black] = await prisma.$transaction([
+    prisma.user.findUnique({
+      where: { username: pair[0].id },
+      select: { rating: true, title: true, bot: true },
+    }),
+    prisma.user.findUnique({
+      where: { username: pair[1].id },
+      select: { rating: true, title: true, bot: true },
+    }),
+  ]);
+
+  if (!white || !black) throw Error("Not white or black");
+
   const gameId = await createGame({
     data: {
       white: {
         username: pair[0].id,
-        rating: players[pair[0].id].rating,
-        title: players[pair[0].id].title,
+        ...white,
+        // rating: players[pair[0].id].rating,
+        // title: players[pair[0].id].title,
       },
       black: {
         username: pair[1].id,
-        rating: players[pair[1].id].rating,
-        title: players[pair[1].id].title,
+        ...black,
+        // rating: players[pair[1].id].rating,
+        // title: players[pair[1].id].title,
       },
       control,
       tournamentId,
@@ -66,6 +88,11 @@ export async function startTournamentGame({
       board,
     },
   });
+
+  if (white.bot && gameId)
+    setTimeout(() => {
+      onGameStartRandomMode({ gameId });
+    }, TOURNAMENT_GAME_PREPARE_TIME);
 
   io.to([USER_ROOM(pair[0].id), USER_ROOM(pair[1].id)]).emit("game:started", {
     gameId,

@@ -56,28 +56,15 @@ export async function createGame({
       });
       return;
     }
-
-    // await changeTime({
-    //   gameId,
-    //   increment: game.increment,
-    //   tsmp: game.tsmp,
-    //   turn: "w",
-    //   game,
-    // });
-    await setGameOver({
-      gameId,
-      result: randomResult == 0 ? "0" : randomResult == 1 ? "1" : "0.5",
-      game,
-    });
   };
   //  В турнире должно быть game.time[0]
   if (data.tournamentId)
     setGameTimeoutInitial(
       gameId,
       initialFn,
-      randomTime + TOURNAMENT_GAME_PREPARE_TIME
+      game.time[0] + TOURNAMENT_GAME_PREPARE_TIME
     );
-  else setGameTimeoutInitial(gameId, initialFn, randomTime);
+  // else setGameTimeoutInitial(gameId, initialFn, randomTime);
 
   if (data.matchId) game.matchId = data.matchId;
   if (data.tournamentId) {

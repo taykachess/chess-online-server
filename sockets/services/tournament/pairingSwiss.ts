@@ -110,11 +110,8 @@ export function pairingSwiss(
         // console.log(sorted);
         // console.log(wt, sorted.findIndex((p) => p.id === opp.id) + 1);
       }
-      if (
-        (curr.receivedBye && curr.receivedBye) ||
-        (opp.receivedBye && opp.receivedBye)
-      ) {
-        wt *= 1.25;
+      if (curr.receivedBye || opp.receivedBye) {
+        wt *= 0.8;
       }
       pairs.push([curr.index, opp.index, wt]);
     }

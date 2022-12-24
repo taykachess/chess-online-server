@@ -39,7 +39,7 @@ export const GET: RequestHandler = async ({ url, fetch, cookies }) => {
     where: {
       yandex: infoJson.id,
     },
-    select: { username: true, roles: { select: { name: true } } },
+    select: { username: true, roles: true },
   });
 
   if (!user) throw Error("Something wrong with user creation");

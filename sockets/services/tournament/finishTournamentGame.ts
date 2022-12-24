@@ -178,10 +178,11 @@ export async function finishTournamentGame({
           control: game.control,
           round,
         });
-        if (gameId && process.env.NODE_ENV == "dev")
-          setTimeout(() => {
-            onGameStartRandomMode({ gameId });
-          }, TOURNAMENT_GAME_PREPARE_TIME);
+
+        // if (gameId && process.env.NODE_ENV == "dev")
+        //   setTimeout(() => {
+        //     onGameStartRandomMode({ gameId });
+        //   }, TOURNAMENT_GAME_PREPARE_TIME);
         pair[3] = `${gameId}`;
       }
 

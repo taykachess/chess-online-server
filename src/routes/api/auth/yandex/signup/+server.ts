@@ -56,7 +56,7 @@ export const GET: RequestHandler = async ({ url, fetch, cookies }) => {
       email: infoJson.default_email,
       yandex: infoJson.id,
     },
-    select: { username: true, roles: { select: { name: true } } },
+    select: { username: true, roles: true },
   });
 
   if (!createdUser) throw Error("Something wrong with user creation");
