@@ -75,6 +75,5 @@
     bind:currentPage
     cb={onClickPagination}
     title="Турниров"
-    textClass="text-slate-300"
   />
 {/if}

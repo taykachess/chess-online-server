@@ -19,7 +19,9 @@
 </script>
 
 <div
-  class="hidden {textClass}   sm:flex sm:flex-1 sm:items-center sm:justify-between "
+  class="hidden {textClass
+    ? textClass
+    : 'text-gray-800'} select-none    sm:flex sm:flex-1 sm:items-center sm:justify-between "
 >
   <div>
     <p class="text-sm ">
@@ -43,7 +45,7 @@
         cb(currentPage - 1);
         currentPage = currentPage - 1;
       }}
-      class="relative inline-flex cursor-pointer items-center rounded-l-md border-r  border-gray-300 bg-white px-2 py-2 text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-20"
+      class="relative inline-flex cursor-pointer items-center rounded-l-md border-r  border-gray-300 bg-white px-2 py-1 text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-20"
     >
       <span class="sr-only">Previous</span>
       <!-- Heroicon name: mini/chevron-left -->
@@ -62,25 +64,36 @@
       </svg>
     </a>
 
-    {#each arrayPages(PAGES) as page}
+    {#each arrayPages(PAGES) as page, index}
+      {#if currentPage - 2 == page && currentPage - 2 > 1}
+        <div class="border-r bg-white px-3 py-1 text-sm font-medium">...</div>
+      {/if}
       <div
         on:click={() => {
           cb(page);
           currentPage = page;
         }}
         aria-current="page"
-        class="relative inline-flex  cursor-pointer items-center  {page ===
-        currentPage
-          ? 'border-indigo-500 bg-indigo-50 text-indigo-600'
-          : 'border-gray-300 bg-white hover:bg-gray-50'}   px-4 py-2 text-sm font-medium  focus:z-20"
+        class="relative {currentPage == page ||
+        currentPage + 1 == page ||
+        currentPage - 1 == page ||
+        page == 1 ||
+        page == PAGES
+          ? ' '
+          : 'hidden'}  cursor-pointer items-center  {page === currentPage
+          ? ' bg-sky-50 text-sky-600'
+          : 'border-gray-300 bg-white hover:bg-gray-50'}  border-r  px-3 py-1 text-sm font-medium  focus:z-20"
       >
         {page}
       </div>
+      {#if currentPage + 2 == page && currentPage + 2 < PAGES}
+        <div class="border-r bg-white px-3 py-1 text-sm font-medium">...</div>
+      {/if}
     {/each}
     <!-- Current: "z-10 bg-indigo-50 border-indigo-500 text-indigo-600", Default: "bg-white border-gray-300 text-gray-500 hover:bg-gray-50" -->
 
     <!-- <span
-        class="relative inline-flex items-center border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700"
+        class="relative inline-flex items-center border border-gray-300 bg-white px-3 py-1 text-sm font-medium text-gray-700"
         >...</span -->
 
     <div
@@ -89,7 +102,7 @@
         cb(currentPage + 1);
         currentPage = currentPage + 1;
       }}
-      class="relative inline-flex cursor-pointer items-center rounded-r-md border-l border-gray-300 bg-white px-2 py-2 text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-20"
+      class="relative inline-flex cursor-pointer items-center rounded-r-md  border-gray-300 bg-white px-2 py-1 text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-20"
     >
       <span class="sr-only">Next</span>
       <!-- Heroicon name: mini/chevron-right -->
