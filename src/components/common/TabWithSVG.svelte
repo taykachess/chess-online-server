@@ -9,10 +9,8 @@
     ? 'text-pink-500 dark:text-pink-400'
     : ' '}"
 >
-  <div
-    class=" mb-2 {active ? '' : 'text-slate-300 group-hover:text-slate-400'}  "
-  >
-    <slot class=" " />
+  <div class="  {active ? '' : 'text-slate-300 group-hover:text-slate-400'}  ">
+    <slot />
   </div>
   {title}</button
 >

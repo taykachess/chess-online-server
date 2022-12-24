@@ -13,6 +13,7 @@
   import ButtonCancel from "./ButtonCancel.svelte";
   import ButtonReadyToPlay from "./ButtonReadyToPlay.svelte";
   import ButtonStop from "./ButtonStop.svelte";
+  import BadgeTournamentFormat from "$components/common/badgeTournamentFormat.svelte";
   // export let tournamentInfo: {
   //   name: string;
   //   control: string;
@@ -75,8 +76,11 @@
           <dt class="text-sm font-medium text-gray-500">Формат</dt>
           <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
             <div class="">
-              <Badge title={transformTournamentFormat($tournament.format)} color={{text:"text-orange-800 px-2 py-1", bg:"bg-orange-100"}}/>
-              <Badge title={`${$tournament.rounds} туров`} color={{text:"text-sky-800 px-2 py-1", bg:"bg-sky-100"}}/>
+
+              <BadgeTournamentFormat format={$tournament.format}   /> 
+              {#if $tournament.format=='swiss'}
+                <Badge title={`${$tournament.rounds} туров`} color={{bg:" bg-blue-100 ", text:" p-px"}}></Badge>
+              {/if}
 
             </div>
           </dd>
