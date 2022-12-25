@@ -2,13 +2,13 @@ import type { TournamentStatus } from "@prisma/client";
 
 // {tournamentInfo.startDate.toLocaleString("ru-RU", {  month: 'long', day: 'numeric'})} {tournamentInfo.startDate.toLocaleString("ru-RU", {  timeStyle:"short"})}
 
-const options = {
-  month: "short",
-  day: "numeric",
-  hour: "numeric",
-  minute: "numeric",
-  hour12: false,
-};
+// const options = {
+//   month: "short",
+//   day: "numeric",
+//   hour: "numeric",
+//   minute: "numeric",
+//   hour12: false,
+// };
 export function formatDate(
   date: number,
   now: number,
@@ -43,7 +43,7 @@ export function formatDate(
     return `Через ${minutes}:${secondString}`;
   } else if (diff < DAY) {
     const minutes = Math.floor(diff / MINUTE) % 60;
-    const hours = Math.round(diff / HOUR);
+    const hours = Math.floor(diff / HOUR);
     const seconds = Math.floor(diff / SECOND) % 60;
     const secondString = `${seconds < 10 ? "0" + seconds : seconds}`;
     return `Через ${hours}:${minutes}:${secondString}`;

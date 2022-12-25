@@ -17,44 +17,21 @@
   console.log("game", data.game);
 
   function removeSocketListerners() {
-    // $socket.removeListener("game:end");
     $socket.removeListener("game:move");
     $socket.removeListener("game:offerDraw");
     $socket.removeListener("game:declineDraw");
   }
-
-  // if (browser) {
-  //   $socket.emit("game:sub", { gameId: $page.params.id });
-  // }
 
   beforeNavigate(({ willUnload, type, to, from }) => {
     if (willUnload) {
       console.log("Unload", willUnload);
     }
     window.cancelAnimationFrame($requestId);
-    // removeSocketListerners();
-    // console.log(to, from);
-
     if (to?.route.id == from?.route.id && to?.params?.id != from?.params?.id) {
-      // $socket.removeListener("game:end");
       $socket.removeListener("game:move");
     } else {
       removeSocketListerners();
-      // if (to?.params?.id)
-      //   $socket.emit("game:leave", { gameId: $page.params.id });
     }
-
-    // $info.chess = null;
-  });
-
-  afterNavigate(({ willUnload, from, to }) => {
-    // if (to?.route.id == from?.route.id && to?.params?.id != from?.params?.id) {
-    //   console.log("after nav", $info.chess.fen());
-    //   setTimeout(() => {
-    //     $board.setPosition($info.chess.fen());
-    //   }, 2000);
-    // }
-    console.log("load", willUnload);
   });
 </script>
 

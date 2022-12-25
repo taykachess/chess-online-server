@@ -92,6 +92,7 @@
             return async ({ result, update }) => {
               await update();
               if ($page.form?.success) {
+                console.log("success");
                 deleteCookie("token");
                 $socket.disconnect();
                 $socket.auth = {};
@@ -104,7 +105,6 @@
           action="/?/logout"
         >
           <button
-            href="##"
             class=" rounded-md  px-2 py-2 text-sm font-medium text-gray-900 transition duration-150 ease-in-out hover:bg-gray-100 focus:outline-none focus-visible:ring focus-visible:ring-orange-500 focus-visible:ring-opacity-50"
           >
             Выйти из аккаунта</button
