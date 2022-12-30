@@ -6,6 +6,7 @@
     ListboxOption,
   } from "@rgossiaux/svelte-headlessui";
   import { Check, Icon } from "svelte-hero-icons";
+  import { createEventDispatcher } from "svelte";
   export let options: { name: string; value: any }[] = [
     { name: "вы забыли", value: "forgot" },
   ];
@@ -15,10 +16,12 @@
   };
   export let colorOptions = { bg: "bg-white", hover: "hover:bg-slate-300" };
 
-  export let value: any = options[0].value;
+  export let value: any = options[1].value;
   let selectedOption: { name: string; value: any } | undefined = options.find(
     (opt) => opt.value === value
   );
+
+  const dispatch = createEventDispatcher();
 
   // function resetAll() {
   //   selectedOption = options[0];
@@ -31,8 +34,10 @@
   value={selectedOption}
   class="relative"
   on:change={(e) => {
+    console.log("Dispatch change");
     selectedOption = e.detail;
     value = e.detail.value;
+    dispatch("change");
   }}
 >
   <ListboxButton

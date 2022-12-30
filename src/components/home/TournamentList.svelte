@@ -5,7 +5,6 @@
   import Pagination from "$components/common/Pagination.svelte";
   import ChessClockSvg from "$components/icons/ChessClockSVG.svelte";
   import IconCalendarDays from "$components/icons/IconCalendarDays.svelte";
-  import IconFlag from "$components/icons/IconFlag.svelte";
   import { formatDate } from "$lib/utils/formatDate";
   import { time } from "$store/global/time";
   import type { GetTournament, TournamentTable } from "$types/tournament";
@@ -62,7 +61,7 @@
 <!-- prettier-ignore -->
 {#each tournaments as tournament, index }
   <!-- svelte-ignore a11y-click-events-have-key-events -->
-  <div on:click={()=>goto(`/${tournament.format}/${tournament.id}`)} class=" grid w-full grid-cols-8 border-x border-b {index%2?"bg-slate-50":" bg-white"} text-center text-sm font-medium hover:bg-sky-50 cursor-pointer  ">
+  <div on:click={()=>goto(`/tournament/${tournament.id}`)} class=" grid w-full grid-cols-8 border-x border-b {index%2?"bg-slate-50":" bg-white"} text-center text-sm font-medium hover:bg-sky-50 cursor-pointer  ">
     <div class=" col-span-3  py-2    border-gray-300 text-gray-700 truncate"> {tournament.name} </div>
     <div class=" col-span-1  py-2    border-gray-300 text-gray-700  flex items-center justify-center "> 
       

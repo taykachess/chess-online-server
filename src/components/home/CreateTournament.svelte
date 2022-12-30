@@ -29,7 +29,7 @@
 
     const { id, format } = await response.json();
 
-    goto(`/${format}/${id}`);
+    goto(`/tournament/${id}`);
   }
 </script>
 

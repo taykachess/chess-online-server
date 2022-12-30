@@ -1,6 +1,7 @@
 <script lang="ts">
   import YandexButton from "./YandexButton.svelte";
   import LichessButton from "./LichessButton.svelte";
+  import IconExitDialog from "$components/icons/IconExitDialog.svelte";
 
   export let isOpen: boolean;
 
@@ -52,12 +53,9 @@
       on:click={() => {
         isOpen = !isOpen;
       }}
-      class=" absolute right-[-0.5rem] top-[-0.5rem] cursor-pointer rounded-full border border-slate-500 bg-slate-200 p-px hover:bg-slate-300"
+      class=" absolute right-[-0.5rem] top-[-0.5rem] h-6 w-6 cursor-pointer rounded-full border border-slate-500 bg-slate-200 p-px hover:bg-slate-300"
     >
-      <!-- prettier-ignore -->
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-      </svg>
+      <IconExitDialog />
     </div>
     <h2 class="text-center text-2xl font-bold tracking-wide text-gray-800">
       Регистрация

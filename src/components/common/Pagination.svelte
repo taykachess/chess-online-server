@@ -19,9 +19,9 @@
 </script>
 
 <div
-  class="hidden {textClass
+  class=" {textClass
     ? textClass
-    : 'text-gray-800'} select-none    sm:flex sm:flex-1 sm:items-center sm:justify-between "
+    : 'text-gray-800'} flex    flex-1 select-none items-center justify-between "
 >
   <div>
     <p class="text-sm ">

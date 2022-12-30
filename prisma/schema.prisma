@@ -38,12 +38,6 @@ enum Title {
   IM
 }
 
-// model Role {
-//   id    Int    @id @default(autoincrement())
-//   name  String @unique
-//   users User[]
-// }
-
 model Tournament {
   id           String           @id @default(cuid())
   name         String
@@ -75,67 +69,32 @@ enum TournamentFormat {
   swiss
 }
 
-// model Player {
-//   id           String     @id @default(cuid())
-//   Tournament   Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
-//   tournamentId String
-//   seed         Int        @default(0)
-//   initialByes  Int        @default(0)
-//   User         User       @relation(fields: [alies], references: [username])
-//   alies        String
-//   pairingBye   Boolean    @default(false)
-//   // matchesWhite Match[]    @relation(name: "w")
-//   // matchesBlack Match[]    @relation(name: "b")
-//   pairUpDown   Boolean    @default(false)
-//   matchCount   Int        @default(0)
-//   matchPoints  Int        @default(0)
-//   gameCount    Int        @default(0)
-//   gamePoints   Int        @default(0)
-//   bsn          Int        @default(0)
-//   active       Boolean    @default(true)
-//   results      Json[]
-//   tiebreakers  Json
-// }
-
-// player1: string;
-//   player2: string;
-//   rounds: number;
-//   games: MatchGame[];
-//   armageddon: boolean;
-//   result: [number, number, number];
-//   active: Boolean;
-//   tournamentId String
-
-//  round: Number,
-//     match: Number,
-//     player1: String | Number | null,
-//     player2: String | Number | null,
-//     // the following objects are only present in elimination pairings
-//     win?: {
-//         round: Number,
-//         match: Number
-//     },
-//     loss?: {
-//         round: Number,
-//         match: Number
-//     }
 model Match {
-  id         String  @unique
+  id         String    @unique
   player1    String?
   player2    String?
   rounds     Int
+  // [int,int,int]
   result     Json?
-  status     String  @default("created")
-  armageddon Boolean @default(false)
+  status     String    @default("created")
+  armageddon Boolean   @default(false)
   games      Game[]
+  type       MatchType @default(bestof)
+  // [{time:1800000, control:"3+0"},...]
+  stages     Json?
 
   // Use in tournaments only
-  round        Int?
-  match        Int?
-  win          Json?
-  loss         Json?
+  // round        Int?
+  // match        Int?
+  // win          Json?
+  // loss         Json?
   // Tournament   Tournament? @relation(fields: [tournamentId], references: [id])
   tournamentId String?
+}
+
+enum MatchType {
+  bestof
+  time
 }
 
 model Game {

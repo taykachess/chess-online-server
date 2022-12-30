@@ -13,8 +13,9 @@
   import type { ChallengeTableRecord } from "$types/challenge";
   import { browser } from "$app/environment";
   import Badge from "$components/common/Badge.svelte";
-
-  const titles = ["Игрок", "Рейтинг", "Контроль"];
+  import ChallengeList from "./ChallengeList.svelte";
+  import ChallengeCreateFast from "./ChallengeCreateFast.svelte";
+  import ChallengeMatchFriend from "./ChallengeMatchFriend.svelte";
 
   async function getAllChallenges() {
     return fetch(`/api/challenge/getAll`, {
@@ -127,61 +128,20 @@
 
     $listOfChallenges = { count: 0, challenges: [] };
   });
-  let count = 0;
-  $: {
-    if (browser) {
-      count = count + 1;
-      if (count == 1) {
-      } else {
-        localStorage.setItem("challengeFilters", JSON.stringify($filters));
-      }
-    }
-  }
 </script>
-
-<div class=" my-4 flex items-end ">
-  {#if $filters}
-    <Select
-      bind:value={$filters.rating[0]}
-      options={[
-        { name: "-ထ", value: -500 },
-        { name: "-100 ", value: -100 },
-        { name: "-200", value: -200 },
-        { name: "-300", value: -300 },
-        { name: "-400", value: -400 },
-      ]}
-      color={{
-        bg: "bg-pink-100 rounded-none rounded-l",
-        text: "text-pink-800",
-      }}
-    />
-    <Badge
-      title={`Ваш рейтинг`}
-      color={{ text: "text-slate-700 py-0.5 rounded-none", bg: "bg-white" }}
-    />
-    <Select
-      bind:value={$filters.rating[1]}
-      options={[
-        { name: "+ထ", value: 500 },
-        { name: "+100", value: 100 },
-        { name: "+200", value: 200 },
-        { name: "+300", value: 300 },
-        { name: "+400", value: 400 },
-      ]}
-      color={{
-        bg: "bg-green-100 rounded-none rounded-r",
-        text: "text-green-800",
-      }}
-    />
-  {/if}
-</div>
 
 <div class=" my-2" />
 <div class=" grid sm:w-full  sm:grid-cols-6 sm:gap-x-4  ">
-  <div class="w-full sm:col-span-2 ">
+  <!-- <div class="w-full sm:col-span-2 ">
     <ChallengeGrid />
+  </div> -->
+  <div class=" sm:col-span-3 ">
+    <div class="my-4">
+      <ChallengeCreateFast />
+      <ChallengeMatchFriend />
+    </div>
   </div>
-  <div class=" mt-2  sm:col-span-4 sm:mt-0 ">
-    <Table {titles} {records} onClickPagination={() => {}} count={10} />
+  <div class="sm:col-span-3 sm:mt-4 ">
+    <ChallengeList bind:challenges={$listOfChallenges.challenges} />
   </div>
 </div>

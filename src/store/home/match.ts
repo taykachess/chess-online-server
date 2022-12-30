@@ -17,7 +17,7 @@ function setFilters() {
   const storageFilters = localStorage.getItem("matchFilters");
   if (!storageFilters) {
     const filters: MatchFilters = { rating: [-500, 500] };
-    localStorage.setItem("challengeFilters", JSON.stringify(filters));
+    localStorage.setItem("matchFilters", JSON.stringify(filters));
     return;
   }
   const parsedFilters = JSON.parse(storageFilters) as MatchFilters;

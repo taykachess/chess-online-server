@@ -1,17 +1,12 @@
 <script lang="ts">
-  import Table from "$components/common/Table.svelte";
   import { page } from "$app/stores";
   import Tabs from "$components/common/Tabs.svelte";
   import { listOfTournaments } from "$store/home/tournaments";
-  import { tournamentTab } from "$store/home/tounamentTab";
+  import { tournamentTab } from "$store/home/tournamentTab";
 
-  import type { TournamentTableRecord } from "$types/tournament";
   import type { TournamentTable } from "$types/tournament";
-  import TournamentGridElement from "./TournamentGridElement.svelte";
   import TournamentCreateButton from "./TournamentCreateButton.svelte";
 
-  import { formatDate } from "$lib/utils/formatDate";
-  import { time } from "$store/global/time";
   import TournamentList from "./TournamentList.svelte";
 
   async function getAllTournaments({

@@ -290,16 +290,23 @@
   </div>
 </div> -->
 
-<div class=" mx-auto max-w-6xl">
-  <div class=" mt-4 grid grid-cols-2 space-x-8 ">
-    <TournamentDescription />
-    {#if $tournament.status == "registration" && $tournament.participants}
-      <TournamentPlayersRegister bind:players={$tournament.participants} />
-    {:else}
-      <TournamentSwissPlayersStanding />
-    {/if}
+<div class=" mx-5 max-w-6xl sm:mx-auto">
+  <div class=" mt-4 grid sm:grid-cols-2 sm:space-x-8 ">
+    <div class="  sm:mx-0">
+      <TournamentDescription />
+    </div>
+
+    <div class="  mt-4 sm:mx-0 sm:mt-0">
+      {#if $tournament.status == "registration" && $tournament.participants}
+        <TournamentPlayersRegister bind:players={$tournament.participants} />
+      {:else}
+        <TournamentSwissPlayersStanding />
+      {/if}
+    </div>
   </div>
-  <div class="sticky top-0 my-8 grid grid-cols-5 space-x-8">
+  <div
+    class="flex flex-col-reverse sm:sticky sm:top-0 sm:mt-8 sm:grid sm:grid-cols-5 sm:space-x-8"
+  >
     {#if $tournament.rounds && $pairings}
       <div class="  col-span-3">
         <GameList
@@ -310,8 +317,8 @@
           }}
         />
       </div>
-      <div class=" relative col-span-2 ">
-        <div class=" sticky top-10">
+      <div class=" relative col-span-2 my-8 sm:my-0">
+        <div class=" sm:sticky sm:top-10 ">
           <ChessTv
             on:boardMounted={() => {
               if ($tournamentTv) {

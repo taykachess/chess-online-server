@@ -10,6 +10,7 @@
   import Login from "$components/dialogs/Auth/Login.svelte";
   import Signup from "$components/dialogs/Auth/Signup.svelte";
   import ChessClockSVG from "$components/icons/ChessClockSVG.svelte";
+  import IconBell from "$components/icons/IconBell.svelte";
   import { deleteCookie } from "$lib/utils/cookie";
   import { socket } from "$store/sockets/socket";
 
@@ -80,6 +81,11 @@
         </button>
       </div>
     {:else}
+      <div
+        class=" mr-4 h-5 w-5 duration-100 hover:scale-105 hover:cursor-pointer"
+      >
+        <IconBell />
+      </div>
       <Popover title={$page.data?.user?.username}>
         <form
           on:keydown={(event) => {
