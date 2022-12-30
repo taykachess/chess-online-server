@@ -20,6 +20,7 @@
     const config: Config = {
       orientation,
       responsive: true,
+      animationDuration: 40,
       position,
       style: {
         borderType: "none",
@@ -39,6 +40,7 @@
       extensions: [{ class: PromotionDialog, props: {} }],
     };
     $board = new Chessboard(boardHTML, config);
+    // $board.
   }
 
   onMount(() => {

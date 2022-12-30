@@ -70,7 +70,7 @@ export async function setGameOver({
   (await io.in(GAME_ROOM(gameId)).fetchSockets()).forEach((socket) => {
     console.log("Next sockets must get resign", socket.data?.username);
   });
-  console.log("game:end send");
+  // console.log("game:end send");
   io.to(GAME_ROOM(gameId)).emit("game:end", {
     result,
     newEloWhite,

@@ -54,6 +54,8 @@ export async function startSwiss({
   // Жеребьевка
 
   const playersValues = Object.values(players);
+  console.log(playersValues.length);
+  playersValues.length;
   const pairings: MatchSwiss[] = pairingSwiss(playersValues, true);
 
   const tournamentSwiss: TournamentSwiss = {
@@ -65,6 +67,8 @@ export async function startSwiss({
     maxRounds: tournament.rounds,
   };
 
+  console.log(playersValues.length);
+  console.log(tournamentSwiss.activeGames);
   await setTournament(tournamentId, tournamentSwiss);
 
   for await (const [index, pair] of pairings.entries()) {

@@ -51,7 +51,34 @@ export function pairingSwiss(
 
   //   console.log(players);
 
+  // order is very important
   playerArray.sort((a, b) => b.rating - a.rating);
+  playerArray.sort((a, b) => b.score - a.score);
+
+  // playerArray.findIndex(player=>player.receivedBye)
+
+  let i = playerArray.length - 1;
+  while (playerArray[i].receivedBye) {
+    i--;
+  }
+
+  const byePlayer = playerArray[i];
+
+  console.log("bye player", byePlayer);
+  matches.push([
+    {
+      id: byePlayer.id,
+      rating: byePlayer.rating,
+      title: byePlayer.title,
+      score: byePlayer.score,
+    },
+    null,
+    "+",
+    null,
+  ]);
+
+  playerArray.splice(i, 1);
+  // playerArray.findLast('dsf')
 
   playerArray.forEach((p, i) => (p.index = i));
   const scoreGroups = [...new Set(playerArray.map((p) => p.score))].sort(
@@ -120,15 +147,15 @@ export function pairingSwiss(
   //   @ts-ignore
   const blossomPairs = blossom(pairs, true);
   const playerCopy = [...playerArray];
-  let byeArray = [];
+  // let byeArray = [];
   do {
     const indexA = playerCopy[0].index;
     // @ts-ignore
     const indexB = blossomPairs[indexA];
-    if (indexB === -1) {
-      byeArray.push(playerCopy.splice(0, 1)[0]);
-      continue;
-    }
+    // if (indexB === -1) {
+    //   byeArray.push(playerCopy.splice(0, 1)[0]);
+    //   continue;
+    // }
     playerCopy.splice(0, 1);
     playerCopy.splice(
       playerCopy.findIndex((p) => p.index === indexB),
@@ -171,21 +198,43 @@ export function pairingSwiss(
       0
     )
   );
-  byeArray = [...byeArray, ...playerCopy];
-  for (let i = 0; i < byeArray.length; i++) {
-    matches.push([
-      {
-        id: byeArray[i].id,
-        rating: byeArray[i].rating,
-        title: byeArray[i].title,
-        score: byeArray[i].score,
-      },
-      null,
-      "+",
-      null,
-    ]);
-    delete byeArray[i].index;
-  }
+
+  // byeArray = [...byeArray, ...playerCopy];
+  // for (let i = 0; i < byeArray.length; i++) {
+  //   matches.push([
+  //     {
+  //       id: byeArray[i].id,
+  //       rating: byeArray[i].rating,
+  //       title: byeArray[i].title,
+  //       score: byeArray[i].score,
+  //     },
+  //     null,
+  //     "+",
+  //     null,
+  //   ]);
+  //   delete byeArray[i].index;
+  // }
   //   @ts-ignore
+  matches.sort(swissSortingFn);
+  players.push(byePlayer);
   return matches;
+}
+
+function swissSortingFn(a: MatchSwiss, b: MatchSwiss) {
+  if (!b[1] || !a[1]) return -1;
+  const diff =
+    Math.max(b[0].score, b[1].score) - Math.max(a[0].score, a[1].score);
+  if (diff > 0) return 1;
+  if (diff == 0) {
+    const summa = b[0].score + b[1].score - a[0].score - a[1].score;
+    if (summa > 0) {
+      return 1;
+    }
+    if (summa < 0) {
+      return -1;
+    }
+    return 0;
+  }
+  if (diff < 0) return -1;
+  return 0;
 }

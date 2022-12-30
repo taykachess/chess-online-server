@@ -32,6 +32,7 @@
   } from "$types/tournament";
   import { Chess } from "cm-chess-ts";
   import { onMount, tick } from "svelte";
+  import { onDestroy } from "svelte";
   import type { PageData } from "./$types";
   export let data: PageData;
 
@@ -230,6 +231,10 @@
     });
   });
 
+  // onDestroy(()=>{
+
+  // })
+
   beforeNavigate(() => {
     $socket.removeListener("tournament:register");
     $socket.removeListener("tournament:unregister");
@@ -242,7 +247,7 @@
 
     $socket.emit("tournament:leave", { tournamentId: $page.params.id });
 
-    if ($tournament.status == "registration")
+    if ($tournament.status == "running")
       $socket.emit("game:leave", { gameId: $selectedTournamentGameId });
   });
 </script>
