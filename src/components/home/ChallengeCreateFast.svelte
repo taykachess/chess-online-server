@@ -7,14 +7,8 @@
   import { socket } from "$store/sockets/socket";
   import type { ChallengeFilters } from "$types/challenge";
   import ChallengeFiltersComponent from "./ChallengeFilters.svelte";
-  function createChallenge({
-    control,
-    filters,
-  }: {
-    control: string;
-    filters: ChallengeFilters;
-  }) {
-    $socket.emit("challenge:create", { control, filters });
+  function createChallenge({ filters }: { filters: ChallengeFilters }) {
+    $socket.emit("challenge:create", { control: filters.control, filters });
   }
 
   function cancelChallenge() {
@@ -39,7 +33,7 @@
         <div on:click={()=>{
           if(challengeSended==false) {
             challengeSended = true;
-            createChallenge({control:"1+0", filters:$filters})
+            createChallenge({ filters:$filters})
           } else {
             cancelChallenge()
             challengeSended = false
@@ -79,7 +73,7 @@
 
                 {#if $page.data.user?.rating}
                 <Badge
-                 title={`1+0 `}
+                 title={`${$filters.control}`}
                  color={{text:"text-sky-800 px-1 ml-1", bg:"bg-sky-100 border"}}
                  >
                 </Badge>

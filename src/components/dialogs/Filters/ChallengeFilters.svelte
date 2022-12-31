@@ -1,6 +1,7 @@
 <script lang="ts">
   import Badge from "$components/common/Badge.svelte";
   import Select from "$components/common/Select.svelte";
+  import TailwindUiListBox from "$components/common/TailwindUiListBox.svelte";
   import IconExitDialog from "$components/icons/IconExitDialog.svelte";
   import { CHALLENGE_FILTERS_LOCAL_STORAGE } from "$lib/variables/home";
 
@@ -17,7 +18,9 @@
 </script>
 
 <!-- svelte-ignore a11y-click-events-have-key-events -->
-<div class=" relative z-10 aspect-square w-1/3 rounded-lg bg-white">
+<div
+  class=" relative z-10 flex aspect-square w-1/3 flex-col items-center justify-center rounded-lg bg-white p-8"
+>
   <div
     on:click={() => {
       isOpen = !isOpen;
@@ -27,8 +30,8 @@
     <IconExitDialog />
   </div>
 
-  <div class="">
-    <div class=" my-4 flex items-end ">
+  <div class=" flex">
+    <div class=" my-4 flex w-full items-end  ">
       {#if $filters}
         <Select
           bind:value={$filters.rating[0]}
@@ -42,12 +45,15 @@
           ]}
           color={{
             bg: "bg-pink-100 rounded-none rounded-l",
-            text: "text-pink-800",
+            text: "text-pink-800 border text-base",
           }}
         />
         <Badge
           title={`Ваш рейтинг`}
-          color={{ text: "text-slate-700 py-0.5 rounded-none", bg: "bg-white" }}
+          color={{
+            text: "text-slate-700 py-0.5 rounded-none ",
+            bg: "bg-white border-y text-base",
+          }}
         />
         <Select
           bind:value={$filters.rating[1]}
@@ -61,10 +67,15 @@
           ]}
           color={{
             bg: "bg-green-100 rounded-none rounded-r",
-            text: "text-green-800",
+            text: "text-green-800 border text-base",
           }}
         />
       {/if}
     </div>
+  </div>
+
+  <div class=" w-40">
+    <TailwindUiListBox on:change={onChange} bind:value={$filters.control} />
+    <!-- <input type="number" name="" id="" /> -->
   </div>
 </div>

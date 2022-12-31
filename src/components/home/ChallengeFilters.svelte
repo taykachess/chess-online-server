@@ -16,7 +16,7 @@
     return `${sum}`;
   }
 
-  $: activeFilters = summa($filters);
+  // $: activeFilters = summa($filters);
 </script>
 
 <Dialog bind:isOpen>
@@ -34,7 +34,7 @@
     isOpen = true;
   }}
   type="button"
-  class="relative inline-flex w-16 items-center  rounded-l-md border-r  border-gray-300 bg-white px-3 py-1 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+  class="relative inline-flex w-16 items-center justify-center  rounded-l-md border-r  border-gray-300 bg-white px-3 py-1 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
 >
   <svg
     class="h-6 w-6"
@@ -49,10 +49,10 @@
       d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"
     /></svg
   >
-  <span class="  ml-1">
+  <!-- <span class="  ml-1">
     <Badge
       title={activeFilters}
       color={{ text: "text-white", bg: "bg-slate-700" }}
     />
-  </span>
+  </span> -->
 </button>

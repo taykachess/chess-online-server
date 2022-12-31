@@ -16,7 +16,7 @@ if (browser) {
 function setFilters() {
   const storageFilters = localStorage.getItem("matchFilters");
   if (!storageFilters) {
-    const filters: MatchFilters = { rating: [-500, 500] };
+    const filters: MatchFilters = { rating: [-500, 500], control: "3+2" };
     localStorage.setItem("matchFilters", JSON.stringify(filters));
     return;
   }

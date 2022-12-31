@@ -1,5 +1,6 @@
 export interface ChallengeFilters {
   rating: [number, number];
+  control: string;
 }
 
 export interface GetChallenge {
