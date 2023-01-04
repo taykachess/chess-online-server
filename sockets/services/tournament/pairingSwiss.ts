@@ -57,27 +57,29 @@ export function pairingSwiss(
 
   // playerArray.findIndex(player=>player.receivedBye)
 
-  let i = playerArray.length - 1;
-  while (playerArray[i].receivedBye) {
-    i--;
+  let byePlayer;
+
+  if (players.length % 2) {
+    let i = playerArray.length - 1;
+    while (playerArray[i].receivedBye) {
+      i--;
+    }
+    byePlayer = playerArray[i];
+
+    matches.push([
+      {
+        id: byePlayer.id,
+        rating: byePlayer.rating,
+        title: byePlayer.title,
+        score: byePlayer.score,
+      },
+      null,
+      "+",
+      null,
+    ]);
+    playerArray.splice(i, 1);
   }
 
-  const byePlayer = playerArray[i];
-
-  console.log("bye player", byePlayer);
-  matches.push([
-    {
-      id: byePlayer.id,
-      rating: byePlayer.rating,
-      title: byePlayer.title,
-      score: byePlayer.score,
-    },
-    null,
-    "+",
-    null,
-  ]);
-
-  playerArray.splice(i, 1);
   // playerArray.findLast('dsf')
 
   playerArray.forEach((p, i) => (p.index = i));
@@ -216,7 +218,8 @@ export function pairingSwiss(
   // }
   //   @ts-ignore
   matches.sort(swissSortingFn);
-  players.push(byePlayer);
+
+  if (byePlayer) players.push(byePlayer);
   return matches;
 }
 

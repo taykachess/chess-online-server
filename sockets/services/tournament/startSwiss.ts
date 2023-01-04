@@ -54,7 +54,7 @@ export async function startSwiss({
   // Жеребьевка
 
   const playersValues = Object.values(players);
-  console.log(playersValues.length);
+  console.log("player values", playersValues.length);
   playersValues.length;
   const pairings: MatchSwiss[] = pairingSwiss(playersValues, true);
 
