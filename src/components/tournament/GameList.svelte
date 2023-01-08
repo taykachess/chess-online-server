@@ -78,11 +78,11 @@
   }
 
   async function getGame(gameId: string) {
-    const data = await fetch(`/api/game/${gameId}`);
-    const game = (await data.json()) as GetGame;
-    if (!game) return;
-    game.id = gameId;
-    dispatch("getGame", game);
+    $socket.emit("game:get", { gameId }, (gameFromServer) => {
+      if (!gameFromServer) return;
+      gameFromServer.id = gameId;
+      dispatch("getGame", gameFromServer);
+    });
   }
 
   onMount(async () => {

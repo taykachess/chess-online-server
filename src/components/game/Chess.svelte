@@ -378,7 +378,13 @@
   afterNavigate(async ({ from, to }) => {
     if (to?.route.id == from?.route.id && to?.params?.id != from?.params?.id) {
       lastTime = 0;
-      onGetGame($page.data.game);
+      $socket.emit(
+        "game:get",
+        { gameId: $page.params.id },
+        (gameFromServer) => {
+          if (gameFromServer) onGetGame(gameFromServer);
+        }
+      );
     }
   });
 

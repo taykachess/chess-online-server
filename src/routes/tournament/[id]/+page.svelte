@@ -58,14 +58,21 @@
 
   $tournament = data.swiss as GetTournament;
 
-  $tournamentTv = data.tournamentTv as TournamentTv;
-
   if (browser) {
     if (data.liveGameId) {
+      $socket.emit(
+        "game:get",
+        { gameId: data.liveGameId },
+        (gameFromServer) => {
+          if (data.liveGameId) setTournamentTv(gameFromServer, data.liveGameId);
+        }
+      );
       $liveTournamentGameId = data.liveGameId;
       $selectedTournamentGameId = $liveTournamentGameId;
     }
   }
+
+  // $tournamentTv = data.tournamentTv as TournamentTv;
 
   $pairings = data.matches as MatchSwiss[];
   if (browser)
@@ -138,7 +145,7 @@
 
       $tournamentTv.game.id = gameId;
 
-      $socket.emit("game:sub", { gameId });
+      // $socket.emit("game:sub", { gameId });
       $socket.on("game:move", (move) => {
         $chess.move(move);
         $board.setPosition($chess.fen());
@@ -222,11 +229,14 @@
     });
 
     $socket.on("tournament:tv", async ({ game }) => {
+      console.log("tournament:tv", game.id);
       if (!game.id) return;
       if ($selectedTournamentGameId == $liveTournamentGameId) {
         $liveTournamentGameId = game.id;
         $selectedTournamentGameId = game.id;
-        setTournamentTv(game, game.id);
+        $socket.emit("game:get", { gameId: game.id }, (gameFromServer) => {
+          setTournamentTv(gameFromServer, game.id);
+        });
       } else $liveTournamentGameId = game.id;
     });
   });

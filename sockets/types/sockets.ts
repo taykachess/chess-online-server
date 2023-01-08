@@ -50,7 +50,7 @@ export interface ServerToClientEvents {
   })=>void
   "tournament:start": ({pairings, players}:{pairings:MatchSwiss[], players:PlayerSwiss[]})=>void
   "tournament:finish": ()=>void
-  "tournament:tv":({game}:{game: GetGame})=>void
+  "tournament:tv":({game}:{game: {id:string}})=>void
 
 }
 
@@ -67,7 +67,7 @@ export interface ClientToServerEvents {
   "match:cancel": () => void;
   "match:accept": ({ username }: { username: string }) => void;
 
-  "game:sub": ({ gameId }: { gameId: string }) => void;
+  // "game:sub": ({ gameId }: { gameId: string }) => void;
   "game:leave": ({ gameId }: { gameId: string }) => void;
   "game:move": ({ move, gameId }: { move: string; gameId: string }) => void;
   "game:resign": ({ gameId }: { gameId: string }) => void;

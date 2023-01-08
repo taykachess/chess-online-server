@@ -70,8 +70,8 @@ export const load: PageServerLoad = async ({ params, fetch }) => {
       path: `$.${params.id}.tv`,
     })) as string;
 
-    const gameJson = await fetch(`/api/game/${tv}`);
-    const game = (await gameJson.json()) as GetGame;
+    // const gameJson = await fetch(`/api/game/${tv}`);
+    // const game = (await gameJson.json()) as GetGame;
 
     const swiss: Omit<GetTournament, "selectedRound" | "participants"> = {
       ...tournament,
@@ -79,9 +79,9 @@ export const load: PageServerLoad = async ({ params, fetch }) => {
       currentRound: currentRoundValue,
     };
 
-    const tournamentTv: TournamentTv = { game };
+    // const tournamentTv: TournamentTv = { game };
 
-    return { swiss, tournamentTv, matches, liveGameId: tv };
+    return { swiss, matches, liveGameId: tv };
   } else if (tournamentWithStatus.status == "registration") {
     const tournament = await prisma.tournament.findUnique({
       where: { id: params.id },
@@ -134,13 +134,13 @@ export const load: PageServerLoad = async ({ params, fetch }) => {
     // @ts-ignore
     const tv = tournament.matches[tournament.rounds - 1][0][3] as string;
 
-    const gameJson = await fetch(`/api/game/${tv}`);
-    const game = (await gameJson.json()) as GetGame;
-    const tournamentTv: TournamentTv = { game };
+    // const gameJson = await fetch(`/api/game/${tv}`);
+    // const game = (await gameJson.json()) as GetGame;
+    // const tournamentTv: TournamentTv = { game };
 
     return {
       swiss,
-      tournamentTv,
+      // tournamentTv,
       liveGameId: tv,
       matches: tournament.matches[tournament.rounds - 1],
     };

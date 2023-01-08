@@ -44,7 +44,7 @@ export const GET: RequestHandler = async ({ params }) => {
   const gameProcessTime = now - game.tsmp;
   if (game.tournamentId && game.ply == 0) {
     if (gameProcessTime < TOURNAMENT_GAME_PREPARE_TIME) {
-      console.log("do nothing");
+      // console.log("do nothing");
     } else {
       if (turn == "w") {
         timeWithDifference[0] =
