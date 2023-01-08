@@ -8,9 +8,8 @@ export function onTournamentSub(
   try {
     const socket = this;
 
-    console.log("socket", socket.id, "join to", TOURNAMENT_ROOM(tournamentId));
     socket.join(TOURNAMENT_ROOM(tournamentId));
   } catch (error) {
-    console.log(error);
+    // console.log(error);
   }
 }

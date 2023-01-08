@@ -47,6 +47,7 @@ export async function onMatchCreate(
       rating: +user?.rating,
       control,
       socketId: socket.id,
+      // @ts-ignore
       filters: {
         rating: [ratingFilter.min, ratingFilter.max],
       },
@@ -113,6 +114,6 @@ export async function onMatchCreate(
 
     if (status) io.to(MATCHES_ROOM).emit("match:created", match);
   } catch (error) {
-    console.log(error);
+    // console.log(error);
   }
 }

@@ -1,4 +1,4 @@
-import { deleteGame, getGame } from "../../global/games";
+import { deleteGame } from "../../global/games";
 import { io } from "../../global/io";
 import { prisma } from "../../global/prisma";
 
@@ -22,7 +22,6 @@ export async function setGameOver({
   result: Result;
   game: Game;
 }) {
-  // const game = await getGame(gameId);
   const { newEloBlack, newEloWhite } = calculateRating({
     eloWhite: game.white.rating,
     eloBlack: game.black.rating,
@@ -34,10 +33,14 @@ export async function setGameOver({
   game.white.ratingNext = newEloWhite;
   game.black.ratingNext = newEloBlack;
 
+  console.log(gameId);
+  deleteGame(gameId);
+
+  // console.log();
   const createGame = prisma.game.create({
     data: {
       id: gameId,
-      pgn: game.pgn,
+      pgn: game.chess.pgn(),
       // @ts-ignore
       white: game.white,
       // @ts-ignore
@@ -67,10 +70,9 @@ export async function setGameOver({
   await Promise.all([createGame, updateRatingBlack, updateRatingWhite]);
 
   // await prisma.$transaction([createGame, updateRatingWhite, updateRatingBlack]);
-  (await io.in(GAME_ROOM(gameId)).fetchSockets()).forEach((socket) => {
-    console.log("Next sockets must get resign", socket.data?.username);
-  });
-  // console.log("game:end send");
+  // (await io.in(GAME_ROOM(gameId)).fetchSockets()).forEach((socket) => {
+  //   console.log("Next sockets must get resign", socket.data?.username);
+  // });
   io.to(GAME_ROOM(gameId)).emit("game:end", {
     result,
     newEloWhite,
@@ -101,5 +103,4 @@ export async function setGameOver({
   } else if (tournamentId) {
     await finishTournamentGame({ game, gameId, tournamentId, result });
   }
-  await deleteGame(gameId);
 }

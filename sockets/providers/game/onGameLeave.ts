@@ -6,8 +6,7 @@ export function onGameLeave(this: SocketType, { gameId }: { gameId: string }) {
     const socket = this;
 
     socket.leave(GAME_ROOM(gameId));
-    console.log("user", socket.id, "leaved", gameId);
   } catch (error) {
-    console.log(error);
+    // console.log(error);
   }
 }

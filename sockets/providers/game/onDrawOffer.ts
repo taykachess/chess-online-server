@@ -12,8 +12,8 @@ export async function onDrawOffer(
   const socket = this;
 
   try {
-    const [game] = await getGame(gameId);
-    if (!game) throw Error("Game not found");
+    const [game] = getGame(gameId);
+    if (!game) throw Error("Game not found from Draw Offer");
     if (
       game.white.username != socket.data.username &&
       game.black.username != socket.data.username
@@ -24,7 +24,7 @@ export async function onDrawOffer(
     if (lastOfferDraw && lastOfferDraw.username === socket.data.username) {
       throw Error("You are already offered draw");
     } else {
-      await setLastOfferDraw({
+      setLastOfferDraw({
         gameId,
         username: socket.data.username,
         ply: game.ply,
@@ -36,6 +36,6 @@ export async function onDrawOffer(
       });
     }
   } catch (error) {
-    console.log(error);
+    // console.log(error);
   }
 }

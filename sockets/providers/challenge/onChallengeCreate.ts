@@ -23,7 +23,6 @@ export async function onChallengeCreate(
     const { control, filters } = data;
     if (!socket.data.username) throw Error("User not found");
 
-    console.log("Challenge filters", filters);
     const user = await prisma.user.findFirst({
       where: { username: socket.data.username },
       select: { rating: true, title: true },
@@ -45,6 +44,7 @@ export async function onChallengeCreate(
       rating: +user?.rating,
       control,
       socketId: socket.id,
+      // @ts-ignore
       filters: {
         rating: [ratingFilter.min, ratingFilter.max],
       },
@@ -56,8 +56,6 @@ export async function onChallengeCreate(
       control,
       rating: +user?.rating,
     });
-
-    console.log(existChallenges);
 
     if (
       existChallenges?.length &&
@@ -108,6 +106,6 @@ export async function onChallengeCreate(
 
     if (status) io.to(CHALLENGES_ROOM).emit("challenge:created", challenge);
   } catch (error) {
-    console.log(error);
+    // console.log(error);
   }
 }

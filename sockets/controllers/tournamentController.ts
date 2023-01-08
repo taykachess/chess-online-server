@@ -7,8 +7,8 @@ export function tournamentController(socket: SocketType) {
     socket.on("tournament:subscribe", onTournamentSub);
     socket.on("tournament:leave", onTournamentLeave);
     // Auth only
-    if (!socket.data?.username) return console.log("Next auth is required");
+    if (!socket.data?.username) return;
   } catch (error) {
-    console.log(error);
+    // console.log(error);
   }
 }

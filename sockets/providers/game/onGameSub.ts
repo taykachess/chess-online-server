@@ -3,11 +3,10 @@ import { GAME_ROOM } from "../../variables/redisIndex";
 
 export function onGameSub(this: SocketType, { gameId }: { gameId: string }) {
   try {
-    console.log("sub game");
     const socket = this;
 
     socket.join(GAME_ROOM(gameId));
   } catch (error) {
-    console.log(error);
+    // console.log(error);
   }
 }

@@ -10,13 +10,13 @@ export function matchController(socket: SocketType) {
     socket.on("match:subscribe", onMatchSub);
 
     // Auth only
-    if (!socket.data?.username) return console.log("Next auth is required");
+    if (!socket.data?.username) return;
     socket.on("match:create", onMatchCreate);
     socket.on("match:cancel", onMatchDelete);
     socket.on("match:accept", onMatchAccept);
 
     // Only for room challenges
   } catch (error) {
-    console.log(error);
+    // console.log(error);
   }
 }

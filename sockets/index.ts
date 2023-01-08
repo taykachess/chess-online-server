@@ -20,13 +20,8 @@ io.use((socket, next) => {
   const token = socket.handshake.auth.token;
   if (!token) next();
   if (token) {
-    console.log(token);
     // @ts-ignore
     verify(token, process.env.JWT_SECRET, async (err, decoded) => {
-      // console.log("decoded", decoded);
-      // @ts-ignore
-      // socket.data.id = decoded?.id;
-      console.log(decoded?.username);
       // @ts-ignore
       socket.data.username = decoded?.username;
       next();
@@ -47,14 +42,7 @@ io.on("connection", async (socket) => {
 
 Promise.all([pubClient.connect(), subClient.connect()]).then(() => {
   io.adapter(createAdapter(pubClient, subClient));
-  // io.of("/").adapter.on("join-room", (room, id) => {
-  //   console.log(`${id} joined ${room}`);
-  // });
 
-  // io.of("/").adapter.on("leave-room", (room, id) => {
-  //   console.log(`${id} leave ${room}`);
-  // });
-  // io.listen(3000);
   app.listen(3000, (token: any) => {
     console.log("Server is connected");
     if (!token) {

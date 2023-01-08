@@ -12,7 +12,7 @@ export async function onDrawDecline(
   const socket = this;
 
   try {
-    const [game] = await getGame(gameId);
+    const [game] = getGame(gameId);
     if (
       game.white.username != socket.data.username &&
       game.black.username != socket.data.username
@@ -24,7 +24,7 @@ export async function onDrawDecline(
       throw Error("You can't decline your draw ");
 
     if (game.lastOfferDraw.ply + 2 < game.ply) throw Error("Too late");
-    await setLastOfferDrawStatus(gameId, "declined");
+    setLastOfferDrawStatus(gameId, "declined");
     // game.lastOfferDraw.status = "declined";
 
     io.to(GAME_ROOM(gameId)).emit("game:declineDraw");
@@ -32,6 +32,6 @@ export async function onDrawDecline(
 
     // await onGameOver({ gameId, result });
   } catch (error) {
-    console.log(error);
+    // console.log(error);
   }
 }

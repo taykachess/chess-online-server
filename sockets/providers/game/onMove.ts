@@ -1,4 +1,4 @@
-import { getGame, increasePly, setGamePgn } from "../../global/games";
+import { getGame, increasePly } from "../../global/games";
 
 import { changeTime } from "../../services/game/changeTime";
 import { isGameOver } from "../../services/game/isGameOver";
@@ -10,7 +10,7 @@ import {
 } from "../../variables/redisIndex";
 
 import type { SocketType } from "../../types/sockets";
-import { Chess } from "chess.js";
+// import { Chess } from "chess.js";
 import { onGameStartRandomMode } from "./dev/onGameStartRandomMode";
 
 export async function onMove(
@@ -20,12 +20,10 @@ export async function onMove(
   const socket = this;
 
   try {
-    console.log("move", move, "gameId", gameId);
-    const [game] = await getGame(gameId);
-    if (!game) throw Error("Game not found");
+    const [game] = getGame(gameId);
+    if (!game) throw Error("Game not found from OnMove");
 
-    const chess = new Chess();
-    chess.loadPgn(game.pgn);
+    const chess = game.chess;
     const turn = chess.turn();
 
     if (turn == "w" && game.white.username != socket.data.username)
@@ -61,25 +59,27 @@ export async function onMove(
     const result = isGameOver({ chess });
     if (result != "*") {
       await setGameOver({ gameId, result, game });
+      return;
     }
 
-    // console.log("On move", chess.turn() == "w", game.white.bot, game.black.bot);
-
-    if (
-      (chess.turn() == "w" && game.white.bot) ||
-      (chess.turn() == "b" && game.black.bot)
-    ) {
-      const randomTime = Math.round(Math.random() * 5) * 1000;
-      setTimeout(() => {
-        onGameStartRandomMode({ gameId });
-      }, randomTime);
-    }
+    if (result == "*")
+      if (
+        (chess.turn() == "w" && game.white.bot) ||
+        (chess.turn() == "b" && game.black.bot)
+      ) {
+        const randomTime = Math.round(Math.random() * 5) * 1000;
+        game.botTimer = setTimeout(() => {
+          onGameStartRandomMode({ gameId });
+        }, randomTime);
+      }
 
     // prettier-ignore
-    Promise.all([increasePly(gameId), setGamePgn({gameId, pgn:chess.pgn()})])
+
+    increasePly(gameId)
+    // Promise.all([increasePly(gameId), setGamePgn({gameId, pgn:chess.pgn()})])
 
     socket.to(GAME_ROOM(gameId)).emit("game:move", move);
   } catch (error) {
-    console.log(error);
+    // console.log(error);
   }
 }

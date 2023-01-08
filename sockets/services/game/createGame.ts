@@ -1,17 +1,13 @@
 import { Chess } from "chess.js";
 import { v4 as uuid } from "uuid";
 
-import { deleteGame, setGame } from "../../global/games";
+import { setGame } from "../../global/games";
 
-import {
-  TIME_TO_CANCEL_GAME,
-  TOURNAMENT_GAME_PREPARE_TIME,
-} from "../../variables/redisIndex";
+import { TOURNAMENT_GAME_PREPARE_TIME } from "../../variables/redisIndex";
 
 import type { Game, Player } from "../../types/game";
 import { setGameOver } from "./setGameOver";
 import { setGameTimeoutInitial } from "../../global/timers";
-import { changeTime } from "./changeTime";
 
 export async function createGame({
   data,
@@ -30,9 +26,9 @@ export async function createGame({
   const gameId = uuid();
 
   const game: Game = {
-    pgn: "",
     white: data.white,
     black: data.black,
+    chess: new Chess(),
     time: [
       +data.control.split("+")[0] * 60 * 1000,
       +data.control.split("+")[0] * 60 * 1000,
@@ -74,7 +70,7 @@ export async function createGame({
     game.board = data.board;
   }
 
-  await setGame(gameId, game);
+  setGame(gameId, game);
 
   return gameId;
 }

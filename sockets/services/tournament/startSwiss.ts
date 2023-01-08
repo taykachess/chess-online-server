@@ -1,19 +1,10 @@
 import type { Tournament, User } from "@prisma/client";
-import { io } from "../../global/io";
 import { addTournamentMatch, setTournament } from "../../global/tournament";
-import { onGameStartRandomMode } from "../../providers/game/dev/onGameStartRandomMode";
-import { GetGame } from "../../types/game";
 import type {
   PlayerSwiss,
   MatchSwiss,
   TournamentSwiss,
 } from "../../types/tournament";
-import {
-  TIME_TO_CANCEL_GAME,
-  TOURNAMENT_ROOM,
-  TOURNAMENT_GAME_PREPARE_TIME,
-} from "../../variables/redisIndex";
-import { getGameForFrontend } from "../game/getGame";
 import { pairingSwiss } from "./pairingSwiss";
 import { setTournamentTv } from "./setTournamentTv";
 import { startTournamentGame } from "./startTournamentGame";
@@ -54,7 +45,6 @@ export async function startSwiss({
   // Жеребьевка
 
   const playersValues = Object.values(players);
-  console.log("player values", playersValues.length);
   playersValues.length;
   const pairings: MatchSwiss[] = pairingSwiss(playersValues, true);
 
@@ -67,8 +57,6 @@ export async function startSwiss({
     maxRounds: tournament.rounds,
   };
 
-  console.log(playersValues.length);
-  console.log(tournamentSwiss.activeGames);
   await setTournament(tournamentId, tournamentSwiss);
 
   for await (const [index, pair] of pairings.entries()) {

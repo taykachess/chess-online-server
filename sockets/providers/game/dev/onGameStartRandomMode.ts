@@ -1,5 +1,5 @@
 import { Chess } from "chess.js";
-import { getGame, increasePly, setGamePgn } from "../../../global/games";
+import { getGame, increasePly } from "../../../global/games";
 import { io } from "../../../global/io";
 import { changeTime } from "../../../services/game/changeTime";
 import { isGameOver } from "../../../services/game/isGameOver";
@@ -8,24 +8,21 @@ import { GAME_ROOM } from "../../../variables/redisIndex";
 
 export async function onGameStartRandomMode({ gameId }: { gameId: string }) {
   try {
-    const [game] = await getGame(gameId);
-    if (!game) throw Error("Game not found");
+    const [game] = getGame(gameId);
+    if (!game) throw Error("Game not found from StartRandomMove");
 
-    const chess = new Chess();
-    chess.loadPgn(game.pgn);
+    const chess = game.chess;
+    // chess.loadPgn(game.pgn);
     const turn = chess.turn();
 
     const moves = chess.moves();
     const randomNumber = Math.floor(Math.random() * moves.length);
     const randomMove = moves[randomNumber];
 
-    // console.log(randomMove, moves.length, randomNumber);
     const resultMove = chess.move(randomMove);
 
     if (!resultMove) throw Error("Move is incorrect");
     const now = new Date().getTime();
-    // if (game.tournamentId && now < TOURNAMENT_GAME_PREPARE_TIME + game.tsmp)
-    //   throw Error("No time yet");
 
     await changeTime({
       gameId,
@@ -37,12 +34,11 @@ export async function onGameStartRandomMode({ gameId }: { gameId: string }) {
     });
 
     const result = isGameOver({ chess });
-    await Promise.all([
-      increasePly(gameId),
-      setGamePgn({ gameId, pgn: chess.pgn() }),
-    ]);
+    increasePly(gameId);
+
     if (result != "*") {
       await setGameOver({ gameId, result, game });
+      return;
     }
 
     // prettier-ignore
@@ -53,11 +49,10 @@ export async function onGameStartRandomMode({ gameId }: { gameId: string }) {
         (chess.turn() == "w" && game.white.bot) ||
         (chess.turn() == "b" && game.black.bot)
       )
-        // console.log("Is bot", game.white.bot, game.black.bot, chess.turn());
-        setTimeout(() => {
+        game.botTimer = setTimeout(() => {
           onGameStartRandomMode({ gameId });
         }, randomTime);
   } catch (error) {
-    // console.log(error);
+    console.log("Game not found from StartRandom");
   }
 }

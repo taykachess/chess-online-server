@@ -1,9 +1,4 @@
-import {
-  getGame,
-  setTimeBlack,
-  setTimestamp,
-  setTimeWhite,
-} from "../../global/games";
+import { setTimeBlack, setTimestamp, setTimeWhite } from "../../global/games";
 import { setGameTimeout } from "../../global/timers";
 import { Game } from "../../types/game";
 import { TOURNAMENT_GAME_PREPARE_TIME } from "../../variables/redisIndex";
@@ -36,30 +31,28 @@ export async function changeTime({
   const isLostOnTime = newTime <= 0;
   const returnTime = isLostOnTime ? 0 : newTime + increment * 1000;
   if (isLostOnTime) {
-    return console.log("Lost on time");
+    return (game.reason = "time");
   }
 
-  await setTimestamp(gameId, now);
+  setTimestamp(gameId, now);
 
   if (turn == "w") {
-    await setTimeWhite(gameId, returnTime);
+    setTimeWhite(gameId, returnTime);
 
     setGameTimeout(
       gameId,
       async () => {
-        // await setTimeBlack(gameId, 0);
         game.time[1] = 0;
         await setGameOver({ gameId, result: "1", game });
       },
       game.time[1]
     );
   } else {
-    await setTimeBlack(gameId, returnTime);
+    setTimeBlack(gameId, returnTime);
 
     setGameTimeout(
       gameId,
       async () => {
-        // await setTimeWhite(gameId, 0);
         game.time[0] = 0;
         await setGameOver({ gameId, result: "0", game });
       },

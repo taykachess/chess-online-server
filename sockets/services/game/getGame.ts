@@ -5,7 +5,7 @@ import { GetGame } from "../../types/game";
 import { TOURNAMENT_GAME_PREPARE_TIME } from "../../variables/redisIndex";
 
 export async function getGameForFrontend({ gameId }: { gameId: string }) {
-  const [game] = await getGame(gameId);
+  const [game] = getGame(gameId);
 
   if (!game) {
     const prismaGame = await prisma.game.findFirst({
@@ -21,19 +21,19 @@ export async function getGameForFrontend({ gameId }: { gameId: string }) {
     return prismaGame;
   }
 
-  const chess = new Chess();
+  const chess = game.chess;
   //   @ts-ignore
-  chess.loadPgn(game.pgn);
+  // chess.loadPgn(game.pgn);
   // const pgn = game.chess.pgn();
   const { white, black, time, result } = game;
 
   const turn = chess.turn();
   const timeWithDifference: [number, number] = [time[0], time[1]];
-  const now = new Date().getTime();
+  const now = Date.now();
   const gameProcessTime = now - game.tsmp;
   if (game.tournamentId && game.ply == 0) {
     if (gameProcessTime < TOURNAMENT_GAME_PREPARE_TIME) {
-      console.log("do nothing");
+      // console.log("do nothing");
     } else {
       if (turn == "w") {
         timeWithDifference[0] =
@@ -56,7 +56,7 @@ export async function getGameForFrontend({ gameId }: { gameId: string }) {
     white,
     black,
     time: timeWithDifference,
-    pgn: game.pgn,
+    pgn: game.chess.pgn(),
     result,
     increment: game.increment,
     lastOfferDraw: game.lastOfferDraw,

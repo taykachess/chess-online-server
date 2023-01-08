@@ -10,7 +10,7 @@ export async function onDrawAccept(
   const socket = this;
 
   try {
-    const [game] = await getGame(gameId);
+    const [game] = getGame(gameId);
     if (
       game.white.username != socket.data.username &&
       game.black.username != socket.data.username
@@ -28,6 +28,6 @@ export async function onDrawAccept(
 
     // await onGameOver({ gameId, result });
   } catch (error) {
-    console.log(error);
+    // console.log(error);
   }
 }

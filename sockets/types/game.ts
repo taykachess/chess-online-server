@@ -14,25 +14,28 @@ export type Result = "1" | "0.5" | "0" | "*" | "+" | "-";
 
 type OfferedDrawPlayer = { username: string; ply: number; status?: "declined" };
 
+type GameOverReason = "time" | "mate" | "rep";
 export interface Game {
   time: [w: number, b: number];
   white: Player;
   black: Player;
   // Needed for inside memory use
-  // chess: Chess;
-  pgn: string;
+  chess: Chess;
+  // pgn: string;
   // Needed for inside memory use
   // timerId: any;
   ply: number;
   tsmp: number;
   increment: number;
   result: Result;
+  reason?: GameOverReason;
   control: string;
   lastOfferDraw?: OfferedDrawPlayer;
   matchId?: string;
   tournamentId?: string;
   round?: number;
   board?: number;
+  botTimer?: any;
 }
 
 export interface Games {

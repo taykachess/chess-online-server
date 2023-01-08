@@ -27,3 +27,6 @@ export const TIME_TO_CANCEL_GAME = 5000;
 export const TOURNAMENT_GAME_PREPARE_TIME = 2000;
 
 // Tournament
+
+// Methods to get game
+export const METHOD_TO_GET_GAME: "memory" | "redis" = "memory";

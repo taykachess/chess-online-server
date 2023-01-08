@@ -119,9 +119,6 @@ export async function finishTournamentGame({
     gameId,
   });
 
-  // const tv = await getTournamentTV(tournamentId)
-
-  console.log(currentActiveGames);
   if (currentActiveGames == 0) {
     const [players] = await getAllPlayers({ tournamentId });
     const [round] = await increaseTournamentRound(tournamentId);
@@ -151,25 +148,6 @@ export async function finishTournamentGame({
 
       const pairings = pairingSwiss(activePlayers, true);
 
-      // pairings.sort((a, b) => {
-      //   if (!b[1] || !a[1]) return 0;
-      //   const diff =
-      //     Math.max(b[0].score, b[1].score) - Math.max(a[0].score, a[1].score);
-      //   if (diff > 0) return 1;
-      //   if (diff == 0) {
-      //     const summa = b[0].score + b[1].score - a[0].score - a[1].score;
-      //     if (summa > 0) {
-      //       return 1;
-      //     }
-      //     if (summa < 0) {
-      //       return -1;
-      //     }
-      //     return 0;
-      //   }
-      //   if (diff < 0) return -1;
-      //   return 0;
-      // });
-
       for await (const [index, pair] of pairings.entries()) {
         const gameId = await startTournamentGame({
           pair,
@@ -180,10 +158,6 @@ export async function finishTournamentGame({
           round,
         });
 
-        // if (gameId && process.env.NODE_ENV == "dev")
-        //   setTimeout(() => {
-        //     onGameStartRandomMode({ gameId });
-        //   }, TOURNAMENT_GAME_PREPARE_TIME);
         pair[3] = `${gameId}`;
       }
 
@@ -191,16 +165,6 @@ export async function finishTournamentGame({
         await setTournamentTv(tournamentId, pairings[0][3]);
       }
 
-      // pairings.forEach(async (pair, index) => {
-      //   await startTournamentGame({
-      //     pair,
-      //     tournamentId,
-      //     players: players[0],
-      //     board: index + 1,
-      //     control: game.control,
-      //     round: round[0],
-      //   });
-      // });
       await addTournamentMatch({
         tournamentId,
         matches: pairings,

@@ -49,8 +49,6 @@ export function pairingSwiss(
   //       playerArray.filter(p => !p.hasOwnProperty('rating') || p.rating === null).forEach(p => p.rating = 0);
   //   }
 
-  //   console.log(players);
-
   // order is very important
   playerArray.sort((a, b) => b.rating - a.rating);
   playerArray.sort((a, b) => b.score - a.score);
@@ -136,8 +134,6 @@ export function pairingSwiss(
           (1 / 3) *
           (Math.log2(sorted.length) +
             Math.log2(sorted.findIndex((p) => p.id === opp.id) + 1));
-        // console.log(sorted);
-        // console.log(wt, sorted.findIndex((p) => p.id === opp.id) + 1);
       }
       if (curr.receivedBye || opp.receivedBye) {
         wt *= 0.8;
@@ -145,7 +141,6 @@ export function pairingSwiss(
       pairs.push([curr.index, opp.index, wt]);
     }
   }
-  //   console.log(pairs);
   //   @ts-ignore
   const blossomPairs = blossom(pairs, true);
   const playerCopy = [...playerArray];

@@ -14,9 +14,7 @@ export async function onGameGet(
 ) {
   try {
     const socket = this;
-    const [game] = await getGame(gameId);
-    console.log("game", game);
-    // console.log("goood", game);
+    const [game] = getGame(gameId);
 
     if (!game) {
       const prismaGame = await prisma.game.findFirst({
@@ -36,8 +34,8 @@ export async function onGameGet(
     // ОЧень опасное место возможно стоит это делать на клиенте!
     //
     if (game.matchId) socket.join(MATCH_ROOM(game.matchId));
-    const chess = new Chess();
-    chess.loadPgn(game.pgn);
+    const chess = game.chess;
+    // chess.loadPgn(game.chess.pgn);
     // const pgn = game.chess.pgn();
     const { white, black, time, result } = game;
 
@@ -55,7 +53,7 @@ export async function onGameGet(
       white,
       black,
       time: timeWithDifference,
-      pgn: game.pgn,
+      pgn: game.chess.pgn(),
       result,
       increment: game.increment,
       lastOfferDraw: game.lastOfferDraw,
@@ -66,6 +64,6 @@ export async function onGameGet(
 
     cb(callbackData);
   } catch (error) {
-    console.log(error);
+    // console.log(error);
   }
 }
