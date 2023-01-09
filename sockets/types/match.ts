@@ -1,4 +1,4 @@
-import type { Result } from "./game";
+import type { Result, Player } from "./game";
 
 import type { ChallengeFilters } from "./challenge";
 
@@ -35,4 +35,17 @@ export interface GetMatch {
   socketId: string;
   filters: MatchFilters;
   rounds: number;
+}
+
+export interface MatchCreateDto {
+  player: string;
+  control: string;
+  type: "game" | "time";
+  timeControls: number[];
+  controls: string[];
+}
+
+export interface MatchCreateDtoExtended extends MatchCreateDto {
+  sender: Player;
+  // receiver: Player;
 }

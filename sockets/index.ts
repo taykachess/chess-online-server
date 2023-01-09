@@ -51,21 +51,21 @@ Promise.all([pubClient.connect(), subClient.connect()]).then(() => {
   });
 });
 
-prisma.tournament
-  .update({
-    where: {
-      id: "clav5lj9q0000p13dg45de9ix",
-    },
-    data: {
-      status: "registration",
-      control: "0.2+0",
-      startTime: new Date(new Date().getTime() + 1000 * 60 * 0.1),
-    },
-  })
-  .then((tournament) => {
-    const diff = tournament.startTime.getTime() - new Date().getTime();
+// prisma.tournament
+//   .update({
+//     where: {
+//       id: "clav5lj9q0000p13dg45de9ix",
+//     },
+//     data: {
+//       status: "registration",
+//       control: "0.2+0",
+//       startTime: new Date(new Date().getTime() + 1000 * 60 * 0.1),
+//     },
+//   })
+//   .then((tournament) => {
+//     const diff = tournament.startTime.getTime() - new Date().getTime();
 
-    setTimeout(async () => {
-      await startTournament("clav5lj9q0000p13dg45de9ix");
-    }, diff);
-  });
+//     setTimeout(async () => {
+//       await startTournament("clav5lj9q0000p13dg45de9ix");
+//     }, diff);
+//   });

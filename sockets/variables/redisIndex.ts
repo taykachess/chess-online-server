@@ -1,7 +1,10 @@
 // Paths in redis
 export const CHALLENGES_REDIS = "challenges";
 export const GAMES_REDIS = "games";
-export const MATCHES_REDIS = "matches";
+// export const MATCHES_REDIS = "matches";
+export const MATCHES_REDIS_SENDED = (owner: string) => `mof${owner}`;
+export const MATCHES_REDIS_GOT = (owner: string) => `mof${owner}got`;
+
 export const MATCHES_IN_PROGRESS_REDIS = "matchesinprogress";
 export const TOURNAMENTS_IN_PROGRESS_REDIS = "tournamentsInProgress";
 export const PLAYER_IN_GAME_REDIS = (username: string) =>

@@ -125,7 +125,7 @@
     $tournamentTv = { game };
 
     $chess.loadPgn(game.pgn);
-    $board.setPosition($chess.fen());
+    if ($board) $board.setPosition($chess.fen());
 
     if (game.result == "*") {
       if (!game.pgn) {

@@ -7,6 +7,8 @@
   import type { LayoutData } from "./$types";
   import { io } from "socket.io-client";
   import { browser } from "$app/environment";
+  import { privateMatches } from "$store/global/privateMatches";
+  import type { MatchCreateDtoExtended } from "$types/match";
   export let data: LayoutData;
 
   if (browser) {
@@ -14,12 +16,25 @@
     $socket = io("http://localhost:3000", {
       auth: { token: document.cookie.split("=")[1] },
     });
+
+    if (data.privateChallenges) {
+      const matches = Object.values(data.privateChallenges).map((value) => {
+        return JSON.parse(value);
+      }) as MatchCreateDtoExtended[];
+      $privateMatches = matches;
+    }
+    // console.log();
   }
 
   onMount(() => {
     $socket.on("game:started", ({ gameId }) => {
       data.gameIds?.push(gameId);
       goto(`/game/${gameId}`);
+    });
+
+    $socket.on("match:private:create", (match) => {
+      $privateMatches.push(match);
+      $privateMatches = $privateMatches;
     });
   });
 </script>

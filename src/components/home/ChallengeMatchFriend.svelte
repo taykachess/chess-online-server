@@ -5,8 +5,8 @@
 
 <div class=" ">
   <!-- prettier-ignore -->
-  <ul class=" ml-16 divide-y  border-t  bg-white   ">
-        <li class=" ">
+  <ul class=" ml-16 divide-y  border-t  bg-white  flex  ">
+        <li class="  ">
             <div class=" p-2 group relative flex items-start space-x-3 cursor-pointer  hover:bg-slate-100 rounded-t-lg   ">
                 <div class="flex-shrink-0">
                   <span class="inline-flex items-center justify-center h-10 w-10 rounded-lg bg-sky-100">

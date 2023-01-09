@@ -1,6 +1,10 @@
 import type { RemoteSocket, Server, Socket } from "socket.io";
 import type { ChallengeFilters, GetChallenge } from "./challenge";
-import type { MatchFilters } from "./match";
+import type {
+  MatchCreateDto,
+  MatchCreateDtoExtended,
+  MatchFilters,
+} from "./match";
 import type { GetGame, Result, Title } from "./game";
 import { GetMatch } from "./match";
 import { MatchSwiss, MatchSwissShortPlayer, PlayerSwiss } from "./tournament";
@@ -28,6 +32,8 @@ export interface ServerToClientEvents {
 
   "match:created": (match: GetMatch) => void;
   "match:deleted": ({ socketId }: { socketId?: string }) => void;
+  "match:private:create": ( match:MatchCreateDtoExtended) => void;
+
 
   "game:started": ({ gameId }: { gameId: string }) => void;
   "game:move": (move: string) => void;
@@ -40,6 +46,7 @@ export interface ServerToClientEvents {
   "tournament:pause":({username}:{username: string}) => void;
   "tournament:continue":({username}:{username: string}) => void;
   "tournament:entry":(player:PlayerSwiss) => void;
+
 
   "tournament:pairings": ({pairings}:{pairings:MatchSwiss[]})=>void
   "tournament:gameOver": ({gameId, result, w, b}:{
@@ -66,6 +73,7 @@ export interface ClientToServerEvents {
   "match:create": ({ control, filters, rounds }: { control: string, filters: MatchFilters, rounds:number }) => void;
   "match:cancel": () => void;
   "match:accept": ({ username }: { username: string }) => void;
+  "match:private:create": (match: MatchCreateDto) => void;
 
   // "game:sub": ({ gameId }: { gameId: string }) => void;
   "game:leave": ({ gameId }: { gameId: string }) => void;
@@ -87,4 +95,5 @@ export interface InterServerEvents {
 
 export interface SocketData {
   username: string;
+  matchSended?: string;
 }

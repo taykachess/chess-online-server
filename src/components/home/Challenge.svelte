@@ -16,6 +16,8 @@
   import ChallengeList from "./ChallengeList.svelte";
   import ChallengeCreateFast from "./ChallengeCreateFast.svelte";
   import ChallengeMatchFriend from "./ChallengeMatchFriend.svelte";
+  import ChallengeSendPrivate from "$components/dialogs/Forms/ChallengeSendPrivate.svelte";
+  import MatchSendPrivate from "$components/dialogs/Forms/MatchSendPrivate.svelte";
 
   async function getAllChallenges() {
     return fetch(`/api/challenge/getAll`, {
@@ -135,10 +137,12 @@
   <!-- <div class="w-full sm:col-span-2 ">
     <ChallengeGrid />
   </div> -->
-  <div class=" sm:col-span-3 ">
-    <div class="my-4">
+  <div class=" sm:col-span-6 ">
+    <div class="my-4 flex justify-between">
       <ChallengeCreateFast />
-      <ChallengeMatchFriend />
+      <MatchSendPrivate />
+      <ChallengeSendPrivate />
+      <!-- <ChallengeMatchFriend /> -->
     </div>
   </div>
   <div class="sm:col-span-3 sm:mt-4 ">
