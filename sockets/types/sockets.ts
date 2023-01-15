@@ -33,6 +33,8 @@ export interface ServerToClientEvents {
   "match:created": (match: GetMatch) => void;
   "match:deleted": ({ socketId }: { socketId?: string }) => void;
   "match:private:create": ( match:MatchCreateDtoExtended) => void;
+  "match:private:cancelled": (player:string)=>void
+  "match:private:refuse": (player:string)=>void
 
 
   "game:started": ({ gameId }: { gameId: string }) => void;
@@ -72,7 +74,7 @@ export interface ClientToServerEvents {
   // prettier-ignore
   "match:create": ({ control, filters, rounds }: { control: string, filters: MatchFilters, rounds:number }) => void;
   "match:cancel": () => void;
-  "match:accept": ({ username }: { username: string }) => void;
+  "match:accept": (username: string) => void;
   "match:private:create": (match: MatchCreateDto) => void;
 
   // "game:sub": ({ gameId }: { gameId: string }) => void;

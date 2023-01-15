@@ -1,6 +1,7 @@
 <script lang="ts">
   import Badge from "$components/common/Badge.svelte";
   import BadgeTitle from "$components/common/BadgeTitle.svelte";
+  import PlayerComponent from "$components/common/PlayerComponent.svelte";
 
   import type { Player } from "$types/game";
   export let player: Player;
@@ -9,7 +10,12 @@
 </script>
 
 <div class="flex items-baseline text-xs font-medium text-slate-800 ">
-  {#if player.title}
+  <PlayerComponent
+    title={player.title}
+    username={player.username}
+    rating={player.rating}
+  />
+  <!-- {#if player.title}
     <div class="">
       <BadgeTitle title={player.title} />
     </div>
@@ -23,7 +29,7 @@
     {#if player.ratingNext}
       <div class=" absolute -top-3 right-4 h-10 w-1 rotate-45 bg-red-500/80" />
     {/if}
-  </div>
+  </div> -->
   {#if player.ratingNext}
     <div class=" mx-px">→</div>
     <div class=" ">

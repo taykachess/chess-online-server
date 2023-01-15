@@ -94,18 +94,14 @@ export async function startTournamentGame({
       onGameStartRandomMode({ gameId });
     }, TOURNAMENT_GAME_PREPARE_TIME);
 
-  io.to([USER_ROOM(pair[0].id), USER_ROOM(pair[1].id)]).emit("game:started", {
-    gameId,
-  });
+  // io.to([USER_ROOM(pair[0].id), USER_ROOM(pair[1].id)]).emit("game:started", {
+  //   gameId,
+  // });
 
-  // matches[gameId] = pair
-
-  //   socket.emit("game:started", { gameId: gameId });
-  // socket2.emit("game:started", { gameId: gameId });
-  Promise.all([
-    redis.SADD(PLAYER_IN_GAME_REDIS(pair[0].id), gameId),
-    redis.SADD(PLAYER_IN_GAME_REDIS(pair[1].id), gameId),
-  ]);
+  // Promise.all([
+  //   redis.SADD(PLAYER_IN_GAME_REDIS(pair[0].id), gameId),
+  //   redis.SADD(PLAYER_IN_GAME_REDIS(pair[1].id), gameId),
+  // ]);
 
   return gameId;
 }

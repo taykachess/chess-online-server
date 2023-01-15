@@ -36,6 +36,14 @@
       $privateMatches.push(match);
       $privateMatches = $privateMatches;
     });
+
+    $socket.on("match:private:cancelled", (player) => {
+      const index = $privateMatches.findIndex(
+        (match) => match.player == player
+      );
+      $privateMatches.splice(index, 1);
+      $privateMatches = $privateMatches;
+    });
   });
 </script>
 

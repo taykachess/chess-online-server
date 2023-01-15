@@ -60,8 +60,7 @@
     player: "",
     control: "1+0",
     type: "time",
-    timeControls: [10],
-    controls: ["1+0"],
+    periods: [[10, "3+0"]],
   };
 
   async function onInput(event: any) {
@@ -87,14 +86,13 @@
       player: form.player,
       type: form.type,
     };
-    if (form.type == "game") {
+    if (form.type == "bestof") {
       formDto.control = form.control;
-    } else {
-      formData.controls = form.controls;
-      formData.timeControls = form.timeControls;
+    } else if (form.type == "time") {
+      formDto.periods = formData.periods;
     }
 
-    $socket.emit("match:private:create", formData);
+    $socket.emit("match:private:create", formDto);
   }
 </script>
 
@@ -225,30 +223,30 @@
           <Label>Контроль времени</Label>
         </div>
       </div>
-      {#each formData.controls as period, index}
+      {#each formData.periods as period, index}
         <div class=" flex space-x-8 ">
           <div class=" w-2/5">
             <Select
               class="mt-2"
               items={timeControls}
-              bind:value={formData.timeControls[index]}
+              bind:value={formData.periods[index][0]}
             />
           </div>
           <div class=" w-2/5">
             <Select
               class="mt-2"
               items={controls}
-              bind:value={formData.controls[index]}
+              bind:value={formData.periods[index][1]}
             />
           </div>
 
           <div class="mt-2 flex w-1/5  ">
-            {#if index == formData.controls.length - 1}
+            {#if index == formData.periods.length - 1}
               <!-- svelte-ignore a11y-click-events-have-key-events -->
               <div
                 on:click={() => {
-                  formData.controls[formData.controls.length] = "1+0";
-                  formData.timeControls[formData.timeControls.length] = 10;
+                  formData.periods[formData.periods.length] = [10, "1+0"];
+                  // formData.periods[formData.periods.length]
                 }}
                 class=" flex h-10 w-10 cursor-pointer items-center justify-center bg-green-200"
               >
@@ -259,10 +257,8 @@
             <!-- svelte-ignore a11y-click-events-have-key-events -->
             <div
               on:click={() => {
-                formData.controls.splice(index, 1);
-                formData.controls = formData.controls;
-                formData.timeControls.splice(index, 1);
-                formData.timeControls = formData.timeControls;
+                formData.periods.splice(index, 1);
+                formData.periods = formData.periods;
               }}
               class=" flex h-10 w-10 cursor-pointer items-center justify-center bg-red-200"
             >

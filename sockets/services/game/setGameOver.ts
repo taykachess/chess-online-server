@@ -9,9 +9,11 @@ import { GAME_ROOM, PLAYER_IN_GAME_REDIS } from "../../variables/redisIndex";
 import type { Game, Result } from "../../types/game";
 import { redis } from "../../global/redis";
 import { addGame, getMatch } from "../../global/matches";
-import { MatchGame } from "../../types/match";
+import { MatchCreateDtoExtended, MatchGame } from "../../types/match";
 import { runNextGameInMatch } from "../match/runNextGameInMatch";
 import { finishTournamentGame } from "../tournament/finishTournamentGame";
+import { Prisma } from "@prisma/client";
+import { createMatchGame } from "../match/createMatchGame";
 
 export async function setGameOver({
   gameId,
@@ -90,16 +92,21 @@ export async function setGameOver({
   redis.SREM(PLAYER_IN_GAME_REDIS(game.black.username), gameId);
 
   if (matchId) {
-    const matchGame: MatchGame = {
-      white: game.white.username,
-      black: game.black.username,
-      result,
+    await createMatchGame(
+      matchId,
       gameId,
-    };
-    let match = await getMatch(matchId);
-    if (!match) return;
-    match = await addGame(matchId, matchGame, match);
-    await runNextGameInMatch({ matchId: matchId, match });
+      game.white.username,
+      game.black.username,
+      result
+    );
+    // while (periodIndex != match.periods.length && diff > 0) {
+    //   periodIndex++;
+    //   diff -= match.periods[periodIndex][0] * MINUTE_IN_MILLISECONDS;
+    // }
+    // let match = await getMatch(matchId);
+    // if (!match) return;
+    // match = await addGame(matchId, matchGame, match);
+    // await runNextGameInMatch({ matchId: matchId, match });
   } else if (tournamentId) {
     await finishTournamentGame({ game, gameId, tournamentId, result });
   }

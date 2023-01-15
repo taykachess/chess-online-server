@@ -2,7 +2,8 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["clientExtensions"]
 }
 
 datasource db {
@@ -70,25 +71,23 @@ enum TournamentFormat {
 }
 
 model Match {
-  id         String    @unique
-  player1    String?
-  player2    String?
-  rounds     Int
+  id         String      @id @default(uuid())
+  startDate  DateTime    @default(now())
+  player1    String
+  player2    String
+  rounds     Int?
   // [int,int,int]
-  result     Json?
-  status     String    @default("created")
-  armageddon Boolean   @default(false)
+  result     Json[]
+  status     MatchStatus
+  armageddon Boolean     @default(false)
   games      Game[]
-  type       MatchType @default(bestof)
-  // [{time:1800000, control:"3+0"},...]
-  stages     Json?
+  type       MatchType   @default(bestof)
+  // FOR TIME TYPE
+  // [[20, "1+0"],..]
+  periods    Json?
+  stage      Int?
+  tsmp       DateTime?   @db.Timestamp()
 
-  // Use in tournaments only
-  // round        Int?
-  // match        Int?
-  // win          Json?
-  // loss         Json?
-  // Tournament   Tournament? @relation(fields: [tournamentId], references: [id])
   tournamentId String?
 }
 
@@ -97,17 +96,24 @@ enum MatchType {
   time
 }
 
+enum MatchStatus {
+  created
+  running
+  finished
+}
+
 model Game {
-  id      String  @id @default(cuid())
-  pgn     String
-  players User[]
-  white   Json
-  black   Json
-  Match   Match?  @relation(fields: [matchId], references: [id], onDelete: SetNull)
-  matchId String?
-  result  String
-  time    Int[]
-  control String
+  id        String   @id @default(cuid())
+  pgn       String
+  players   User[]
+  white     Json
+  black     Json
+  Match     Match?   @relation(fields: [matchId], references: [id], onDelete: SetNull)
+  matchId   String?
+  result    String
+  time      Int[]
+  control   String
+  createdAt DateTime @default(now())
 }
 
 // model Chat {

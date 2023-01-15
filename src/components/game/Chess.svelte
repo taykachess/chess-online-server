@@ -29,6 +29,7 @@
   } from "$store/game/tournament";
   import { requestId } from "$store/game/requestId";
   import { clock } from "$store/game/clock";
+  import AccordionForTimeMatch from "./AccordionForTimeMatch.svelte";
 
   export let game: GetGame;
 
@@ -116,7 +117,7 @@
     }
 
     if (result == "*") {
-      $socket.emit("game:sub", { gameId: $page.params.id });
+      // $socket.emit("game:sub", { gameId: $page.params.id });
       $socket.on("game:move", onMoveHandler);
       $socket.on("game:end", onEndHandler);
 
@@ -408,8 +409,12 @@
   <div class="text-3xl text-slate-900">♛ ♚ ♝ ♞ ♜ ♟︎ ♟︎</div>
 </div> -->
 
-<div class=" z-0 grid w-full max-w-4xl md:grid-cols-7 ">
-  <div class=" col-span-5">
+<div class=" z-0 grid w-full max-w-7xl  md:grid-cols-10 ">
+  <div class=" col-span-2" />
+  <!-- <div class=" col-span-3 mr-4">
+    <AccordionForTimeMatch />
+  </div> -->
+  <div class=" col-span-6">
     {#if $info && $info.chess}
       <Board
         {inputHandler}

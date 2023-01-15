@@ -37,12 +37,15 @@ export interface GetMatch {
   rounds: number;
 }
 
+type Minutes = number;
+type TimeControl = string;
+
 export interface MatchCreateDto {
   player: string;
   control: string;
-  type: "game" | "time";
-  timeControls: number[];
-  controls: string[];
+  type: "bestof" | "time";
+  periods: [Minutes, TimeControl][];
+  // controls: string[];
 }
 
 export interface MatchCreateDtoExtended extends MatchCreateDto {

@@ -15,7 +15,7 @@ import { prisma } from "./global/prisma";
 import { USER_ROOM } from "./variables/redisIndex";
 
 dotenv.config({ path: "../.env" });
-
+// let counter = 1;
 io.use((socket, next) => {
   const token = socket.handshake.auth.token;
   if (!token) next();
@@ -32,10 +32,17 @@ io.use((socket, next) => {
 io.on("connection", async (socket) => {
   if (socket.data.username) socket.join(USER_ROOM(socket.data.username));
 
+  // console.log(socket.id, "connected!");
+
   challengeController(socket);
   gameController(socket);
   matchController(socket);
   tournamentController(socket);
+
+  // socket.on("ping", (cb: any) => {
+  //   console.log("pong", counter++);
+  //   cb("pong");
+  // });
 
   socket.on("disconnect", onDisconnect);
 });

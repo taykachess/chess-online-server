@@ -3,11 +3,17 @@ import { v4 as uuid } from "uuid";
 
 import { setGame } from "../../global/games";
 
-import { TOURNAMENT_GAME_PREPARE_TIME } from "../../variables/redisIndex";
+import {
+  PLAYER_IN_GAME_REDIS,
+  TOURNAMENT_GAME_PREPARE_TIME,
+  USER_ROOM,
+} from "../../variables/redisIndex";
 
 import type { Game, Player } from "../../types/game";
 import { setGameOver } from "./setGameOver";
 import { setGameTimeoutInitial } from "../../global/timers";
+import { io } from "../../global/io";
+import { redis } from "../../global/redis";
 
 export async function createGame({
   data,
@@ -71,6 +77,18 @@ export async function createGame({
   }
 
   setGame(gameId, game);
+
+  io.to([USER_ROOM(data.white.username), USER_ROOM(data.black.username)]).emit(
+    "game:started",
+    {
+      gameId,
+    }
+  );
+
+  Promise.all([
+    redis.SADD(PLAYER_IN_GAME_REDIS(data.white.username), gameId),
+    redis.SADD(PLAYER_IN_GAME_REDIS(data.black.username), gameId),
+  ]);
 
   return gameId;
 }
