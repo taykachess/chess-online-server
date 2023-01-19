@@ -113,7 +113,7 @@ export type MatchSwissShortPlayer = {
   id: string;
   rating: number;
   title?: Title | null;
-  res: 1 | 0 | 0.5 | "*";
+  res: Result;
   color: "w" | "b";
 };
 

@@ -56,6 +56,7 @@ export async function setGameOver({
       result,
       time: game.time,
       control: game.control,
+      matchId: game.matchId ? game.matchId : undefined,
     },
   });
 

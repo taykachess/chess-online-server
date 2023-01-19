@@ -64,18 +64,19 @@
               <div class="">
                 {#if $page.data.user?.rating}
                 <Badge
-                 title={`${Math.round($filters.rating[0]+$page.data.user?.rating)}-${Math.round($filters.rating[1]+$page.data.user?.rating)} `}
                  color={{text:"text-sky-800 px-1", bg:"bg-white border"}}
                  >
+
+                 {Math.round($filters.rating[0]+$page.data.user?.rating)}-{Math.round($filters.rating[1]+$page.data.user?.rating)}
                 </Badge>
                   
                 {/if}
 
                 {#if $page.data.user?.rating}
                 <Badge
-                 title={`${$filters.control}`}
                  color={{text:"text-sky-800 px-1 ml-1", bg:"bg-sky-100 border"}}
                  >
+                 {$filters.control}
                 </Badge>
                   
                 {/if}

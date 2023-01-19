@@ -6,7 +6,7 @@ import type {
   MatchFilters,
 } from "./match";
 import type { GetGame, Result, Title } from "./game";
-import { GetMatch } from "./match";
+// import { GetMatch } from "./match";
 import { MatchSwiss, MatchSwissShortPlayer, PlayerSwiss } from "./tournament";
 
 export type SocketServer = Server<
@@ -30,11 +30,13 @@ export interface ServerToClientEvents {
   "challenge:created": (challenge: GetChallenge) => void;
   "challenge:deleted": ({ socketId }: { socketId?: string }) => void;
 
-  "match:created": (match: GetMatch) => void;
+  // "match:created": (match: GetMatch) => void;
   "match:deleted": ({ socketId }: { socketId?: string }) => void;
   "match:private:create": ( match:MatchCreateDtoExtended) => void;
   "match:private:cancelled": (player:string)=>void
   "match:private:refuse": (player:string)=>void
+  "match:private:gameOver": ({res,curr, stage, tsmp}:{res:[string, Result, number], curr?:string, stage?:number, tsmp?:Date})=>void
+  "match:private:ended": ()=>void
 
 
   "game:started": ({ gameId }: { gameId: string }) => void;
@@ -70,7 +72,8 @@ export interface ClientToServerEvents {
   "challenge:cancel": () => void;
   "challenge:accept": ({ username }: { username: string }) => void;
 
-  "match:subscribe": () => void;
+  "match:unsub": (id: string) => void;
+  "match:subscribe": (id: string) => void;
   // prettier-ignore
   "match:create": ({ control, filters, rounds }: { control: string, filters: MatchFilters, rounds:number }) => void;
   "match:cancel": () => void;

@@ -29,7 +29,8 @@
   } from "$store/game/tournament";
   import { requestId } from "$store/game/requestId";
   import { clock } from "$store/game/clock";
-  import AccordionForTimeMatch from "./AccordionForTimeMatch.svelte";
+  import MatchTimeInfo from "./MatchTimeInfo.svelte";
+  import type { Match } from "$types/match";
 
   export let game: GetGame;
 
@@ -119,7 +120,8 @@
     if (result == "*") {
       // $socket.emit("game:sub", { gameId: $page.params.id });
       $socket.on("game:move", onMoveHandler);
-      $socket.on("game:end", onEndHandler);
+      if (!$socket.hasListeners("game:end"))
+        $socket.on("game:end", onEndHandler);
 
       const isTournamentGameBegins = $info.tournamentId && $info.ply == 0;
 
@@ -216,31 +218,62 @@
     $info.white.ratingNext = newEloWhite;
     $info.black.ratingNext = newEloBlack;
 
-    if ($match) {
-      $match.games.push({
-        white: $info.white.username,
-        black: $info.black.username,
-        result,
-        gameId: $page.params.id,
-      });
+    // if ($match) {
+    //   if ($match.stage && $match.type == "time") {
+    //     $match.resultsData[$match.resultsData.length - 1][0] == $info.control
+    //       ? console.log("match continue with the same control ")
+    //       : $match.periodsData.length ==
+    //         $match.resultsData[$match.resultsData.length - 1][2] + 1
+    //       ? console.log("Match finished")
+    //       : ($match.stage =
+    //           $match.resultsData[$match.resultsData.length - 1][2]);
 
-      $match.games = $match.games;
+    //     let res: Result =
+    //       $match.player1 == $info.white.username
+    //         ? result
+    //         : result == "1"
+    //         ? "0"
+    //         : result == "0"
+    //         ? "1"
+    //         : "0.5";
 
-      if ($match.player1 == $info.white.username) {
-        if (result == "1") $match.result[0] = $match.result[0] + 1;
-        else if (result == "0") $match.result[1] = $match.result[1] + 1;
-        else if (result == "0.5") $match.result[2] = $match.result[2] + 1;
-      } else if ($match.player1 == $info.black.username) {
-        if (result == "1") $match.result[1] = $match.result[1] + 1;
-        else if (result == "0") $match.result[0] = $match.result[0] + 1;
-        else if (result == "0.5") $match.result[2] = $match.result[2] + 1;
-      }
-    }
+    //     if ($match.resultsData)
+    //       $match.resultsData.push([$page.params.id, res, $match.stage]);
+    //     else $match.resultsData = [[$page.params.id, res, $match.stage]];
+    //     $match.resultsData = $match.resultsData;
+
+    //     console.log([$page.params.id, result, $match.stage]);
+    //   }
+    // }
+
+    // if ($match) {
+    //   $match.games.push({
+    //     white: $info.white.username,
+    //     black: $info.black.username,
+    //     result,
+    //     gameId: $page.params.id,
+    //   });
+
+    //   $match.games = $match.games;
+
+    //   if ($match.player1 == $info.white.username) {
+    //     if (result == "1") $match.result[0] = $match.result[0] + 1;
+    //     else if (result == "0") $match.result[1] = $match.result[1] + 1;
+    //     else if (result == "0.5") $match.result[2] = $match.result[2] + 1;
+    //   } else if ($match.player1 == $info.black.username) {
+    //     if (result == "1") $match.result[1] = $match.result[1] + 1;
+    //     else if (result == "0") $match.result[0] = $match.result[0] + 1;
+    //     else if (result == "0.5") $match.result[2] = $match.result[2] + 1;
+    //   }
+    // }
 
     if ($page.data.gameIds) {
       const index = $page.data.gameIds.indexOf($page.params.id);
 
-      if (index !== -1) $page.data.gameIds.splice(index, 1);
+      if (index !== -1) {
+        $page.data.gameIds.splice(index, 1);
+        // $page.data.gameIds = $page.data.gameIds;
+      }
     }
     // $match.games = $match.games;
 
@@ -376,14 +409,48 @@
     }
   }
 
+  async function getMatch(id: string) {
+    const matchData = await fetch(`/api/match/get/${id}`);
+    const matchFromServer = (await matchData.json()) as Match;
+
+    console.log("got match");
+    $match = matchFromServer;
+    $match.id = id;
+    if ($match.status == "running") $socket.emit("match:subscribe", id);
+
+    if ($match.type == "time") {
+      if (!$match.resultsData) $match.resultsData = [];
+
+      if (!$socket.hasListeners("match:private:gameOver"))
+        $socket.on("match:private:gameOver", (res) => {
+          if (!$match) return;
+          $match.resultsData.push(res.res);
+          $match.resultsData = $match.resultsData;
+          if (res.curr) $match.currentGame = res.curr;
+          if (res.stage) $match.stage = res.stage;
+          if (res.tsmp) $match.tsmp = res.tsmp;
+        });
+
+      if (!$socket.hasListeners("match:private:ended"))
+        $socket.on("match:private:ended", () => {
+          $match.status = "finished";
+        });
+    }
+  }
+
   afterNavigate(async ({ from, to }) => {
     if (to?.route.id == from?.route.id && to?.params?.id != from?.params?.id) {
       lastTime = 0;
       $socket.emit(
         "game:get",
         { gameId: $page.params.id },
-        (gameFromServer) => {
-          if (gameFromServer) onGetGame(gameFromServer);
+        async (gameFromServer) => {
+          if (gameFromServer) {
+            await onGetGame(gameFromServer);
+            if ($info.matchId && $info.matchId != $match.id) {
+              await getMatch($info.matchId);
+            }
+          }
         }
       );
     }
@@ -409,12 +476,18 @@
   <div class="text-3xl text-slate-900">♛ ♚ ♝ ♞ ♜ ♟︎ ♟︎</div>
 </div> -->
 
-<div class=" z-0 grid w-full max-w-7xl  md:grid-cols-10 ">
-  <div class=" col-span-2" />
-  <!-- <div class=" col-span-3 mr-4">
-    <AccordionForTimeMatch />
-  </div> -->
-  <div class=" col-span-6">
+<div class=" z-0  grid w-full  max-w-7xl md:grid-cols-10 ">
+  <div class=" col-span-2">
+    {#if $match && $match.type == "time" && $match.stage && $match.tsmp}
+      <MatchTimeInfo
+        periods={$match.periodsData}
+        bind:stage={$match.stage}
+        bind:timestamp={$match.tsmp}
+      />
+    {/if}
+  </div>
+
+  <div class=" col-span-5">
     {#if $info && $info.chess}
       <Board
         {inputHandler}
@@ -456,10 +529,17 @@
         <Timer bind:time={$clock[0]} side="w" />
       </div>
     </div>
-    {#if $info.matchId}
-      <div class="  col-span-5  mt-4 flex items-center justify-center  ">
-        <MatchResults matchId={$info.matchId} />
-      </div>
-    {/if}
+    <!-- {#if $info.matchId} -->
+
+    <!-- {/if} -->
   {/if}
 </div>
+
+{#if $match && $match.type == "time"}
+  <div class=" mt-8 flex justify-center ">
+    <MatchResults
+      bind:results={$match.resultsData}
+      periods={$match.periodsData}
+    />
+  </div>
+{/if}

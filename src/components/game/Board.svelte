@@ -64,7 +64,7 @@
 </script>
 
 <!-- 40rem is standart, so if make w-full is going to be problem -->
-<div class=" relative flex-none  ">
+<div class="   ">
   <div bind:this={boardHTML} class=" relative ">
     {#if $isTournamentTimerVisible}
       <div

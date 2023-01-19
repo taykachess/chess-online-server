@@ -26,6 +26,7 @@
 
   function acceptChallenge(username: string) {
     $socket.emit("match:accept", username);
+    isOpen = false;
   }
 </script>
 

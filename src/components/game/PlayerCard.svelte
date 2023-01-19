@@ -31,14 +31,20 @@
     {/if}
   </div> -->
   {#if player.ratingNext}
-    <div class=" mx-px">→</div>
-    <div class=" ">
-      <Badge
-        title={`${Math.trunc(player.ratingNext)}`}
+    <!-- <div class=" mx-px">→</div> -->
+    <div class=" ml-1 ">
+      {#if difference > 0}
+        <span class=" text-green-700">+{Math.floor(difference)}</span>
+      {:else}
+        <span class=" text-purple-800">{Math.floor(difference)}</span>
+      {/if}
+      <!-- <Badge
         color={difference > 0
           ? { text: "text-green-100", bg: "bg-green-800" }
           : { text: "text-pink-100", bg: "bg-pink-800" }}
-      />
+      >
+        {Math.trunc(player.ratingNext)}
+      </Badge> -->
     </div>
   {/if}
   <!-- <p class="text-indigo-400">Vadim Moiseenko</p> -->

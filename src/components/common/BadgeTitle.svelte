@@ -24,4 +24,4 @@
   $: color = badgeColor(title);
 </script>
 
-<Badge {title} {color} />
+<Badge {color}>{title}</Badge>

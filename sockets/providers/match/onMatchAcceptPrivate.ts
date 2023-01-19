@@ -66,6 +66,10 @@ export async function onMatchAcceptPrivate(this: SocketType, player: string) {
 
     if (!white) throw Error("");
     if (!black) throw Error("");
+    io.to(USER_ROOM(socket.data.username)).emit(
+      "match:private:cancelled",
+      socket.data.username
+    );
 
     const sockets = await io.in(`${USER_ROOM(black.username)}`).fetchSockets();
 

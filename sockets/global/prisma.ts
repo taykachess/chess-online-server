@@ -3,7 +3,7 @@ import {
   type TimePeriods as TypePeriodsType,
   TimePeriods,
   Player,
-  MatchResult,
+  MatchResults,
 } from "../zod/schemas";
 export const prisma = new PrismaClient().$extends({
   result: {
@@ -14,18 +14,10 @@ export const prisma = new PrismaClient().$extends({
           return periods as TypePeriodsType;
         },
       },
-    },
-    gameData: {
-      white: {
-        needs: { white: true },
-        compute({ white }) {
-          return white as Player;
-        },
-      },
-      blackData: {
-        needs: { black: true },
-        compute({ black }) {
-          return black as Player;
+      resultsData: {
+        needs: { result: true },
+        compute({ result }) {
+          return result as MatchResults;
         },
       },
     },

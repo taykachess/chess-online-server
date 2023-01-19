@@ -31,6 +31,7 @@
   ];
 
   const timeControls: { value: string | number; name: string }[] = [
+    { value: 1, name: "1 минута" },
     { value: 10, name: "10 минут" },
     { value: 20, name: "20 минут" },
     { value: 30, name: "30 минут" },

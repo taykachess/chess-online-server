@@ -28,6 +28,7 @@ export async function onGameGet(
           time: true,
           result: true,
           pgn: true,
+          matchId: true,
         },
       });
 

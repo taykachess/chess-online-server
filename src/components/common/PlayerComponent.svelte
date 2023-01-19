@@ -2,12 +2,12 @@
   import type { Title } from "@prisma/client";
   import BadgeTitle from "./BadgeTitle.svelte";
 
-  export let title: Title | null = "GM";
-  export let username: string = "tayka";
-  export let rating: number = 2022;
+  export let title: Title | null = null;
+  export let username: string = "";
+  export let rating: number = 0;
 </script>
 
-<div class=" flex items-baseline ">
+<div class=" flex items-baseline font-medium ">
   {#if title}
     <div class="">
       <BadgeTitle {title} />
@@ -15,5 +15,7 @@
   {/if}
   <div class=" mx-1 text-base text-slate-700">{username}</div>
 
-  <div class=" text-xs text-orange-700">{rating}</div>
+  {#if rating}
+    <div class=" text-xs text-orange-700">{rating}</div>
+  {/if}
 </div>

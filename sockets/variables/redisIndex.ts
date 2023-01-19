@@ -21,7 +21,7 @@ export const USER_ROOM = (username: string) => `user${username}`;
 //   `tournamentsInProgress${tournamentId}`;
 
 //Rooms static
-export const MATCHES_ROOM = "matches";
+// export const MATCHES_ROOM = "matches"
 export const CHALLENGES_ROOM = "challenges";
 
 // Const

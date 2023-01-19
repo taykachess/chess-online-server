@@ -1,5 +1,9 @@
+import { io } from "../../global/io";
 import { prisma } from "../../global/prisma";
 import { Result } from "../../types/game";
+import { MatchResults } from "../../types/match";
+import { transformResult } from "../../utils/transformResult";
+import { MATCH_ROOM } from "../../variables/redisIndex";
 import { createGame } from "../game/createGame";
 
 export async function createMatchGame(
@@ -33,7 +37,7 @@ export async function createMatchGame(
     });
 
     if (!match.stage) throw Error("Must be current stage!");
-    const res = transformResult(
+    const res = transformResultMatch(
       result,
       white,
       match.player1,
@@ -80,20 +84,21 @@ export async function createMatchGame(
           data: {
             status: "finished",
           },
+          select: {
+            currentGame: true,
+          },
         });
+
+        io.to(MATCH_ROOM(matchId)).emit("match:private:gameOver", {
+          res,
+        });
+
+        io.to(MATCH_ROOM(matchId)).emit("match:private:ended");
+
+        io.socketsLeave(MATCH_ROOM(matchId));
 
         return;
       }
-
-      await prisma.match.update({
-        where: {
-          id: matchId,
-        },
-        data: {
-          stage: { increment: 1 },
-          tsmp: new Date(),
-        },
-      });
 
       const playerBlack = await prisma.user.findUnique({
         where: { username: white },
@@ -109,7 +114,7 @@ export async function createMatchGame(
 
       console.log("match continue with next period");
 
-      await createGame({
+      const newGameId = await createGame({
         data: {
           white: playerWhite,
           black: playerBlack,
@@ -117,15 +122,47 @@ export async function createMatchGame(
           matchId,
         },
       });
+
+      const now = new Date();
+      await prisma.match.update({
+        where: {
+          id: matchId,
+        },
+        data: {
+          stage: { increment: 1 },
+          tsmp: now,
+          currentGame: newGameId,
+        },
+      });
+      io.to(MATCH_ROOM(matchId)).emit("match:private:gameOver", {
+        res,
+        curr: newGameId,
+        stage: match.stage + 1,
+        tsmp: now,
+      });
     } else {
       console.log("match continue with the same period");
 
-      await fetchAndCreateGame(
+      const newGameId = await fetchAndCreateGame(
         white,
         black,
         match.periodsData[match.stage - 1][1],
         matchId
       );
+
+      await prisma.match.update({
+        where: {
+          id: matchId,
+        },
+        data: {
+          currentGame: newGameId,
+        },
+      });
+
+      io.to(MATCH_ROOM(matchId)).emit("match:private:gameOver", {
+        res,
+        curr: newGameId,
+      });
     }
   } catch (error) {
     console.log(error);
@@ -150,7 +187,7 @@ async function fetchAndCreateGame(
   });
   if (!playerWhite) throw Error("User not found");
 
-  await createGame({
+  const gameId = await createGame({
     data: {
       white: playerWhite,
       black: playerBlack,
@@ -158,18 +195,17 @@ async function fetchAndCreateGame(
       matchId,
     },
   });
+
+  return gameId;
 }
 
-type Stage = number;
-type MatchResultElement = [string, 1 | 2, Result, Stage];
-
-function transformResult(
+function transformResultMatch(
   res: Result,
   white: string,
   player1: string,
   gameId: string,
-  stage: Stage
-): MatchResultElement {
-  if (white == player1) return [gameId, 1, res, stage];
-  else return [gameId, 2, res, stage];
+  stage: number
+): [string, Result, number] {
+  if (white == player1) return [gameId, res, stage];
+  else return [gameId, transformResult(res, "b"), stage];
 }

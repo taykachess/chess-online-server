@@ -1,7 +1,7 @@
 import { redis } from "../../global/redis";
 
 // prettier-ignore
-import { CHALLENGES_REDIS, CHALLENGES_ROOM,  MATCHES_REDIS_GOT, MATCHES_ROOM, USER_ROOM } from "../../variables/redisIndex";
+import { CHALLENGES_REDIS, CHALLENGES_ROOM,  MATCHES_REDIS_GOT, USER_ROOM } from "../../variables/redisIndex";
 
 import type { SocketType } from "../../types/sockets";
 
