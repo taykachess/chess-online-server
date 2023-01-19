@@ -31,6 +31,7 @@
   import { clock } from "$store/game/clock";
   import MatchTimeInfo from "./MatchTimeInfo.svelte";
   import type { Match } from "$types/match";
+  import { gamesInProgress } from "$store/global/gamesInProgress";
 
   export let game: GetGame;
 
@@ -267,14 +268,14 @@
     //   }
     // }
 
-    if ($page.data.gameIds) {
-      const index = $page.data.gameIds.indexOf($page.params.id);
+    // if ($gamesInProgress) {
+    const index = $gamesInProgress.indexOf($page.params.id);
 
-      if (index !== -1) {
-        $page.data.gameIds.splice(index, 1);
-        // $page.data.gameIds = $page.data.gameIds;
-      }
+    if (index !== -1) {
+      $gamesInProgress.splice(index, 1);
+      $gamesInProgress = $gamesInProgress;
     }
+    // }
     // $match.games = $match.games;
 
     // prettier-ignore

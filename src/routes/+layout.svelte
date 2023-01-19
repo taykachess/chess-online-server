@@ -9,9 +9,11 @@
   import { browser } from "$app/environment";
   import { privateMatches } from "$store/global/privateMatches";
   import type { MatchCreateDtoExtended } from "$types/match";
+  import { gamesInProgress } from "$store/global/gamesInProgress";
   export let data: LayoutData;
 
   if (browser) {
+    $gamesInProgress = data.gameIds || [];
     console.log(document.cookie);
     $socket = io("http://localhost:3000", {
       auth: { token: document.cookie.split("=")[1] },
@@ -28,7 +30,8 @@
 
   onMount(() => {
     $socket.on("game:started", ({ gameId }) => {
-      data.gameIds?.push(gameId);
+      $gamesInProgress.push(gameId);
+      $gamesInProgress = $gamesInProgress;
       goto(`/game/${gameId}`);
     });
 
@@ -44,6 +47,15 @@
       $privateMatches.splice(index, 1);
       $privateMatches = $privateMatches;
     });
+
+    $socket.on("game:deleteId", (id) => {
+      const index = $gamesInProgress.indexOf(id);
+
+      if (index !== -1) {
+        $gamesInProgress.splice(index, 1);
+        $gamesInProgress = $gamesInProgress;
+      }
+    });
   });
 </script>
 
@@ -57,7 +69,7 @@
 </svelte:head>
 
 <div class=" w-full">
-  <Header games={data.gameIds} />
+  <Header games={$gamesInProgress} />
 </div>
 <main class="  text-slate-500  ">
   <!-- {#if visible} -->

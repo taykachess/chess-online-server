@@ -4,7 +4,11 @@ import { prisma } from "../../global/prisma";
 
 import { calculateRating } from "./calculateRating";
 
-import { GAME_ROOM, PLAYER_IN_GAME_REDIS } from "../../variables/redisIndex";
+import {
+  GAME_ROOM,
+  PLAYER_IN_GAME_REDIS,
+  USER_ROOM,
+} from "../../variables/redisIndex";
 
 import type { Game, Result } from "../../types/game";
 import { redis } from "../../global/redis";
@@ -91,6 +95,10 @@ export async function setGameOver({
   // await Promise.all([
   redis.SREM(PLAYER_IN_GAME_REDIS(game.white.username), gameId);
   redis.SREM(PLAYER_IN_GAME_REDIS(game.black.username), gameId);
+  io.to([USER_ROOM(game.white.username), USER_ROOM(game.black.username)]).emit(
+    "game:deleteId",
+    gameId
+  );
 
   if (matchId) {
     await createMatchGame(

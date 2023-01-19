@@ -44,6 +44,8 @@ export interface ServerToClientEvents {
   "game:end": ({result,newEloWhite,newEloBlack}: {result:Result; newEloWhite:number; newEloBlack:number}) => void;
   "game:offerDraw": ({username, ply}: {username: string; ply: number;}) => void;
   "game:declineDraw": () => void;
+  "game:deleteId": (gameId: string) => void;
+
 
   "tournament:register": ({username, rating, title}:{username: string; rating: number; title: Title | null;}) => void;
   "tournament:unregister": ({username}:{username: string}) => void;
