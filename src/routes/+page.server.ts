@@ -8,7 +8,7 @@
 // import { JWT_SECRET } from "$env/static/private";
 // import { filterSchema } from "$lib/validate/filters";
 
-import type { PageServerLoad, Actions } from "./$types";
+import type { PageServerLoad, Actions } from './$types'
 
 // export const load: PageServerLoad = async ({ locals }) => {
 //   return {
@@ -119,11 +119,11 @@ export const actions: Actions = {
   //   return { success: true, token };
   // },
   logout: async ({ request, cookies }) => {
-    cookies.delete("token", {
-      path: "/",
-    });
+    cookies.delete('token', {
+      path: '/',
+    })
 
     // console.log("cookie deleted");
-    return { success: true };
+    return { success: true }
   },
-};
+}

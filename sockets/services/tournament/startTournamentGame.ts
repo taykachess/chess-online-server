@@ -1,23 +1,14 @@
-import { redis } from "../../global/redis";
+import { redis } from '../../global/redis'
 
-import {
-  addPlayerMatches,
-  decreaseTournamentActiveGameByOne,
-  increasePlayerScore,
-  setPlayerReceivedBye,
-} from "../../global/tournament";
-import { MatchSwiss } from "../../types/tournament";
-import {
-  PLAYER_IN_GAME_REDIS,
-  TOURNAMENT_GAME_PREPARE_TIME,
-  USER_ROOM,
-} from "../../variables/redisIndex";
-import { createGame } from "../game/createGame";
+import { addPlayerMatches, decreaseTournamentActiveGameByOne, increasePlayerScore, setPlayerReceivedBye } from '../../global/tournament'
+import { MatchSwiss } from '../../types/tournament'
+import { PLAYER_IN_GAME_REDIS, TOURNAMENT_GAME_PREPARE_TIME, USER_ROOM } from '../../variables/redisIndex'
+import { createGame } from '../game/createGame'
 
-import type { PlayerSwiss } from "../../types/tournament";
-import { io } from "../../global/io";
-import { prisma } from "../../global/prisma";
-import { onGameStartRandomMode } from "../../providers/game/dev/onGameStartRandomMode";
+import type { PlayerSwiss } from '../../types/tournament'
+import { io } from '../../global/io'
+import { prisma } from '../../global/prisma'
+import { onGameStartRandomMode } from '../../providers/game/dev/onGameStartRandomMode'
 export async function startTournamentGame({
   pair,
   tournamentId,
@@ -26,33 +17,33 @@ export async function startTournamentGame({
   control,
   round,
 }: {
-  pair: MatchSwiss;
-  tournamentId: string;
-  players: Record<string, PlayerSwiss>;
-  board: number;
-  round: number;
-  control: string;
+  pair: MatchSwiss
+  tournamentId: string
+  players: Record<string, PlayerSwiss>
+  board: number
+  round: number
+  control: string
 }) {
   if (!pair[1]) {
     // decreaseTournamentActiveGameByOne(tournamentId);
-    increasePlayerScore({ tournamentId, username: pair[0].id, point: 1 });
+    increasePlayerScore({ tournamentId, username: pair[0].id, point: 1 })
     addPlayerMatches({
       tournamentId,
       username: pair[0].id,
       game: [
         {
-          id: "Bye",
+          id: 'Bye',
           rating: 0,
           // title: black.title,
           res: 1,
-          color: "w",
+          color: 'w',
         },
-        "",
+        '',
       ],
-    });
+    })
     // prettier-ignore
     setPlayerReceivedBye({tournamentId, username:pair[0].id, receivedBye:true})
-    return;
+    return
   }
 
   const [white, black] = await prisma.$transaction([
@@ -64,9 +55,9 @@ export async function startTournamentGame({
       where: { username: pair[1].id },
       select: { rating: true, title: true, bot: true },
     }),
-  ]);
+  ])
 
-  if (!white || !black) throw Error("Not white or black");
+  if (!white || !black) throw Error('Not white or black')
 
   const gameId = await createGame({
     data: {
@@ -87,12 +78,12 @@ export async function startTournamentGame({
       round,
       board,
     },
-  });
+  })
 
   if (white.bot && gameId)
     setTimeout(() => {
-      onGameStartRandomMode({ gameId });
-    }, TOURNAMENT_GAME_PREPARE_TIME);
+      onGameStartRandomMode({ gameId })
+    }, TOURNAMENT_GAME_PREPARE_TIME)
 
   // io.to([USER_ROOM(pair[0].id), USER_ROOM(pair[1].id)]).emit("game:started", {
   //   gameId,
@@ -103,5 +94,5 @@ export async function startTournamentGame({
   //   redis.SADD(PLAYER_IN_GAME_REDIS(pair[1].id), gameId),
   // ]);
 
-  return gameId;
+  return gameId
 }

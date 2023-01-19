@@ -1,7 +1,7 @@
 <script lang="ts">
   // const rows = [{title:'Название турнира'}]
-  export let title: string;
-  export let bg: string;
+  export let title: string
+  export let bg: string
 </script>
 
 <!-- {#each rows as row } -->

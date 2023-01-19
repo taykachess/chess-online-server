@@ -1,30 +1,30 @@
-import { prisma } from "$lib/db/prisma";
-import type { TournamentTable } from "$types/tournament";
-import { json } from "@sveltejs/kit";
-import type { RequestHandler } from "./$types";
-import type { Prisma } from "@prisma/client";
+import { prisma } from '$lib/db/prisma'
+import type { TournamentTable } from '$types/tournament'
+import { json } from '@sveltejs/kit'
+import type { RequestHandler } from './$types'
+import type { Prisma } from '@prisma/client'
 
 export const GET: RequestHandler = async ({ request, locals, url }) => {
-  let page = url.searchParams.get("page");
+  let page = url.searchParams.get('page')
 
   if (!page) {
-    page = "1";
+    page = '1'
   }
 
-  const whereParam: Prisma.TournamentWhereInput = {};
+  const whereParam: Prisma.TournamentWhereInput = {}
 
-  const register = url.searchParams.get("register");
-  const created = url.searchParams.get("created");
+  const register = url.searchParams.get('register')
+  const created = url.searchParams.get('created')
 
-  if (locals.user && register === "yes") {
-    whereParam.participants = { some: { username: locals.user.username } };
+  if (locals.user && register === 'yes') {
+    whereParam.participants = { some: { username: locals.user.username } }
   }
 
-  if (locals.user && created === "yes") {
-    whereParam.organizer = { username: locals.user.username };
+  if (locals.user && created === 'yes') {
+    whereParam.organizer = { username: locals.user.username }
   }
 
-  const take = 10;
+  const take = 10
   const tournaments: TournamentTable[] = await prisma.tournament.findMany({
     take,
     skip: take * (+page - 1),
@@ -33,7 +33,7 @@ export const GET: RequestHandler = async ({ request, locals, url }) => {
       // status: "registration",
       ...whereParam,
     },
-    orderBy: { startTime: "desc" },
+    orderBy: { startTime: 'desc' },
     select: {
       id: true,
       name: true,
@@ -50,7 +50,7 @@ export const GET: RequestHandler = async ({ request, locals, url }) => {
       // },
       format: true,
     },
-  });
+  })
 
-  return json(tournaments);
-};
+  return json(tournaments)
+}

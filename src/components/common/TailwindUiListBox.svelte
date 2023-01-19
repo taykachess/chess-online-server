@@ -1,25 +1,25 @@
 <script lang="ts">
-  import { createEventDispatcher } from "svelte";
+  import { createEventDispatcher } from 'svelte'
 
   interface Option {
-    text: string;
-    value: string | number;
+    text: string
+    value: string | number
   }
   export let options: Option[] = [
-    { text: "1+0", value: "1+0" },
-    { text: "1+1", value: "1+1" },
-    { text: "3+0", value: "3+0" },
-    { text: "3+2", value: "3+2" },
-    { text: "5+0", value: "5+0" },
-    { text: "5+3", value: "5+3" },
-    { text: "10+5", value: "10+5" },
-  ];
-  export let value = options[0].value;
-  const elWithValue = options.find((el) => el.value == value);
-  let selectedOption: Option = elWithValue ? elWithValue : options[0];
-  const dispatch = createEventDispatcher();
+    { text: '1+0', value: '1+0' },
+    { text: '1+1', value: '1+1' },
+    { text: '3+0', value: '3+0' },
+    { text: '3+2', value: '3+2' },
+    { text: '5+0', value: '5+0' },
+    { text: '5+3', value: '5+3' },
+    { text: '10+5', value: '10+5' },
+  ]
+  export let value = options[0].value
+  const elWithValue = options.find((el) => el.value == value)
+  let selectedOption: Option = elWithValue ? elWithValue : options[0]
+  const dispatch = createEventDispatcher()
 
-  let isOpen = false;
+  let isOpen = false
 </script>
 
 <!-- prettier-ignore -->

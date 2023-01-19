@@ -1,10 +1,10 @@
 <script lang="ts">
-  import { page } from "$app/stores";
+  import { page } from '$app/stores'
 
   async function Pause() {
     await fetch(`/api/tournament/pause/${$page.params.id}`, {
-      method: "POST",
-    });
+      method: 'POST',
+    })
   }
 </script>
 

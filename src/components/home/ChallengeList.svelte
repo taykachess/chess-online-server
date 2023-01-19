@@ -1,10 +1,10 @@
 <script lang="ts">
-  import Pagination from "$components/common/Pagination.svelte";
-  import ChessClockSvg from "$components/icons/ChessClockSVG.svelte";
-  import IconCalendarDays from "$components/icons/IconCalendarDays.svelte";
-  import type { GetChallenge } from "$types/challenge";
+  import Pagination from '$components/common/Pagination.svelte'
+  import ChessClockSvg from '$components/icons/ChessClockSVG.svelte'
+  import IconCalendarDays from '$components/icons/IconCalendarDays.svelte'
+  import type { GetChallenge } from '$types/challenge'
 
-  export let challenges: GetChallenge[];
+  export let challenges: GetChallenge[]
   //   export let currentPage = 1;
   //   export let count = 25;
 

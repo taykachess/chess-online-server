@@ -1,24 +1,19 @@
 <script lang="ts">
-  import { beforeNavigate } from "$app/navigation";
-  import BadgeTitle from "$components/common/BadgeTitle.svelte";
-  import MiniChessBoard from "$components/common/MiniChessBoard.svelte";
-  import { formatTime } from "$lib/utils/formatTime";
-  import { socket } from "$store/sockets/socket";
-  import { tournament } from "$store/tournament/tournament";
-  import {
-    tournamentTv,
-    tournamentPrepareTime,
-    isTournamentTimerVisible,
-    chess,
-  } from "$store/tournament/tournamentTv";
-  import type { GetGame } from "$types/game";
-  import { Chess } from "cm-chess-ts";
-  import type { ChessBoardInstance } from "cm-chessboard-ts";
-  import { onMount } from "svelte";
+  import { beforeNavigate } from '$app/navigation'
+  import BadgeTitle from '$components/common/BadgeTitle.svelte'
+  import MiniChessBoard from '$components/common/MiniChessBoard.svelte'
+  import { formatTime } from '$lib/utils/formatTime'
+  import { socket } from '$store/sockets/socket'
+  import { tournament } from '$store/tournament/tournament'
+  import { tournamentTv, tournamentPrepareTime, isTournamentTimerVisible, chess } from '$store/tournament/tournamentTv'
+  import type { GetGame } from '$types/game'
+  import { Chess } from 'cm-chess-ts'
+  import type { ChessBoardInstance } from 'cm-chessboard-ts'
+  import { onMount } from 'svelte'
 
   beforeNavigate(() => {
-    $socket.removeListener("tournament:tv");
-  });
+    $socket.removeListener('tournament:tv')
+  })
 
   //   let board: ChessBoardInstance;
   //   const chess = new Chess();
@@ -56,9 +51,7 @@
       <!-- {#if $chess} -->
       <MiniChessBoard on:boardMounted />
       {#if $isTournamentTimerVisible}
-        <div
-          class=" absolute inset-0 flex items-center justify-center  bg-slate-50/60    "
-        >
+        <div class=" absolute inset-0 flex items-center justify-center  bg-slate-50/60    ">
           <div class=" bg-slate-50 p-2 font-serif text-xl text-slate-800">
             <!-- {formatTime($tournamentPrepareTime)} -->
             Начало тура через {formatTime($tournamentPrepareTime)}

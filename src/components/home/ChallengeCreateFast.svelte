@@ -1,21 +1,21 @@
 <script lang="ts">
-  import { page } from "$app/stores";
-  import Badge from "$components/common/Badge.svelte";
-  import PulseAnimatedElement from "$components/common/PulseAnimatedElement.svelte";
-  import IconPawn from "$components/icons/IconPawn.svelte";
-  import { filters } from "$store/home/challenges";
-  import { socket } from "$store/sockets/socket";
-  import type { ChallengeFilters } from "$types/challenge";
-  import ChallengeFiltersComponent from "./ChallengeFilters.svelte";
+  import { page } from '$app/stores'
+  import Badge from '$components/common/Badge.svelte'
+  import PulseAnimatedElement from '$components/common/PulseAnimatedElement.svelte'
+  import IconPawn from '$components/icons/IconPawn.svelte'
+  import { filters } from '$store/home/challenges'
+  import { socket } from '$store/sockets/socket'
+  import type { ChallengeFilters } from '$types/challenge'
+  import ChallengeFiltersComponent from './ChallengeFilters.svelte'
   function createChallenge({ filters }: { filters: ChallengeFilters }) {
-    $socket.emit("challenge:create", { control: filters.control, filters });
+    $socket.emit('challenge:create', { control: filters.control, filters })
   }
 
   function cancelChallenge() {
-    $socket.emit("challenge:cancel");
+    $socket.emit('challenge:cancel')
   }
 
-  let challengeSended = false;
+  let challengeSended = false
 
   // let
 </script>

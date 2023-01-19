@@ -1,21 +1,15 @@
-import type { Socket } from "socket.io-client";
-import { io } from "socket.io-client";
+import type { Socket } from 'socket.io-client'
+import { io } from 'socket.io-client'
 
-import type {
-  ServerToClientEvents,
-  ClientToServerEvents,
-} from "$types/sockets";
-import { writable, type Writable } from "svelte/store";
-import { browser } from "$app/environment";
+import type { ServerToClientEvents, ClientToServerEvents } from '$types/sockets'
+import { writable, type Writable } from 'svelte/store'
+import { browser } from '$app/environment'
 // import {coki} from "svelte"
 
-export const socket: Writable<
-  Socket<ServerToClientEvents, ClientToServerEvents>
-> =
-  writable();
-  // io("http://localhost:3000", {
-  //   auth: { token:  },
-  // })
+export const socket: Writable<Socket<ServerToClientEvents, ClientToServerEvents>> = writable()
+// io("http://localhost:3000", {
+//   auth: { token:  },
+// })
 
 // export const deleteSocketListenersHome = () => {
 //   socket.subscribe((value) => value.removeListener());

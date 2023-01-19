@@ -1,19 +1,19 @@
 <script lang="ts">
-  import { page } from "$app/stores";
-  import Badge from "$components/common/Badge.svelte";
-  import Dialog from "$components/common/Dialog.svelte";
-  import ChallengeFiltersComponent from "$components/dialogs/Filters/ChallengeFilters.svelte";
-  import { filters } from "$store/home/challenges";
-  import type { ChallengeFilters, GetChallenge } from "$types/challenge";
+  import { page } from '$app/stores'
+  import Badge from '$components/common/Badge.svelte'
+  import Dialog from '$components/common/Dialog.svelte'
+  import ChallengeFiltersComponent from '$components/dialogs/Filters/ChallengeFilters.svelte'
+  import { filters } from '$store/home/challenges'
+  import type { ChallengeFilters, GetChallenge } from '$types/challenge'
 
-  let isOpen = false;
+  let isOpen = false
 
   function summa(filters: ChallengeFilters) {
-    let sum = 0;
-    if (!filters) return ``;
-    if (filters.rating[0] != -500 || filters.rating[1] != 500) sum++;
+    let sum = 0
+    if (!filters) return ``
+    if (filters.rating[0] != -500 || filters.rating[1] != 500) sum++
 
-    return `${sum}`;
+    return `${sum}`
   }
 
   // $: activeFilters = summa($filters);
@@ -30,18 +30,13 @@
 
 <button
   on:click={() => {
-    if (!$page.data.user) return;
-    isOpen = true;
+    if (!$page.data.user) return
+    isOpen = true
   }}
   type="button"
   class="relative inline-flex w-16 items-center justify-center  rounded-l-md border-r  border-gray-300 bg-white px-3 py-1 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
 >
-  <svg
-    class="h-6 w-6"
-    fill="none"
-    stroke="currentColor"
-    viewBox="0 0 24 24"
-    xmlns="http://www.w3.org/2000/svg"
+  <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"
     ><path
       stroke-linecap="round"
       stroke-linejoin="round"

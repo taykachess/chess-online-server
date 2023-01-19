@@ -1,9 +1,9 @@
 <script lang="ts">
-  import IconExitDialog from "$components/icons/IconExitDialog.svelte";
-  import LichessButton from "./LichessButton.svelte";
-  import YandexButton from "./YandexButton.svelte";
+  import IconExitDialog from '$components/icons/IconExitDialog.svelte'
+  import LichessButton from './LichessButton.svelte'
+  import YandexButton from './YandexButton.svelte'
 
-  export let isOpen: boolean;
+  export let isOpen: boolean
 </script>
 
 <div class=" z-20  py-8 text-left">

@@ -1,24 +1,24 @@
 <script lang="ts">
-  export let currentTab: string;
+  export let currentTab: string
   export let tabs: {
-    active: string;
-    title: string;
-    load: () => any;
-    disabled?: boolean;
+    active: string
+    title: string
+    load: () => any
+    disabled?: boolean
   }[] = [
-    { active: "all", title: "Турниры", load: () => {} },
-    { active: "IRegistered", title: "Зарегестрирован", load: () => {} },
-    { active: "ICreated", title: "Созданные", load: () => {} },
-  ];
+    { active: 'all', title: 'Турниры', load: () => {} },
+    { active: 'IRegistered', title: 'Зарегестрирован', load: () => {} },
+    { active: 'ICreated', title: 'Созданные', load: () => {} },
+  ]
 </script>
 
 <div class="mb-2 flex space-x-1 rounded-xl bg-blue-400/20 p-1">
   {#each tabs as tab}
     <button
       on:click={async () => {
-        if (tab.disabled) return;
-        currentTab = tab.active;
-        tab.load();
+        if (tab.disabled) return
+        currentTab = tab.active
+        tab.load()
       }}
       id="headlessui-tabs-tab-1"
       role="tab"

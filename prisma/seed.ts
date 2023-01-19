@@ -1,5 +1,5 @@
-import { PrismaClient, type User } from "@prisma/client";
-const prisma = new PrismaClient();
+import { PrismaClient, type User } from '@prisma/client'
+const prisma = new PrismaClient()
 async function main() {
   // await prisma.role.upsert({
   //   create: {
@@ -14,47 +14,44 @@ async function main() {
   //   User with role ADMIN
   await prisma.user.upsert({
     create: {
-      username: "tayka",
-      email: "mvkvol@yandex.ru",
-      hashedPassword:
-        "$2b$10$FXPVAxuA5ByTC1lonJxY9.DJrWiPY4PHc1qLWM9a7nXnxHF4sTBuO",
-      title: "GM",
+      username: 'tayka',
+      email: 'mvkvol@yandex.ru',
+      hashedPassword: '$2b$10$FXPVAxuA5ByTC1lonJxY9.DJrWiPY4PHc1qLWM9a7nXnxHF4sTBuO',
+      title: 'GM',
       roles: {
-        set: "ADMIN",
+        set: 'ADMIN',
       },
-      lichess: "tayka",
+      lichess: 'tayka',
     },
     update: {
-      lichess: "tayka",
+      lichess: 'tayka',
     },
     where: {
-      username: "tayka",
+      username: 'tayka',
     },
-  });
+  })
   // User without role
   await prisma.user.upsert({
     create: {
-      username: "tayka2",
-      email: "mvkvol2@yandex.ru",
-      hashedPassword:
-        "$2b$10$FXPVAxuA5ByTC1lonJxY9.DJrWiPY4PHc1qLWM9a7nXnxHF4sTBuO",
+      username: 'tayka2',
+      email: 'mvkvol2@yandex.ru',
+      hashedPassword: '$2b$10$FXPVAxuA5ByTC1lonJxY9.DJrWiPY4PHc1qLWM9a7nXnxHF4sTBuO',
     },
     update: {},
     where: {
-      username: "tayka2",
+      username: 'tayka2',
     },
-  });
+  })
 
-  const amountOfBots = 100;
+  const amountOfBots = 100
 
-  const prismaQueries: Promise<User>[] = [];
+  const prismaQueries: Promise<User>[] = []
   for (let i = 0; i < amountOfBots; i++) {
     const qe = prisma.user.upsert({
       create: {
         username: `bot${i}`,
         email: `mvkvols${i}@yandex.ru`,
-        hashedPassword:
-          "$2b$10$FXPVAxuA5ByTC1lonJxY9.DJrWiPY4PHc1qLWM9a7nXnxHF4sTBuO",
+        hashedPassword: '$2b$10$FXPVAxuA5ByTC1lonJxY9.DJrWiPY4PHc1qLWM9a7nXnxHF4sTBuO',
         rating: 2020 + i,
         bot: true,
       },
@@ -65,51 +62,51 @@ async function main() {
       where: {
         username: `bot${i}`,
       },
-    });
+    })
 
-    prismaQueries.push(qe);
+    prismaQueries.push(qe)
   }
 
-  const users = await Promise.all(prismaQueries);
+  const users = await Promise.all(prismaQueries)
 
   const tournament = await prisma.tournament.upsert({
     create: {
-      id: "clav5lj9q0000p13dg45de9ix",
-      name: "Мой первый турнир",
-      description: "",
-      control: "3+0",
-      format: "swiss",
+      id: 'clav5lj9q0000p13dg45de9ix',
+      name: 'Мой первый турнир',
+      description: '',
+      control: '3+0',
+      format: 'swiss',
       startTime: new Date(),
       rounds: 11,
-      organizer: { connect: { username: "tayka" } },
+      organizer: { connect: { username: 'tayka' } },
     },
     update: {},
     where: {
-      id: "clav5lj9q0000p13dg45de9ix",
+      id: 'clav5lj9q0000p13dg45de9ix',
     },
-  });
+  })
 
   for (let i = 0; i < 10; i++) {
     await prisma.tournament.upsert({
       create: {
         id: `clav5lj9q0000p13dg45de9ix${i}`,
         name: `Мой ${i} турнир`,
-        description: "",
-        control: "3+0",
-        format: "swiss",
+        description: '',
+        control: '3+0',
+        format: 'swiss',
         startTime: new Date(),
         rounds: 11,
-        organizer: { connect: { username: "tayka" } },
-        status: "registration",
+        organizer: { connect: { username: 'tayka' } },
+        status: 'registration',
       },
       update: {},
       where: {
         id: `clav5lj9q0000p13dg45de9ix${i}`,
       },
-    });
+    })
   }
 
-  const prismaQueriesUser: Promise<User>[] = [];
+  const prismaQueriesUser: Promise<User>[] = []
 
   users.forEach((user) => {
     const qr = prisma.user.update({
@@ -119,19 +116,19 @@ async function main() {
           connect: { id: tournament.id },
         },
       },
-    });
-    prismaQueriesUser.push(qr);
-  });
+    })
+    prismaQueriesUser.push(qr)
+  })
 
-  const registedUsers = await Promise.all(prismaQueriesUser);
+  const registedUsers = await Promise.all(prismaQueriesUser)
 }
 
 main()
   .then(async () => {
-    await prisma.$disconnect();
+    await prisma.$disconnect()
   })
   .catch(async (e) => {
-    console.error(e);
-    await prisma.$disconnect();
-    process.exit(1);
-  });
+    console.error(e)
+    await prisma.$disconnect()
+    process.exit(1)
+  })

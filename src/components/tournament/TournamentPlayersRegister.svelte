@@ -1,12 +1,12 @@
 <script lang="ts">
-  import BadgeTitle from "$components/common/BadgeTitle.svelte";
-  import type { Title } from "$types/game";
+  import BadgeTitle from '$components/common/BadgeTitle.svelte'
+  import type { Title } from '$types/game'
 
   export let players: {
-    username: string;
-    title?: Title | null;
-    rating?: number;
-  }[];
+    username: string
+    title?: Title | null
+    rating?: number
+  }[]
 </script>
 
 <div class=" ">

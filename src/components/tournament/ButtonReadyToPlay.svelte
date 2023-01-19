@@ -1,10 +1,10 @@
 <script lang="ts">
-  import { page } from "$app/stores";
+  import { page } from '$app/stores'
 
   async function ContinueOrStartToPlay() {
     await fetch(`/api/tournament/continue/${$page.params.id}`, {
-      method: "POST",
-    });
+      method: 'POST',
+    })
   }
 </script>
 

@@ -1,65 +1,57 @@
 <script lang="ts">
-  import YandexButton from "./YandexButton.svelte";
-  import LichessButton from "./LichessButton.svelte";
-  import IconExitDialog from "$components/icons/IconExitDialog.svelte";
+  import YandexButton from './YandexButton.svelte'
+  import LichessButton from './LichessButton.svelte'
+  import IconExitDialog from '$components/icons/IconExitDialog.svelte'
 
-  export let isOpen: boolean;
+  export let isOpen: boolean
 
-  let username = "";
-  $: isValidUsernameLong = (username.match(/^.{5,18}$/g) || []).length == 1;
-  $: isValidUsernameString =
-    (username.match(/^[a-zA-Z0-9]{0,}$/g) || []).length == 1;
-  let isUniqueUsername: boolean | null = null;
+  let username = ''
+  $: isValidUsernameLong = (username.match(/^.{5,18}$/g) || []).length == 1
+  $: isValidUsernameString = (username.match(/^[a-zA-Z0-9]{0,}$/g) || []).length == 1
+  let isUniqueUsername: boolean | null = null
 
-  $: validationDone =
-    isValidUsernameLong && isValidUsernameString && isUniqueUsername && terms;
+  $: validationDone = isValidUsernameLong && isValidUsernameString && isUniqueUsername && terms
 
-  let terms = true;
+  let terms = true
 
   async function isUniqueUser(username: string) {
-    const data = await fetch(`/api/user/${username}/isUnique`);
+    const data = await fetch(`/api/user/${username}/isUnique`)
     if (data.status == 200) {
-      isUniqueUsername = await data.json();
+      isUniqueUsername = await data.json()
     }
   }
 
-  let timerId: NodeJS.Timeout;
+  let timerId: NodeJS.Timeout
 
   async function inputHandler(event: any) {
     // console.log("username", username, event.target.value);
     // await tick();
     // console.log(isValidated());
-    isUniqueUsername = null;
-    clearTimeout(timerId);
-    const isValidUsernameLong =
-      (event.target.value.match(/^.{5,18}$/g) || []).length == 1;
-    const isValidUsernameString =
-      (event.target.value.match(/^[a-zA-Z0-9]{0,}$/g) || []).length == 1;
+    isUniqueUsername = null
+    clearTimeout(timerId)
+    const isValidUsernameLong = (event.target.value.match(/^.{5,18}$/g) || []).length == 1
+    const isValidUsernameString = (event.target.value.match(/^[a-zA-Z0-9]{0,}$/g) || []).length == 1
 
     if (isValidUsernameLong && isValidUsernameString) {
       timerId = setTimeout(async () => {
-        await isUniqueUser(event.target.value);
-      }, 2000);
+        await isUniqueUser(event.target.value)
+      }, 2000)
     }
   }
 </script>
 
 <div class=" z-20  py-8 text-left">
-  <div
-    class="relative mx-auto mt-8  rounded-lg bg-white px-16 py-8 shadow-2xl "
-  >
+  <div class="relative mx-auto mt-8  rounded-lg bg-white px-16 py-8 shadow-2xl ">
     <!-- svelte-ignore a11y-click-events-have-key-events -->
     <div
       on:click={() => {
-        isOpen = !isOpen;
+        isOpen = !isOpen
       }}
       class=" absolute right-[-0.5rem] top-[-0.5rem] h-6 w-6 cursor-pointer rounded-full border border-slate-500 bg-slate-200 p-px hover:bg-slate-300"
     >
       <IconExitDialog />
     </div>
-    <h2 class="text-center text-2xl font-bold tracking-wide text-gray-800">
-      Регистрация
-    </h2>
+    <h2 class="text-center text-2xl font-bold tracking-wide text-gray-800">Регистрация</h2>
     <p class="mt-2 text-center text-sm text-gray-600">
       Уже имеется аккаунт?
       <!-- <a
@@ -138,25 +130,15 @@
       </div>
 
       <div class="mt-4 flex items-center">
-        <input
-          bind:checked={terms}
-          type="checkbox"
-          name="remember_me"
-          id="remember_me"
-          class="mr-2 rounded focus:ring-0"
-        />
-        <label for="remember_me" class="text-sm "
-          >Подтверждаю честную игру и уважения к другим игрокам</label
-        >
+        <input bind:checked={terms} type="checkbox" name="remember_me" id="remember_me" class="mr-2 rounded focus:ring-0" />
+        <label for="remember_me" class="text-sm ">Подтверждаю честную игру и уважения к другим игрокам</label>
       </div>
     </form>
 
-    <div class={validationDone ? "" : " invisible"}>
+    <div class={validationDone ? '' : ' invisible'}>
       <!-- svelte-ignore a11y-click-events-have-key-events -->
       <LichessButton state={username} type="signup">
-        <div class=" absolute top-[-0.5rem] rounded bg-teal-200 px-2 text-xs">
-          Рекомендован, особенно для title игроков
-        </div>
+        <div class=" absolute top-[-0.5rem] rounded bg-teal-200 px-2 text-xs">Рекомендован, особенно для title игроков</div>
       </LichessButton>
 
       <div class="my-3 flex items-center justify-between">

@@ -1,10 +1,10 @@
 <script lang="ts">
-  import type { Title } from "@prisma/client";
-  import BadgeTitle from "./BadgeTitle.svelte";
+  import type { Title } from '@prisma/client'
+  import BadgeTitle from './BadgeTitle.svelte'
 
-  export let title: Title | null = null;
-  export let username: string = "";
-  export let rating: number = 0;
+  export let title: Title | null = null
+  export let username: string = ''
+  export let rating: number = 0
 </script>
 
 <div class=" flex items-baseline font-medium ">

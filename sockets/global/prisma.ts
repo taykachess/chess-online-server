@@ -1,23 +1,18 @@
-import { PrismaClient } from "@prisma/client";
-import {
-  type TimePeriods as TypePeriodsType,
-  TimePeriods,
-  Player,
-  MatchResults,
-} from "../zod/schemas";
+import { PrismaClient } from '@prisma/client'
+import { type TimePeriods as TypePeriodsType, TimePeriods, Player, MatchResults } from '../zod/schemas'
 export const prisma = new PrismaClient().$extends({
   result: {
     match: {
       periodsData: {
         needs: { periods: true },
         compute({ periods }) {
-          return periods as TypePeriodsType;
+          return periods as TypePeriodsType
         },
       },
       resultsData: {
         needs: { result: true },
         compute({ result }) {
-          return result as MatchResults;
+          return result as MatchResults
         },
       },
     },
@@ -26,9 +21,9 @@ export const prisma = new PrismaClient().$extends({
   query: {
     match: {
       create({ args, query }) {
-        console.log(args);
-        args.data.periods = TimePeriods.parse(args.data.periods);
-        return query(args);
+        console.log(args)
+        args.data.periods = TimePeriods.parse(args.data.periods)
+        return query(args)
       },
       // update({ args, query }) {
       //   args.data.result = MatchResult.parse(args.data.periods);
@@ -41,4 +36,4 @@ export const prisma = new PrismaClient().$extends({
     //     }
     // }
   },
-});
+})

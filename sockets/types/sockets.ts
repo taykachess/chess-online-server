@@ -1,29 +1,15 @@
-import type { RemoteSocket, Server, Socket } from "socket.io";
-import type { ChallengeFilters, GetChallenge } from "./challenge";
-import type {
-  MatchCreateDto,
-  MatchCreateDtoExtended,
-  MatchFilters,
-} from "./match";
-import type { GetGame, Result, Title } from "./game";
+import type { RemoteSocket, Server, Socket } from 'socket.io'
+import type { ChallengeFilters, GetChallenge } from './challenge'
+import type { MatchCreateDto, MatchCreateDtoExtended, MatchFilters } from './match'
+import type { GetGame, Result, Title } from './game'
 // import { GetMatch } from "./match";
-import { MatchSwiss, MatchSwissShortPlayer, PlayerSwiss } from "./tournament";
+import { MatchSwiss, MatchSwissShortPlayer, PlayerSwiss } from './tournament'
 
-export type SocketServer = Server<
-  ClientToServerEvents,
-  ServerToClientEvents,
-  InterServerEvents,
-  SocketData
->;
+export type SocketServer = Server<ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData>
 
-export type SocketType = Socket<
-  ClientToServerEvents,
-  ServerToClientEvents,
-  InterServerEvents,
-  SocketData
->;
+export type SocketType = Socket<ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData>
 
-export type SocketRemoteType = RemoteSocket<ServerToClientEvents, SocketData>;
+export type SocketRemoteType = RemoteSocket<ServerToClientEvents, SocketData>
 
 // prettier-ignore
 export interface ServerToClientEvents {
@@ -68,39 +54,39 @@ export interface ServerToClientEvents {
 }
 
 export interface ClientToServerEvents {
-  "challenge:subscribe": () => void;
+  'challenge:subscribe': () => void
   // prettier-ignore
   "challenge:create": ({ control, filters }: { control: string, filters: ChallengeFilters}) => void;
-  "challenge:cancel": () => void;
-  "challenge:accept": ({ username }: { username: string }) => void;
+  'challenge:cancel': () => void
+  'challenge:accept': ({ username }: { username: string }) => void
 
-  "match:unsub": (id: string) => void;
-  "match:subscribe": (id: string) => void;
+  'match:unsub': (id: string) => void
+  'match:subscribe': (id: string) => void
   // prettier-ignore
   "match:create": ({ control, filters, rounds }: { control: string, filters: MatchFilters, rounds:number }) => void;
-  "match:cancel": () => void;
-  "match:accept": (username: string) => void;
-  "match:private:create": (match: MatchCreateDto) => void;
+  'match:cancel': () => void
+  'match:accept': (username: string) => void
+  'match:private:create': (match: MatchCreateDto) => void
 
   // "game:sub": ({ gameId }: { gameId: string }) => void;
-  "game:leave": ({ gameId }: { gameId: string }) => void;
-  "game:move": ({ move, gameId }: { move: string; gameId: string }) => void;
-  "game:resign": ({ gameId }: { gameId: string }) => void;
-  "game:drawOffer": ({ gameId }: { gameId: string }) => void;
-  "game:drawAccept": ({ gameId }: { gameId: string }) => void;
-  "game:drawDecline": ({ gameId }: { gameId: string }) => void;
+  'game:leave': ({ gameId }: { gameId: string }) => void
+  'game:move': ({ move, gameId }: { move: string; gameId: string }) => void
+  'game:resign': ({ gameId }: { gameId: string }) => void
+  'game:drawOffer': ({ gameId }: { gameId: string }) => void
+  'game:drawAccept': ({ gameId }: { gameId: string }) => void
+  'game:drawDecline': ({ gameId }: { gameId: string }) => void
   // prettier-ignore
   "game:get": ({ gameId }: { gameId: string },cb: (data: GetGame) => void) => void;
 
-  "tournament:subscribe": ({ tournamentId }: { tournamentId: string }) => void;
-  "tournament:leave": ({ tournamentId }: { tournamentId: string }) => void;
+  'tournament:subscribe': ({ tournamentId }: { tournamentId: string }) => void
+  'tournament:leave': ({ tournamentId }: { tournamentId: string }) => void
 }
 
 export interface InterServerEvents {
-  ping: () => void;
+  ping: () => void
 }
 
 export interface SocketData {
-  username: string;
-  matchSended?: string;
+  username: string
+  matchSended?: string
 }

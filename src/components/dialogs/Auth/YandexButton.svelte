@@ -1,11 +1,11 @@
 <script lang="ts">
-  import { dev } from "$app/environment";
-  import { PUBLIC_APP_DEV_URL, PUBLIC_APP_PROD_URL } from "$env/static/public";
+  import { dev } from '$app/environment'
+  import { PUBLIC_APP_DEV_URL, PUBLIC_APP_PROD_URL } from '$env/static/public'
 
-  export let state: string | undefined = undefined;
-  export let type: "login" | "signup";
+  export let state: string | undefined = undefined
+  export let type: 'login' | 'signup'
 
-  const yandexClientID = "8e344c0640bf44988536c700491a911a";
+  const yandexClientID = '8e344c0640bf44988536c700491a911a'
   //   prettier-ignore
   const yandexRedirect =
     type == "login"
@@ -14,9 +14,7 @@
 </script>
 
 <a
-  href="https://oauth.yandex.ru/authorize?response_type=code&client_id={yandexClientID}&redirect_uri={yandexRedirect}{state
-    ? '&state=' + state
-    : ''}"
+  href="https://oauth.yandex.ru/authorize?response_type=code&client_id={yandexClientID}&redirect_uri={yandexRedirect}{state ? '&state=' + state : ''}"
   class=" flex  items-center justify-center space-x-2 bg-black p-2 text-white"
 >
   <!-- prettier-ignore -->

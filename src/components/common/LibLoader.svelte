@@ -1,21 +1,21 @@
 <script lang="ts">
-  import { onMount, createEventDispatcher } from "svelte";
+  import { onMount, createEventDispatcher } from 'svelte'
 
-  const dispatch = createEventDispatcher();
-  export let url: string;
-  let script: HTMLElement;
+  const dispatch = createEventDispatcher()
+  export let url: string
+  let script: HTMLElement
 
   onMount(async () => {
-    script.addEventListener("load", () => {
-      console.log(script);
-      dispatch("loaded");
-    });
+    script.addEventListener('load', () => {
+      console.log(script)
+      dispatch('loaded')
+    })
 
-    script.addEventListener("error", (event) => {
-      console.error("something went wrong", event);
-      dispatch("error");
-    });
-  });
+    script.addEventListener('error', (event) => {
+      console.error('something went wrong', event)
+      dispatch('error')
+    })
+  })
 </script>
 
 <svelte:head>

@@ -2,6 +2,6 @@
 
 // export const prisma = new PrismaClient();
 
-import { prisma } from "$sockets/global/prisma";
+import { prisma } from '$sockets/global/prisma'
 
-export { prisma };
+export { prisma }

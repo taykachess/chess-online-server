@@ -4,11 +4,11 @@
 
 declare namespace App {
   interface Locals {
-    user: import("$types/user").DecodedUser;
+    user: import('$types/user').DecodedUser
   }
 
   interface PageData {
-    user?: import("$types/user").DecodedUser;
-    gameIds?: string[];
+    user?: import('$types/user').DecodedUser
+    gameIds?: string[]
   }
 }

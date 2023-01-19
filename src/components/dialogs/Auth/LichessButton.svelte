@@ -1,11 +1,11 @@
 <script lang="ts">
-  import { dev } from "$app/environment";
-  import Lichess from "$components/icons/Lichess.svelte";
-  import { PUBLIC_APP_DEV_URL, PUBLIC_APP_PROD_URL } from "$env/static/public";
+  import { dev } from '$app/environment'
+  import Lichess from '$components/icons/Lichess.svelte'
+  import { PUBLIC_APP_DEV_URL, PUBLIC_APP_PROD_URL } from '$env/static/public'
 
-  export let state: string | undefined = undefined;
-  export let type: "login" | "signup";
-  const code_challenge = "mQMOoD93XTahZHU4OtTwImi_0soQ_maBmVnIIjcCQ4Y";
+  export let state: string | undefined = undefined
+  export let type: 'login' | 'signup'
+  const code_challenge = 'mQMOoD93XTahZHU4OtTwImi_0soQ_maBmVnIIjcCQ4Y'
   //   prettier-ignore
   let lichessRedirect =
     type == "login"
@@ -24,5 +24,5 @@
   <div class=" h-5 w-5">
     <Lichess />
   </div>
-  <div class="">{type == "signup" ? "Регистрация с" : ""} lichess.org</div>
+  <div class="">{type == 'signup' ? 'Регистрация с' : ''} lichess.org</div>
 </a>

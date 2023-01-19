@@ -1,28 +1,28 @@
 <script lang="ts">
-  import { enhance } from "$app/forms";
-  import { goto } from "$app/navigation";
+  import { enhance } from '$app/forms'
+  import { goto } from '$app/navigation'
 
-  import { page } from "$app/stores";
+  import { page } from '$app/stores'
 
-  import Dialog from "$components/common/Dialog.svelte";
-  import PopoverMyOwn from "$components/common/Popover.svelte";
-  import PulseAnimatedElement from "$components/common/PulseAnimatedElement.svelte";
-  import Login from "$components/dialogs/Auth/Login.svelte";
-  import Signup from "$components/dialogs/Auth/Signup.svelte";
-  import ChessClockSVG from "$components/icons/ChessClockSVG.svelte";
-  import IconCheck from "$components/icons/IconCheck.svelte";
-  import IconSwords from "$components/icons/IconSwords.svelte";
-  import IconXCircle from "$components/icons/IconXCircle.svelte";
-  import { deleteCookie } from "$lib/utils/cookie";
-  import { privateMatches } from "$store/global/privateMatches";
-  import { socket } from "$store/sockets/socket";
-  import { Badge, Button, Popover } from "flowbite-svelte";
-  import PrivateChallenges from "./header/PrivateChallenges.svelte";
+  import Dialog from '$components/common/Dialog.svelte'
+  import PopoverMyOwn from '$components/common/Popover.svelte'
+  import PulseAnimatedElement from '$components/common/PulseAnimatedElement.svelte'
+  import Login from '$components/dialogs/Auth/Login.svelte'
+  import Signup from '$components/dialogs/Auth/Signup.svelte'
+  import ChessClockSVG from '$components/icons/ChessClockSVG.svelte'
+  import IconCheck from '$components/icons/IconCheck.svelte'
+  import IconSwords from '$components/icons/IconSwords.svelte'
+  import IconXCircle from '$components/icons/IconXCircle.svelte'
+  import { deleteCookie } from '$lib/utils/cookie'
+  import { privateMatches } from '$store/global/privateMatches'
+  import { socket } from '$store/sockets/socket'
+  import { Badge, Button, Popover } from 'flowbite-svelte'
+  import PrivateChallenges from './header/PrivateChallenges.svelte'
 
-  export let games: string[] | undefined;
+  export let games: string[] | undefined
 
-  let isOpen = false;
-  let isOpenLogin = false;
+  let isOpen = false
+  let isOpenLogin = false
 </script>
 
 <Dialog bind:isOpen>
@@ -33,13 +33,11 @@
 </Dialog>
 
 <div class="border-b">
-  <div
-    class="  flex h-16 max-w-6xl  items-center  justify-between sm:mx-auto   "
-  >
+  <div class="  flex h-16 max-w-6xl  items-center  justify-between sm:mx-auto   ">
     <!-- svelte-ignore a11y-click-events-have-key-events -->
     <div
       on:click={() => {
-        goto("/");
+        goto('/')
       }}
       class=" flex cursor-pointer items-center space-x-2"
     >
@@ -70,7 +68,7 @@
         <!-- svelte-ignore a11y-click-events-have-key-events -->
         <div
           on:click={() => {
-            isOpenLogin = true;
+            isOpenLogin = true
           }}
           class=" cursor-pointer text-slate-700 hover:text-slate-900"
         >
@@ -78,7 +76,7 @@
         </div>
         <button
           on:click={() => {
-            isOpen = true;
+            isOpen = true
           }}
           class=" rounded bg-blue-400 p-2 text-white hover:bg-blue-500  "
         >
@@ -90,23 +88,23 @@
       <PopoverMyOwn title={$page.data?.user?.username}>
         <form
           on:keydown={(event) => {
-            if (event.key === "Enter") {
-              event.preventDefault();
-              return false;
+            if (event.key === 'Enter') {
+              event.preventDefault()
+              return false
             }
           }}
           use:enhance={({ form, data, action, cancel }) => {
             return async ({ result, update }) => {
-              await update();
+              await update()
               if ($page.form?.success) {
-                console.log("success");
-                deleteCookie("token");
-                $socket.disconnect();
-                $socket.auth = {};
-                $socket.connect();
-                isOpen = false;
+                console.log('success')
+                deleteCookie('token')
+                $socket.disconnect()
+                $socket.auth = {}
+                $socket.connect()
+                isOpen = false
               }
-            };
+            }
           }}
           method="POST"
           action="/?/logout"

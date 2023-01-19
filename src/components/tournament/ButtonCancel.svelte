@@ -1,11 +1,11 @@
 <script lang="ts">
-  import { page } from "$app/stores";
-  import IconPersonMinus from "$components/icons/IconPersonMinus.svelte";
+  import { page } from '$app/stores'
+  import IconPersonMinus from '$components/icons/IconPersonMinus.svelte'
 
   async function CancelRegister() {
     await fetch(`/api/tournament/unregister/${$page.params.id}`, {
-      method: "POST",
-    });
+      method: 'POST',
+    })
   }
 </script>
 

@@ -1,8 +1,8 @@
 <script lang="ts">
-  import Dialog from "$components/common/Dialog.svelte";
-  import CreateTournament from "$components/home/CreateTournament.svelte";
+  import Dialog from '$components/common/Dialog.svelte'
+  import CreateTournament from '$components/home/CreateTournament.svelte'
 
-  let isOpen = false;
+  let isOpen = false
 </script>
 
 <Dialog bind:isOpen>
@@ -12,7 +12,7 @@
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <div
   on:click={() => {
-    isOpen = true;
+    isOpen = true
   }}
   class=" w-40 cursor-pointer rounded border 
   border-gray-300 bg-white px-2.5 py-1.5 text-center text-xs 

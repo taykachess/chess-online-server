@@ -1,24 +1,24 @@
-import type { Result, Player } from "./game";
+import type { Result, Player } from './game'
 
-import type { ChallengeFilters } from "./challenge";
-import { MatchResults, TimePeriods } from "../zod/schemas";
-import type { Prisma } from "@prisma/client";
-import { prisma } from "../global/prisma";
+import type { ChallengeFilters } from './challenge'
+import { MatchResults, TimePeriods } from '../zod/schemas'
+import type { Prisma } from '@prisma/client'
+import { prisma } from '../global/prisma'
 
 // prettier-ignore
 // eslint-disable-next-line @typescript-eslint/ban-types
 export type Match = Prisma.MatchGetPayload<{}, typeof prisma["$extends"]["extArgs"]>;
 
-export { MatchResults, TimePeriods };
+export { MatchResults, TimePeriods }
 
-export type MatchFilters = ChallengeFilters;
+export type MatchFilters = ChallengeFilters
 
 export type MatchGame = {
-  white: string;
-  black: string;
-  result: Result;
-  gameId: string;
-};
+  white: string
+  black: string
+  result: Result
+  gameId: string
+}
 
 // export type MatchStatus = "created" | "running" | "armageddon" | "finished";
 
@@ -46,19 +46,19 @@ export type MatchGame = {
 //   rounds: number;
 // }
 
-type Minutes = number;
-type TimeControl = string;
+type Minutes = number
+type TimeControl = string
 
 export interface MatchCreateDto {
-  player: string;
-  control: string;
-  type: "bestof" | "time";
-  periods: [Minutes, TimeControl][];
+  player: string
+  control: string
+  type: 'bestof' | 'time'
+  periods: [Minutes, TimeControl][]
   // controls: string[];
 }
 
 export interface MatchCreateDtoExtended extends MatchCreateDto {
-  sender: Player;
+  sender: Player
   // receiver: Player;
 }
 

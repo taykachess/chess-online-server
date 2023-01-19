@@ -1,20 +1,16 @@
 <script lang="ts">
-  import Badge from "$components/common/Badge.svelte";
-  import BadgeTitle from "$components/common/BadgeTitle.svelte";
-  import PlayerComponent from "$components/common/PlayerComponent.svelte";
+  import Badge from '$components/common/Badge.svelte'
+  import BadgeTitle from '$components/common/BadgeTitle.svelte'
+  import PlayerComponent from '$components/common/PlayerComponent.svelte'
 
-  import type { Player } from "$types/game";
-  export let player: Player;
+  import type { Player } from '$types/game'
+  export let player: Player
 
-  $: difference = player.ratingNext ? player.ratingNext - player.rating : 0;
+  $: difference = player.ratingNext ? player.ratingNext - player.rating : 0
 </script>
 
 <div class="flex items-baseline text-xs font-medium text-slate-800 ">
-  <PlayerComponent
-    title={player.title}
-    username={player.username}
-    rating={player.rating}
-  />
+  <PlayerComponent title={player.title} username={player.username} rating={player.rating} />
   <!-- {#if player.title}
     <div class="">
       <BadgeTitle title={player.title} />

@@ -1,4 +1,4 @@
-import { writable, type Writable } from "svelte/store";
-import type { Match } from "$types/match";
+import { writable, type Writable } from 'svelte/store'
+import type { Match } from '$types/match'
 
-export const match: Writable<Match> = writable();
+export const match: Writable<Match> = writable()

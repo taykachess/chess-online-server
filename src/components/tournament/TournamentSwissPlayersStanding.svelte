@@ -1,124 +1,124 @@
 <script lang="ts">
-  import { goto } from "$app/navigation";
-  import BadgeTitle from "$components/common/BadgeTitle.svelte";
-  import Pagination from "$components/common/Pagination.svelte";
-  import IconTrophy from "$components/icons/IconTrophy.svelte";
-  import { tournament } from "$store/tournament/tournament";
+  import { goto } from '$app/navigation'
+  import BadgeTitle from '$components/common/BadgeTitle.svelte'
+  import Pagination from '$components/common/Pagination.svelte'
+  import IconTrophy from '$components/icons/IconTrophy.svelte'
+  import { tournament } from '$store/tournament/tournament'
 
-  import type { PlayerSwissFrontend } from "$types/tournament";
+  import type { PlayerSwissFrontend } from '$types/tournament'
 
   function sortFunction(a: PlayerSwissFrontend, b: PlayerSwissFrontend) {
-    const scoreDiff = b.score - a.score;
+    const scoreDiff = b.score - a.score
     if (scoreDiff > 0) {
-      return 1;
+      return 1
     }
     if (scoreDiff == 0) {
-      const buchDiff = b.coefficient.buchholz - a.coefficient.buchholz;
-      if (buchDiff > 0) return 1;
-      if (buchDiff < 0) return -1;
+      const buchDiff = b.coefficient.buchholz - a.coefficient.buchholz
+      if (buchDiff > 0) return 1
+      if (buchDiff < 0) return -1
       if (buchDiff == 0) {
         if (a.uuid) {
-          b.uuid = a.uuid;
-          return 0;
+          b.uuid = a.uuid
+          return 0
         }
-        const uuid = (Math.random() + 1).toString(36).substring(7);
-        a.uuid = uuid;
-        b.uuid = uuid;
+        const uuid = (Math.random() + 1).toString(36).substring(7)
+        a.uuid = uuid
+        b.uuid = uuid
 
-        return 0;
+        return 0
       }
     }
-    return -1;
+    return -1
   }
 
   function resetUUID(players: PlayerSwissFrontend[]) {
-    players.forEach((player) => (player.uuid = undefined));
+    players.forEach((player) => (player.uuid = undefined))
   }
 
   function transformUUIDtoPlace(players: PlayerSwissFrontend[]) {
-    let i = 0;
+    let i = 0
 
     while (i < players.length) {
-      if (!players[i]) break;
+      if (!players[i]) break
       if (players[i].uuid) {
-        let j = i;
-        const uuid = players[i].uuid;
-        let counter = 0;
+        let j = i
+        const uuid = players[i].uuid
+        let counter = 0
         // players[i].place = `${i}`;
         while (uuid == players[j].uuid) {
-          counter++;
+          counter++
           //   players[j + 1].place = `${i}`;
           if (j + 1 >= players.length) {
-            j = j + 1;
-            break;
+            j = j + 1
+            break
           }
-          j = j + 1;
+          j = j + 1
         }
 
         for (let x = i; x < i + counter; x++) {
-          players[x].place = `${i + 1}-${i + counter}`;
+          players[x].place = `${i + 1}-${i + counter}`
         }
-        i = j;
-        continue;
+        i = j
+        continue
       }
 
-      players[i].place = `${i + 1}`;
-      i = i + 1;
+      players[i].place = `${i + 1}`
+      i = i + 1
     }
   }
 
   function transformPlayers(players: PlayerSwissFrontend[]) {
     // if (players.length == 0) return [];
     // console.log(players);
-    resetUUID(players);
+    resetUUID(players)
     players.forEach((player) => {
-      calculateBuchholz(player);
-    });
-    players.sort(sortFunction);
-    transformUUIDtoPlace(players);
+      calculateBuchholz(player)
+    })
+    players.sort(sortFunction)
+    transformUUIDtoPlace(players)
 
-    console.log("sorted");
+    console.log('sorted')
 
-    return players;
+    return players
   }
 
-  let selectedPlayerGames = -1;
+  let selectedPlayerGames = -1
 
   function stringPoints(player: PlayerSwissFrontend) {
-    return `${player.score} / ${player.matches.length}`;
+    return `${player.score} / ${player.matches.length}`
   }
 
   function averageRating(player: PlayerSwissFrontend) {
     let summa = player.matches.reduce((acc, curr) => {
-      return acc + curr[0].rating;
-    }, 0);
+      return acc + curr[0].rating
+    }, 0)
 
-    return summa / player.matches.length;
+    return summa / player.matches.length
   }
 
   function calculateBuchholz(player: PlayerSwissFrontend) {
-    let buchholz = 0;
+    let buchholz = 0
     player.matches.forEach((match) => {
       // console.log(match);
-      const opponent = match[0].id;
-      const index = $tournament.players.findIndex((p) => p.id == opponent);
-      if (index != -1) buchholz += $tournament.players[index].score;
-    });
+      const opponent = match[0].id
+      const index = $tournament.players.findIndex((p) => p.id == opponent)
+      if (index != -1) buchholz += $tournament.players[index].score
+    })
 
-    player.coefficient.buchholz = buchholz;
+    player.coefficient.buchholz = buchholz
 
-    return buchholz;
+    return buchholz
   }
-  $: sortedPlayers = transformPlayers($tournament.players);
+  $: sortedPlayers = transformPlayers($tournament.players)
 
   // .slice(
   //   (currentPage - 1) * 10,
   //   10 * currentPage
   // )
 
-  let currentPage = 1;
+  let currentPage = 1
 
-  const playersOnPage = 10;
+  const playersOnPage = 10
 </script>
 
 <div class="  ">
@@ -238,12 +238,7 @@
   </div>
 
   <div class=" mt-2">
-    <Pagination
-      count={$tournament.players.length}
-      cb={(page) => (currentPage = page)}
-      STEP={playersOnPage}
-      title="игроков"
-    />
+    <Pagination count={$tournament.players.length} cb={(page) => (currentPage = page)} STEP={playersOnPage} title="игроков" />
   </div>
 </div>
 

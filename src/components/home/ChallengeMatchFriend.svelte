@@ -1,6 +1,6 @@
 <script>
-  import IconPiecies from "$components/icons/IconPiecies.svelte";
-  import IconRook from "$components/icons/IconRook.svelte";
+  import IconPiecies from '$components/icons/IconPiecies.svelte'
+  import IconRook from '$components/icons/IconRook.svelte'
 </script>
 
 <div class=" ">
