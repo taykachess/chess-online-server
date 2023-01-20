@@ -3,6 +3,7 @@
   import Badge from '$components/common/Badge.svelte'
   import PulseAnimatedElement from '$components/common/PulseAnimatedElement.svelte'
   import IconPawn from '$components/icons/IconPawn.svelte'
+  import { me } from '$store/global/me'
   import { filters } from '$store/home/challenges'
   import { socket } from '$store/sockets/socket'
   import type { ChallengeFilters } from '$types/challenge'
@@ -10,7 +11,6 @@
   function createChallenge({ filters }: { filters: ChallengeFilters }) {
     $socket.emit('challenge:create', { control: filters.control, filters })
   }
-
   function cancelChallenge() {
     $socket.emit('challenge:cancel')
   }
@@ -61,13 +61,13 @@
       </div>
       <div class="text-sm text-gray-500">
         <div class="">
-          {#if $page.data.user?.rating}
+          {#if $me?.rating}
             <Badge color={{ text: 'text-sky-800 px-1', bg: 'bg-white border' }}>
-              {Math.round($filters.rating[0] + $page.data.user?.rating)}-{Math.round($filters.rating[1] + $page.data.user?.rating)}
+              {Math.round($filters.rating[0] + $me?.rating)}-{Math.round($filters.rating[1] + $me?.rating)}
             </Badge>
           {/if}
 
-          {#if $page.data.user?.rating}
+          {#if $me?.rating}
             <Badge color={{ text: 'text-sky-800 px-1 ml-1', bg: 'bg-sky-100 border' }}>
               {$filters.control}
             </Badge>

@@ -3,11 +3,12 @@
   import Badge from '$components/common/Badge.svelte'
   import BadgeTournamentFormat from '$components/common/BadgeTournamentFormat.svelte'
   import Pagination from '$components/common/Pagination.svelte'
-  import ChessClockSvg from '$components/icons/ChessClockSVG.svelte'
+  import IconChessClock from '$components/icons/IconChessClock.svelte'
   import IconCalendarDays from '$components/icons/IconCalendarDays.svelte'
   import { formatDate } from '$lib/utils/formatDate'
   import { time } from '$store/global/time'
-  import type { GetTournament, TournamentTable } from '$types/tournament'
+
+  import type { TournamentTable } from '$types/tournament'
 
   export let count: number
   // Pick<TournamentTable, "name" | "format"|"_count"|''>
@@ -50,7 +51,7 @@
   <div class=" col-span-2  border-gray-300  py-2 font-bold text-gray-900">Тип</div>
   <div class=" col-span-1  flex  justify-center border-gray-300 py-1 font-bold text-gray-900  ">
     <div class="h-8 w-8">
-      <ChessClockSvg />
+      <IconChessClock />
     </div>
   </div>
   <div class=" col-span-1  border-gray-300  py-2 font-bold text-gray-900">Участники</div>

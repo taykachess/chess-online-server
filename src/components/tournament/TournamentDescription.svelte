@@ -14,19 +14,10 @@
   import ButtonReadyToPlay from './ButtonReadyToPlay.svelte'
   import ButtonStop from './ButtonStop.svelte'
   import BadgeTournamentFormat from '$components/common/BadgeTournamentFormat.svelte'
-  // export let tournamentInfo: {
-  //   name: string;
-  //   control: string;
-  //   format: "swiss";
-  //   startDate: Date;
-  //   description: string;
-  //   orginizer: { title: Title | null; username: string };
-  //   rounds: number;
-  // };
+  import { me } from '$store/global/me'
 
-  $: isRegister = $tournament.participants?.some((participant) => participant.username === $page.data.user?.username)
-
-  $: isActive = $tournament.players?.some((player) => player.id === $page.data.user?.username && player.active)
+  $: isRegister = $tournament.participants?.some((participant) => participant.username === $me?.username)
+  $: isActive = $tournament.players?.some((player) => player.id === $me?.username && player.active)
 
   function transformTournamentFormat(format: 'swiss', rounds?: number): string {
     if (format == 'swiss') return `Щвейцарская система`
@@ -38,7 +29,7 @@
   <div class="flex items-center justify-between px-4 py-5 sm:px-6">
     <h3 class="text-lg font-medium leading-6 text-gray-900">Турнирная информация</h3>
 
-    {#if $page.data.user?.username}
+    {#if $me}
       {#if $tournament.status == 'registration'}
         {#if !isRegister}
           <ButtonRegister />

@@ -8,6 +8,7 @@
   import { Chessboard, COLOR, MARKER_TYPE } from 'cm-chessboard-ts'
   import { onMount } from 'svelte'
   import { PromotionDialog } from 'cm-chessboard-ts/src/cm-chessboard/extensions/promotion-dialog'
+  import { me } from '$store/global/me'
 
   let boardHTML: HTMLElement
   export let orientation: 'w' | 'b'
@@ -44,11 +45,11 @@
     console.log('Mounted')
     setChessBoardToDOM()
 
-    if ($info.white.username === $page.data.user?.username && $info.chess.turn() == 'w') {
+    if ($info.white.username === $me?.username && $info.chess.turn() == 'w') {
       return $board.enableMoveInput(inputHandler, COLOR.white)
     }
 
-    if ($info.black.username === $page.data.user?.username && $info.chess.turn() == 'b') {
+    if ($info.black.username === $me?.username && $info.chess.turn() == 'b') {
       return $board.enableMoveInput(inputHandler, COLOR.black)
     }
   })

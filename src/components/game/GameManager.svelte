@@ -2,6 +2,7 @@
   import { browser } from '$app/environment'
   import { page } from '$app/stores'
   import { info } from '$store/game/info'
+  import { me } from '$store/global/me'
   import { socket } from '$store/sockets/socket'
   import type { Result } from '$types/game'
 
@@ -49,11 +50,10 @@
       }
     }
   }
-
   $: onlyPlayers = $info.role
-  $: isPossibleAcceptDraw = $info.lastOfferDraw && $info.lastOfferDraw.ply > $info.ply - 2 && $info.lastOfferDraw.username != $page.data.user?.username && !$info.lastOfferDraw.status
+  $: isPossibleAcceptDraw = $info.lastOfferDraw && $info.lastOfferDraw.ply > $info.ply - 2 && $info.lastOfferDraw.username != $me?.username && !$info.lastOfferDraw.status
 
-  $: isPossibleOfferDraw = !$info.lastOfferDraw || ($info.lastOfferDraw.username != $page.data.user?.username && $info.lastOfferDraw.status == 'declined')
+  $: isPossibleOfferDraw = !$info.lastOfferDraw || ($info.lastOfferDraw.username != $me?.username && $info.lastOfferDraw.status == 'declined')
 </script>
 
 <div class=" mt-2 flex flex-col space-y-2 text-center text-slate-800 ">

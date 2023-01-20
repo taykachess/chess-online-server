@@ -4,8 +4,7 @@
   import PlayerComponent from '$components/common/PlayerComponent.svelte'
   import { match } from '$store/game/match'
   import type { Result } from '$types/game'
-  import type { Match, MatchResults, TimePeriods } from '$types/match'
-  import { onDestroy } from 'svelte'
+  import type { MatchResults, TimePeriods } from '$types/match'
 
   interface Res {
     control: string

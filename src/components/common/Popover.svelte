@@ -1,11 +1,10 @@
 <script lang="ts">
   import { page } from '$app/stores'
+  import { me } from '$store/global/me'
   import { Popover, PopoverButton, PopoverPanel } from '@rgossiaux/svelte-headlessui'
   import Badge from './Badge.svelte'
   import BadgeTitle from './BadgeTitle.svelte'
 
-  export let title: string = 'tayka'
-  $: rating = $page.data.user ? Math.trunc($page.data.user?.rating) : ''
   export let records: {
     link: string
     svg: string
@@ -31,15 +30,15 @@
   <PopoverButton
     class=" group inline-flex items-center rounded-md bg-slate-700 px-4 py-1 font-medium text-white text-opacity-90 hover:text-opacity-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75"
   >
-    {#if $page.data.user?.title}
+    {#if $me?.title}
       <span class="mr-1 -mt-px">
-        <BadgeTitle title={$page.data.user?.title} />
+        <BadgeTitle title={$me.title} />
       </span>
     {/if}
 
-    <span>{title}</span>
+    <span>{$me?.username}</span>
     <span class=" ml-2 -mt-px">
-      <Badge color={{ text: 'text-slate-700', bg: 'bg-white' }}>{rating}</Badge>
+      <Badge color={{ text: 'text-slate-700', bg: 'bg-white' }}>{$me?.rating}</Badge>
     </span>
 
     <svg

@@ -13,14 +13,13 @@ export const load: LayoutServerLoad = async ({ locals, cookies }) => {
 
   const user = await prisma.user.findUnique({
     where: { username: locals.user?.username },
-    select: { rating: true, title: true },
+    select: { rating: true, title: true, roles: true },
   })
 
   return {
     user: {
       ...locals.user,
-      rating: Number(user?.rating),
-      title: user?.title,
+      ...user,
     },
     gameIds,
     privateChallenges,

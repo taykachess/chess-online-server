@@ -24,6 +24,7 @@
   import MatchTimeInfo from './MatchTimeInfo.svelte'
   import type { Match } from '$types/match'
   import { gamesInProgress } from '$store/global/gamesInProgress'
+  import { me } from '$store/global/me'
 
   export let game: GetGame
 
@@ -34,13 +35,12 @@
   onMount(() => {
     onGetGame(game)
   })
-
   function enableMoveInputOnNavigate() {
-    if ($info.white.username === $page.data.user?.username && $info.chess.turn() == 'w') {
+    if ($info.white.username === $me?.username && $info.chess.turn() == 'w') {
       return $board.enableMoveInput(inputHandler, COLOR.white)
     }
 
-    if ($info.black.username === $page.data.user?.username && $info.chess.turn() == 'b') {
+    if ($info.black.username === $me?.username && $info.chess.turn() == 'b') {
       return $board.enableMoveInput(inputHandler, COLOR.black)
     }
   }
@@ -69,7 +69,7 @@
       matchId,
       increment,
       tournamentId,
-      role: black.username === $page.data.user?.username ? 'b' : white.username === $page.data.user?.username ? 'w' : undefined,
+      role: black.username === $me?.username ? 'b' : white.username === $me?.username ? 'w' : undefined,
       lastOfferDraw,
       ply: tmpHistory[tmpHistory.length - 1]
         ? // @ts-ignore
@@ -80,7 +80,7 @@
     $clock = time
 
     if ($board) {
-      $board.setOrientation($info.black.username === $page.data.user?.username ? 'b' : 'w')
+      $board.setOrientation($info.black.username === $me?.username ? 'b' : 'w')
       $board.setPosition(chess.fen(), true)
 
       enableMoveInputOnNavigate()
@@ -151,11 +151,11 @@
       $board.setPosition($info.chess.fen(), true)
       const newTurn = $info.chess.turn()
       incrementTimer(newTurn)
-      if ($info.white.username === $page.data.user?.username && newTurn == 'w') {
+      if ($info.white.username === $me?.username && newTurn == 'w') {
         return $board.enableMoveInput(inputHandler, COLOR.white)
       }
 
-      if ($info.black.username === $page.data.user?.username && newTurn == 'b') {
+      if ($info.black.username === $me?.username && newTurn == 'b') {
         return $board.enableMoveInput(inputHandler, COLOR.black)
       }
     } else {
@@ -339,7 +339,7 @@
     }
   })
 
-  $: orientation = $info?.black?.username === $page.data.user?.username ? 'b' : 'w'
+  $: orientation = $info?.black?.username === $me?.username ? 'b' : 'w'
 </script>
 
 <!-- <div class="">
@@ -356,7 +356,7 @@
 
   <div class=" col-span-5">
     {#if $info && $info.chess}
-      <Board {inputHandler} position={$info.chess.fen()} orientation={$info.black.username === $page.data.user?.username ? 'b' : 'w'} />
+      <Board {inputHandler} position={$info.chess.fen()} orientation={$info.black.username === $me?.username ? 'b' : 'w'} />
     {/if}
   </div>
 

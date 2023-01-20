@@ -22,8 +22,8 @@ io.use((socket, next) => {
   if (token) {
     // @ts-ignore
     verify(token, process.env.JWT_SECRET, async (err, decoded) => {
-      // @ts-ignore
-      socket.data.username = decoded?.username
+      if (err) next()
+      socket.data.username = decoded as string
       next()
     })
   }

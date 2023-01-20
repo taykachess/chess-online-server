@@ -1,6 +1,6 @@
 <script lang="ts">
   import { dev } from '$app/environment'
-  import Lichess from '$components/icons/Lichess.svelte'
+  import IconLichess from '$components/icons/IconLichess.svelte'
   import { PUBLIC_APP_DEV_URL, PUBLIC_APP_PROD_URL } from '$env/static/public'
 
   export let state: string | undefined = undefined
@@ -17,8 +17,8 @@
   class=" relative flex cursor-pointer items-center justify-center  space-x-2 border border-black p-2 hover:bg-slate-50"
 >
   <slot />
-  <div class=" h-5 w-5">
-    <Lichess />
+  <div class=" h-4 w-4">
+    <IconLichess />
   </div>
-  <div class="">{type == 'signup' ? 'Регистрация с' : ''} lichess.org</div>
+  <div class="">lichess.org</div>
 </a>

@@ -5,7 +5,6 @@
   import TitleAndDescription from '$components/home/TitleAndDescription.svelte'
   import Challenge from '$components/home/Challenge.svelte'
   import Tournament from '$components/home/Tournament.svelte'
-  import Match from '$components/home/Match.svelte'
   import { onDestroy } from 'svelte'
   import { currentChallengeControl } from '$store/home/challenges'
   import { currentMatchControl } from '$store/home/match'
@@ -30,8 +29,6 @@
   <div class=" w-full md:max-w-6xl">
     {#if $tab === 'challenge'}
       <Challenge />
-    {:else if $tab === 'match'}
-      <Match />
     {:else if $tab === 'tournament'}
       <div class=" mt-4">
         <Tournament />

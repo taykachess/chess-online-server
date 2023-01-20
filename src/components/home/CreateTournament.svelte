@@ -1,8 +1,8 @@
 <script lang="ts">
   import { DateInput } from 'date-picker-svelte'
 
-  import Select from '$components/common/Select.svelte'
-  import Switch from '$components/common/Switch.svelte'
+  // import Select from '$components/common/Select.svelte'
+  // import Switch from '$components/common/Switch.svelte'
 
   import type { Prisma } from '@prisma/client'
 
@@ -48,7 +48,7 @@
 
       <div class="flex w-full flex-none items-center p-4 sm:p-6 lg:p-4 xl:p-6">
         <dt class="w-2/5 flex-none font-medium text-slate-500  transition-opacity delay-500 duration-[1.5s] dark:text-slate-300 sm:w-1/4">Система</dt>
-        <Select
+        <!-- <Select
           options={[
             { name: 'Олимпийская', value: 'elimination' },
             { name: 'Щвейцарка', value: 'swiss' },
@@ -57,12 +57,12 @@
           color={{ bg: 'bg-green-100', text: 'text-green-800' }}
           colorOptions={{ bg: 'bg-slate-100', hover: 'hover:bg-slate-300' }}
           bind:value={formData.format}
-        />
+        /> -->
       </div>
       {#if formData.format === 'swiss'}
         <div class="flex w-full flex-none items-center p-4 sm:p-6 lg:p-4 xl:p-6">
           <dt class="w-2/5 flex-none font-medium text-slate-500  transition-opacity delay-500 duration-[1.5s] dark:text-slate-300 sm:w-1/4">Раундов</dt>
-          <Select
+          <!-- <Select
             options={[
               { name: '7', value: 7 },
               { name: '8', value: 8 },
@@ -75,14 +75,14 @@
             color={{ bg: 'bg-green-100', text: 'text-green-800' }}
             colorOptions={{ bg: 'bg-slate-100', hover: 'hover:bg-slate-300' }}
             bind:value={formData.rounds}
-          />
+          /> -->
         </div>
       {/if}
 
-      {#if formData.format === 'elimination'}
+      {#if formData.format == 'elimination'}
         <div class="flex w-full flex-none items-center p-4 sm:py-5 sm:px-6 lg:p-4 xl:py-5 xl:px-6">
           <div class="w-3/5 flex-none font-medium text-slate-500  transition-opacity delay-500 duration-[1.5s]  sm:w-1/4">Сетка</div>
-          <Select
+          <!-- <Select
             bind:value={formData.playerLimit}
             options={[
               { name: '4 игрока', value: 4 },
@@ -93,19 +93,19 @@
             ]}
             color={{ bg: 'bg-green-100', text: 'text-green-800' }}
             colorOptions={{ bg: 'bg-slate-100', hover: 'hover:bg-slate-300' }}
-          />
+          /> -->
         </div>
 
         <div class="flex w-full flex-none items-center p-4 sm:p-6 lg:p-4 xl:p-6">
           <dt class="w-2/5 flex-none font-medium text-slate-500  transition-opacity delay-500 duration-[1.5s] dark:text-slate-300 sm:w-1/4">Двойное выбивание</dt>
-          <Switch bind:state={formData.double} />
+          <!-- <Switch bind:state={formData.double} />  -->
         </div>
       {/if}
 
       {#if formData.format === 'round robin'}
         <div class="flex w-full flex-none items-center p-4 sm:py-5 sm:px-6 lg:p-4 xl:py-5 xl:px-6">
           <div class=" mr-5 flex-none font-medium text-slate-500  transition-opacity delay-500 duration-[1.5s] ">Кол-во игроков</div>
-          <Select
+          <!-- <Select
             bind:value={formData.playerLimit}
             options={[
               { name: '4', value: 4 },
@@ -119,18 +119,18 @@
             ]}
             color={{ bg: 'bg-green-100', text: 'text-green-800' }}
             colorOptions={{ bg: 'bg-slate-100', hover: 'hover:bg-slate-300' }}
-          />
+          /> -->
         </div>
 
         <div class="flex w-full flex-none items-center p-4 sm:p-6 lg:p-4 xl:p-6">
           <dt class="w-2/5 flex-none font-medium text-slate-500  transition-opacity delay-500 duration-[1.5s] dark:text-slate-300 sm:w-1/4">В 2 круга</dt>
-          <Switch bind:state={formData.double} />
+          <!-- <Switch bind:state={formData.double} /> -->
         </div>
       {/if}
 
       <div class="flex w-full flex-none items-center p-4 sm:p-6 lg:p-4 xl:p-6">
         <dt class="w-2/5 flex-none font-medium text-slate-500  transition-opacity delay-500 duration-[1.5s] dark:text-slate-300 sm:w-1/4">Контроль</dt>
-        <Select
+        <!-- <Select
           bind:value={formData.control}
           options={[
             { name: '3+0', value: '3+0' },
@@ -139,7 +139,7 @@
           ]}
           color={{ bg: 'bg-green-100', text: 'text-green-800' }}
           colorOptions={{ bg: 'bg-slate-100', hover: 'hover:bg-slate-300' }}
-        />
+        /> -->
       </div>
 
       <div class="flex w-full flex-none  items-center p-4 sm:p-6 lg:p-4 xl:p-6">

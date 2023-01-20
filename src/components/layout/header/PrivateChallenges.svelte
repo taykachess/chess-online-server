@@ -79,6 +79,7 @@
                   </Popover>
                 </div>
                 <div class=" flex">
+                  <!-- svelte-ignore a11y-click-events-have-key-events -->
                   <div
                     on:click={() => {
                       acceptChallenge(match.sender.username)

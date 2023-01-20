@@ -51,7 +51,7 @@ export const GET: RequestHandler = async ({ url, fetch, cookies }) => {
 
   if (!user) throw Error('Something wrong with user creation')
 
-  const token = jwt.sign(user, JWT_SECRET)
+  const token = jwt.sign(user.username, JWT_SECRET)
   cookies.set('token', token, {
     path: '/',
     httpOnly: false,

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import ChessClockSVG from '$components/icons/ChessClockSVG.svelte'
+  import IconChessClock from '$components/icons/IconChessClock.svelte'
   import { formatTime } from '$lib/utils/formatTime'
   import { info } from '$store/game/info'
 
@@ -11,6 +11,6 @@
 <div class="  flex items-center p-2 text-2xl   font-bold tracking-tighter text-slate-800 ">
   <div class=" ">{formatTime(time)}</div>
   {#if $info.chess.turn() == side}
-    <div class=" ml-5 -mt-1 h-8 w-8"><ChessClockSVG /></div>
+    <div class=" ml-5 -mt-1 h-8 w-8"><IconChessClock /></div>
   {/if}
 </div>

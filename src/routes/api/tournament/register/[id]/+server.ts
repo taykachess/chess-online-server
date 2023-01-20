@@ -6,6 +6,8 @@ import { error } from '@sveltejs/kit'
 import type { RequestHandler } from './$types'
 
 export const POST: RequestHandler = async ({ params, locals }) => {
+  console.log('nice', params.id, locals)
+
   const tournament = await prisma.tournament.findUnique({
     where: { id: params.id },
     select: {

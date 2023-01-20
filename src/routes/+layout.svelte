@@ -10,11 +10,14 @@
   import { privateMatches } from '$store/global/privateMatches'
   import type { MatchCreateDtoExtended } from '$types/match'
   import { gamesInProgress } from '$store/global/gamesInProgress'
+  import { me } from '$store/global/me'
   export let data: LayoutData
+
+  $me = data.user
 
   if (browser) {
     $gamesInProgress = data.gameIds || []
-    console.log(document.cookie)
+
     $socket = io('http://localhost:3000', {
       auth: { token: document.cookie.split('=')[1] },
     })

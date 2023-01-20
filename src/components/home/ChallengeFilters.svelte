@@ -1,8 +1,8 @@
 <script lang="ts">
   import { page } from '$app/stores'
   import Badge from '$components/common/Badge.svelte'
-  import Dialog from '$components/common/Dialog.svelte'
   import ChallengeFiltersComponent from '$components/dialogs/Filters/ChallengeFilters.svelte'
+  import { me } from '$store/global/me'
   import { filters } from '$store/home/challenges'
   import type { ChallengeFilters, GetChallenge } from '$types/challenge'
 
@@ -19,18 +19,13 @@
   // $: activeFilters = summa($filters);
 </script>
 
-<Dialog bind:isOpen>
+<div class=" hidden">
   <ChallengeFiltersComponent bind:isOpen />
-  <!-- <FiltersForm
-      low={$page.data.user?.filters?.min}
-      high={$page.data.user?.filters?.max}
-      bind:isOpen
-    /> -->
-</Dialog>
+</div>
 
 <button
   on:click={() => {
-    if (!$page.data.user) return
+    if (!$me) return
     isOpen = true
   }}
   type="button"

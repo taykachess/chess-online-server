@@ -8,8 +8,8 @@ export const handle: Handle = async ({ event, resolve }) => {
     return await resolve(event)
   }
   try {
-    const decodedUser = jwt.verify(token, JWT_SECRET) as DecodedUser
-    event.locals.user = decodedUser
+    const decodedUser = jwt.verify(token, JWT_SECRET) as string
+    event.locals.user = { username: decodedUser }
   } catch (error) {
     event.cookies.delete('token')
   }

@@ -57,7 +57,7 @@ export interface ClientToServerEvents {
   'match:accept': (username: string) => void
   'match:private:create': (match: MatchCreateDto) => void
 
-  // 'game:leave': ({ gameId }: { gameId: string }) => void
+  'game:leave': ({ gameId }: { gameId: string }) => void
   'game:move': ({ move, gameId }: { move: string; gameId: string }) => void
   'game:resign': ({ gameId }: { gameId: string }) => void
   'game:drawOffer': ({ gameId }: { gameId: string }) => void

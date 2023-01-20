@@ -1,13 +1,12 @@
 <script lang="ts">
-  import Dialog from '$components/common/Dialog.svelte'
   import CreateTournament from '$components/home/CreateTournament.svelte'
 
   let isOpen = false
 </script>
 
-<Dialog bind:isOpen>
+<div class=" hidden">
   <CreateTournament bind:isOpen />
-</Dialog>
+</div>
 
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <div

@@ -1,6 +1,6 @@
 <script lang="ts">
   import Pagination from '$components/common/Pagination.svelte'
-  import ChessClockSvg from '$components/icons/ChessClockSVG.svelte'
+  import ChessClockSvg from '$components/icons/IconChessClock.svelte'
   import IconCalendarDays from '$components/icons/IconCalendarDays.svelte'
   import type { GetChallenge } from '$types/challenge'
 
