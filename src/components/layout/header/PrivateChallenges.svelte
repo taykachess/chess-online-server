@@ -31,19 +31,21 @@
 </script>
 
 <div class=" relative z-50  ">
-  <!-- prettier-ignore -->
-  <button on:mousedown|stopPropagation={()=>{isOpen=!isOpen}} class="">
-
-      <Button  class="relative mr-2" size='sm'>
-          <div class=" w-4 h-4">
-            <IconSwords></IconSwords>
-    
-          </div>
-          <span class="sr-only">Notifications</span>
-          {#if $privateMatches.length}
-            <Badge rounded index color="!red">{$privateMatches.length}</Badge>
-          {/if}
-        </Button>
+  <button
+    on:mousedown|stopPropagation={() => {
+      isOpen = !isOpen
+    }}
+    class=""
+  >
+    <Button class="relative mr-2" size="sm">
+      <div class=" h-4 w-4">
+        <IconSwords />
+      </div>
+      <span class="sr-only">Notifications</span>
+      {#if $privateMatches.length}
+        <Badge rounded index color="!red">{$privateMatches.length}</Badge>
+      {/if}
+    </Button>
   </button>
 
   {#if isOpen}
@@ -63,10 +65,9 @@
                 <div class="  flex  ">
                   <Button btnClass=" p-1 px-2 border flex items-center justify-center text-xs rounded-lg " size="xs" id="placement-bottom" on:mouseenter={() => (placement = 'bottom')}
                     >Матч из {match.periods.length} периодов
-                    <!-- prettier-ignore -->
-                    <div class="w-5 h-5 ml-1">
-                  <IconQuestionMarkCircle></IconQuestionMarkCircle>
-                </div>
+                    <div class="ml-1 h-5 w-5">
+                      <IconQuestionMarkCircle />
+                    </div>
                   </Button>
                   <Popover triggeredBy="[id^='placement-']" {placement} class="w-64 text-sm font-light " title="Информация о матче ">
                     {#each match.periods as period, index}

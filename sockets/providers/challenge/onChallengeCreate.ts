@@ -87,9 +87,8 @@ export async function onChallengeCreate(this: SocketType, data: { control: strin
         redis.json.del(CHALLENGES_REDIS, `$.${socket2.data.username}`),
       ])
     }
-    // prettier-ignore
     // @ts-ignore
-    const status = await redis.json.set(CHALLENGES_REDIS,`${socket.data.username}`,challenge);
+    const status = await redis.json.set(CHALLENGES_REDIS, `${socket.data.username}`, challenge)
 
     if (status) io.to(CHALLENGES_ROOM).emit('challenge:created', challenge)
   } catch (error) {

@@ -39,7 +39,7 @@
 
     <span>{title}</span>
     <span class=" ml-2 -mt-px">
-      <Badge title={`${rating}`} color={{ text: 'text-slate-700', bg: 'bg-white' }} />
+      <Badge color={{ text: 'text-slate-700', bg: 'bg-white' }}>{rating}</Badge>
     </span>
 
     <svg

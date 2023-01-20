@@ -10,29 +10,6 @@ export function shuffle(arr: (string | number)[]): (string | number)[] {
   }
   return a
 }
-// export interface Match {
-//   round: number;
-//   match: number;
-//   player1: Player;
-//   player2: Player;
-//   win?: {
-//     round: number;
-//     match: number;
-//   };
-//   loss?: {
-//     round: number;
-//     match: number;
-//   };
-// }
-// interface Player {
-//   id: string;
-//   score: number;
-//   colors: number;
-//   pairedUpDown?: boolean;
-//   receivedBye?: boolean;
-//   avoid?: (string | number)[];
-//   rating: number;
-// }
 
 interface PlayerSwissIndex extends PlayerSwiss {
   index?: number
@@ -42,15 +19,9 @@ export function pairingSwiss(players: PlayerSwissIndex[], rated = false): MatchS
   const matches: MatchSwiss[] = []
   const playerArray: PlayerSwissIndex[] = players
 
-  //   if (rated) {
-  //       playerArray.filter(p => !p.hasOwnProperty('rating') || p.rating === null).forEach(p => p.rating = 0);
-  //   }
-
-  // order is very important
+  // Порядок очень важен
   playerArray.sort((a, b) => b.rating - a.rating)
   playerArray.sort((a, b) => b.score - a.score)
-
-  // playerArray.findIndex(player=>player.receivedBye)
 
   let byePlayer
 

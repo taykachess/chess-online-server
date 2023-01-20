@@ -5,7 +5,6 @@
 </script>
 
 <Transition class=" fixed" bind:show={isOpen} on:afterLeave={() => console.log('done')}>
-  <!-- on:close={() => (isOpen = false)} -->
   <Dialog>
     <div class="fixed inset-0 z-10 overflow-y-auto">
       <div class="flex min-h-screen items-end justify-center px-4 pt-4 pb-20 text-center sm:block sm:p-0">
@@ -21,9 +20,6 @@
           leaveFrom="opacity-100 translate-y-0 sm:scale-100"
           leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
         >
-          <!-- This element is to trick the browser into centering the modal contents. -->
-
-          <!-- <div class=" z-10 h-10 w-1/2 bg-white sm:align-middle">Super</div> -->
           <div class=" flex h-screen items-center justify-center ">
             <slot />
           </div>

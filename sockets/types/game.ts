@@ -15,14 +15,12 @@ export type Result = '1' | '0.5' | '0' | '*' | '+' | '-'
 type OfferedDrawPlayer = { username: string; ply: number; status?: 'declined' }
 
 type GameOverReason = 'time' | 'mate' | 'rep'
+
 export interface Game {
   time: [w: number, b: number]
   white: Player
   black: Player
-  // Needed for inside memory use
   chess: Chess
-  // pgn: string;
-  // Needed for inside memory use
   // timerId: any;
   ply: number
   tsmp: number
@@ -38,15 +36,10 @@ export interface Game {
   botTimer?: any
 }
 
-export interface Games {
-  [id: string]: Game
-}
-
 // Frontend and Backend
-// prettier-ignore
-export interface GetGame extends Pick<Game, "white"| "black"|"time"|"result"|"increment"|"lastOfferDraw"|"matchId"|"tournamentId"|"tsmp"|"control"> {
-  pgn: string;
-  id?:string;
+export interface GetGame extends Pick<Game, 'white' | 'black' | 'time' | 'result' | 'increment' | 'lastOfferDraw' | 'matchId' | 'tournamentId' | 'tsmp' | 'control'> {
+  pgn: string
+  id?: string
 }
 
 interface Node {
@@ -58,16 +51,15 @@ interface Node {
   next: Node | undefined
 }
 
-// prettier-ignore
-export interface GameInfo extends Pick<GetGame, "white"| "black"|"time"|"result"|"pgn"|"increment"|"lastOfferDraw"|"matchId"|"tournamentId"|"control"> {
-  requestId?: any;
-  ply: number;
-  role?: "w" | "b";
-  
+export interface GameInfo extends Pick<GetGame, 'white' | 'black' | 'time' | 'result' | 'pgn' | 'increment' | 'lastOfferDraw' | 'matchId' | 'tournamentId' | 'control'> {
+  requestId?: any
+  ply: number
+  role?: 'w' | 'b'
+
   tree: {
-    history: Node[];
-    currentNode: Node;
-    liveNode: Node;
-  };
-  chess: ChessInstance;
+    history: Node[]
+    currentNode: Node
+    liveNode: Node
+  }
+  chess: ChessInstance
 }

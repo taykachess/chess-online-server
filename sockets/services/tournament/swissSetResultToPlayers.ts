@@ -16,12 +16,6 @@ export async function swissSetResultToPlayers({
   result: Result
   gameId: string
 }) {
-  //   increasePlayerScore()
-  //   increasePlayerColorsByOne()
-  //   addPlayerMatches()
-  // addPlayerAvoid()
-  //   setPlayerPairedUpDown()
-
   // Increase white player color
   const q1 = increasePlayerColorsByOne({ tournamentId, username: white.id })
 

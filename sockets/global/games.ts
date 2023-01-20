@@ -1,8 +1,10 @@
-import type { Game } from '../types/game'
 import { GAMES_REDIS } from '../variables/redisIndex'
 import { redis } from './redis'
 import { deleteGameTimer } from './timers'
 import { METHOD_TO_GET_GAME } from '../variables/redisIndex'
+
+import type { Game } from '../types/game'
+
 export const games: { [id: string]: Game } = {}
 
 export function getGame(gameId: string): [Game] {
@@ -52,25 +54,22 @@ export function setTimeBlack(gameId: string, time: number) {
   return redis.json.set(GAMES_REDIS, `$.${gameId}.time[1]`, time)
 }
 
-// prettier-ignore
-export function setLastOfferDrawStatus(gameId: string, status: "declined") {
-  if (METHOD_TO_GET_GAME=="memory") {
+export function setLastOfferDrawStatus(gameId: string, status: 'declined') {
+  if (METHOD_TO_GET_GAME == 'memory') {
     // @ts-ignore
-    if(games[gameId].lastOfferDraw) games[gameId].lastOfferDraw.status = status
+    if (games[gameId].lastOfferDraw) games[gameId].lastOfferDraw.status = status
     return
   }
 
-  return redis.json.set(GAMES_REDIS, `$.${gameId}.lastOfferDraw.status`, status);
+  return redis.json.set(GAMES_REDIS, `$.${gameId}.lastOfferDraw.status`, status)
 }
 
-// prettier-ignore
-export function setLastOfferDraw({gameId,username,ply}:{gameId:string, username:string, ply:number}) {
-  if (METHOD_TO_GET_GAME == "memory") return games[gameId].lastOfferDraw = {username, ply}
-  
-  return redis.json.set(GAMES_REDIS, `$.${gameId}.lastOfferDraw`, {username, ply})
+export function setLastOfferDraw({ gameId, username, ply }: { gameId: string; username: string; ply: number }) {
+  if (METHOD_TO_GET_GAME == 'memory') return (games[gameId].lastOfferDraw = { username, ply })
+
+  return redis.json.set(GAMES_REDIS, `$.${gameId}.lastOfferDraw`, { username, ply })
 }
 
-// prettier-ignore
 // export function setGamePgn({gameId,pgn}:{gameId:string, pgn:string}) {
 //   if(METHOD_TO_GET_GAME == "memory") throw Error("This method is not needed")
 //   return redis.json.set(GAMES_REDIS, `$.${gameId}.pgn`, pgn)

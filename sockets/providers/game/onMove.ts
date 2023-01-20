@@ -6,9 +6,9 @@ import { setGameOver } from '../../services/game/setGameOver'
 
 import { GAME_ROOM, TOURNAMENT_GAME_PREPARE_TIME } from '../../variables/redisIndex'
 
-import type { SocketType } from '../../types/sockets'
-// import { Chess } from "chess.js";
 import { onGameStartRandomMode } from './dev/onGameStartRandomMode'
+
+import type { SocketType } from '../../types/sockets'
 
 export async function onMove(this: SocketType, { move, gameId }: { move: string; gameId: string }) {
   const socket = this
@@ -22,13 +22,7 @@ export async function onMove(this: SocketType, { move, gameId }: { move: string;
 
     if (turn == 'w' && game.white.username != socket.data.username) throw Error('You have no access to resign')
     if (turn == 'b' && game.black.username != socket.data.username) throw Error('You have no access to resign')
-    // if (
-    //   !(
-    //     game.white.username == socket.data.username ||
-    //     game.black.username == socket.data.username
-    //   )
-    // )
-    //   throw Error("You have no access to move");
+
     const resultMove = chess.move(move)
 
     if (!resultMove) throw Error('Move is incorrect')
@@ -57,10 +51,7 @@ export async function onMove(this: SocketType, { move, gameId }: { move: string;
         }, randomTime)
       }
 
-    // prettier-ignore
-
     increasePly(gameId)
-    // Promise.all([increasePly(gameId), setGamePgn({gameId, pgn:chess.pgn()})])
 
     socket.to(GAME_ROOM(gameId)).emit('game:move', move)
   } catch (error) {

@@ -1,7 +1,6 @@
 import { io } from '../../global/io'
 import { prisma } from '../../global/prisma'
 import { Result } from '../../types/game'
-import { MatchResults } from '../../types/match'
 import { transformResult } from '../../utils/transformResult'
 import { MATCH_ROOM } from '../../variables/redisIndex'
 import { createGame } from '../game/createGame'

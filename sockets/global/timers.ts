@@ -8,10 +8,9 @@ export function setGameTimeout(gameId: string, fn: any, milliseconds: number) {
   timers.games[gameId] = timerId
 }
 
-// prettier-ignore
 export function setGameTimeoutInitial(gameId: string, fn: any, milliseconds: number) {
-  const timerId = setTimeout(fn, milliseconds);
-  timers.games[gameId] = timerId;
+  const timerId = setTimeout(fn, milliseconds)
+  timers.games[gameId] = timerId
 }
 
 export function deleteGameTimer(gameId: string) {

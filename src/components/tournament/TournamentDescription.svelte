@@ -13,7 +13,7 @@
   import ButtonCancel from './ButtonCancel.svelte'
   import ButtonReadyToPlay from './ButtonReadyToPlay.svelte'
   import ButtonStop from './ButtonStop.svelte'
-  import BadgeTournamentFormat from '$components/common/badgeTournamentFormat.svelte'
+  import BadgeTournamentFormat from '$components/common/BadgeTournamentFormat.svelte'
   // export let tournamentInfo: {
   //   name: string;
   //   control: string;

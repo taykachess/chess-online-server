@@ -1,8 +1,8 @@
 import { TOURNAMENTS_IN_PROGRESS_REDIS } from '../variables/redisIndex'
 import { redis } from './redis'
+import { Result } from '../types/game'
 
 import type { MatchSwiss, MatchSwissShort, PlayerSwiss, TournamentSwiss } from '../types/tournament'
-import { Result } from '../types/game'
 
 export function getTournament(tournamentId: string) {
   return redis.json.get(TOURNAMENTS_IN_PROGRESS_REDIS, {
@@ -10,22 +10,20 @@ export function getTournament(tournamentId: string) {
   })
 }
 
-// prettier-ignore
-export function getTournamentTV({tournamentId,gameId}:{tournamentId: string, gameId:string}):[string] {
+export function getTournamentTV({ tournamentId, gameId }: { tournamentId: string; gameId: string }): [string] {
   // @ts-ignore
   return redis.json.get(TOURNAMENTS_IN_PROGRESS_REDIS, {
     path: `$.${tournamentId}.tv`,
-  }) 
+  })
 }
 
 export function setTourTV({ tournamentId, gameId }: { tournamentId: string; gameId: string }) {
   return redis.json.set(TOURNAMENTS_IN_PROGRESS_REDIS, `$.${tournamentId}.tv`, gameId)
 }
 
-// prettier-ignore
 export function setTournament(tournamentId: string, tournament: TournamentSwiss) {
-// @ts-ignore
-  return redis.json.set(TOURNAMENTS_IN_PROGRESS_REDIS,tournamentId,tournament);
+  // @ts-ignore
+  return redis.json.set(TOURNAMENTS_IN_PROGRESS_REDIS, tournamentId, tournament)
 }
 
 export function decreaseTournamentActiveGameByOne(tournamentId: string): [number] {
@@ -44,13 +42,11 @@ export function setTournamentActiveGames(tournamentId: string, activeGames: numb
   return redis.json.set(TOURNAMENTS_IN_PROGRESS_REDIS, `$.${tournamentId}.activeGames`, activeGames)
 }
 
-// prettier-ignore
-export function getTournamentActiveGames({tournamentId,round}:{tournamentId:string, round:number}):string[] {
+export function getTournamentActiveGames({ tournamentId, round }: { tournamentId: string; round: number }): string[] {
   // @ts-ignore
-return redis.json.get(TOURNAMENTS_IN_PROGRESS_REDIS,{
-  path:`$.${tournamentId}.matches[${round-1}][?(@.[2]=="*")][3]`
-})
-  
+  return redis.json.get(TOURNAMENTS_IN_PROGRESS_REDIS, {
+    path: `$.${tournamentId}.matches[${round - 1}][?(@.[2]=="*")][3]`,
+  })
 }
 
 export function setTournamentMatchResult({ tournamentId, round, board, result }: { tournamentId: string; round: number; board: number; result: Result }) {
@@ -110,8 +106,6 @@ export function addPlayerAvoid({ tournamentId, username, playerId }: { tournamen
 export function addPlayerMatches({ tournamentId, username, game }: { tournamentId: string; username: string; game: MatchSwissShort }) {
   return redis.json.arrAppend(TOURNAMENTS_IN_PROGRESS_REDIS, `$.${tournamentId}.players["${username}"].matches`, game)
 }
-
-// pairedUpDown
 
 export function setPlayerPairedUpDown({ tournamentId, username, pairedUpDown }: { tournamentId: string; username: string; pairedUpDown: boolean }) {
   return redis.json.arrAppend(TOURNAMENTS_IN_PROGRESS_REDIS, `$.${tournamentId}.players["${username}"].pairedUpDown`, pairedUpDown)

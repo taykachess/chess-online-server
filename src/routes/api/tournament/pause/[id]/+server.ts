@@ -5,8 +5,7 @@ import type { RequestHandler } from './$types'
 export const POST: RequestHandler = async ({ params, locals }) => {
   const status = await redis.json.set(TOURNAMENTS_IN_PROGRESS_REDIS, `$.${params.id}.players["${locals.user.username}"].active`, false)
 
-  // prettier-ignore
-  emitter.to(TOURNAMENT_ROOM(params.id)).emit("tournament:pause", {username:locals.user.username});
+  emitter.to(TOURNAMENT_ROOM(params.id)).emit('tournament:pause', { username: locals.user.username })
 
   return new Response(status)
 }

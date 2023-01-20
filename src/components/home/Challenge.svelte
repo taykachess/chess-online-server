@@ -3,19 +3,13 @@
 
   import { page } from '$app/stores'
   import { socket } from '$store/sockets/socket'
-  import { filters, listOfChallenges } from '$store/home/challenges'
-
-  import Table from '$components/common/Table.svelte'
-  import Select from '$components/common/Select.svelte'
-  import ChallengeGrid from '$components/home/ChallengeGrid.svelte'
+  import { listOfChallenges } from '$store/home/challenges'
 
   import type { GetChallenge } from '$types/challenge'
   import type { ChallengeTableRecord } from '$types/challenge'
-  import { browser } from '$app/environment'
-  import Badge from '$components/common/Badge.svelte'
+
   import ChallengeList from './ChallengeList.svelte'
   import ChallengeCreateFast from './ChallengeCreateFast.svelte'
-  import ChallengeMatchFriend from './ChallengeMatchFriend.svelte'
   import ChallengeSendPrivate from '$components/dialogs/Forms/ChallengeSendPrivate.svelte'
   import MatchSendPrivate from '$components/dialogs/Forms/MatchSendPrivate.svelte'
 

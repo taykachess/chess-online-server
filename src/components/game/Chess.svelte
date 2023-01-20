@@ -170,76 +170,14 @@
     $info.white.ratingNext = newEloWhite
     $info.black.ratingNext = newEloBlack
 
-    // if ($match) {
-    //   if ($match.stage && $match.type == "time") {
-    //     $match.resultsData[$match.resultsData.length - 1][0] == $info.control
-    //       ? console.log("match continue with the same control ")
-    //       : $match.periodsData.length ==
-    //         $match.resultsData[$match.resultsData.length - 1][2] + 1
-    //       ? console.log("Match finished")
-    //       : ($match.stage =
-    //           $match.resultsData[$match.resultsData.length - 1][2]);
-
-    //     let res: Result =
-    //       $match.player1 == $info.white.username
-    //         ? result
-    //         : result == "1"
-    //         ? "0"
-    //         : result == "0"
-    //         ? "1"
-    //         : "0.5";
-
-    //     if ($match.resultsData)
-    //       $match.resultsData.push([$page.params.id, res, $match.stage]);
-    //     else $match.resultsData = [[$page.params.id, res, $match.stage]];
-    //     $match.resultsData = $match.resultsData;
-
-    //     console.log([$page.params.id, result, $match.stage]);
-    //   }
-    // }
-
-    // if ($match) {
-    //   $match.games.push({
-    //     white: $info.white.username,
-    //     black: $info.black.username,
-    //     result,
-    //     gameId: $page.params.id,
-    //   });
-
-    //   $match.games = $match.games;
-
-    //   if ($match.player1 == $info.white.username) {
-    //     if (result == "1") $match.result[0] = $match.result[0] + 1;
-    //     else if (result == "0") $match.result[1] = $match.result[1] + 1;
-    //     else if (result == "0.5") $match.result[2] = $match.result[2] + 1;
-    //   } else if ($match.player1 == $info.black.username) {
-    //     if (result == "1") $match.result[1] = $match.result[1] + 1;
-    //     else if (result == "0") $match.result[0] = $match.result[0] + 1;
-    //     else if (result == "0.5") $match.result[2] = $match.result[2] + 1;
-    //   }
-    // }
-
-    // if ($gamesInProgress) {
     const index = $gamesInProgress.indexOf($page.params.id)
 
     if (index !== -1) {
       $gamesInProgress.splice(index, 1)
       $gamesInProgress = $gamesInProgress
     }
-    // }
-    // $match.games = $match.games;
 
-    // prettier-ignore
-    // $page.data.user.rating = 5555
-    // page.subscribe((val)=>{
-    //     if(val.data.user)
-    //     val.data.user.rating = 4001
-    //     // $info.role == 'w'? newEloWhite : $info.role == 'b'?newEloBlack: val.data.user.rating
-    //   })
-    // $info.white = $info.white;
-    // $info.black = $info.black;
-    // $info = $info;
-    $board.disableMoveInput();
+    $board.disableMoveInput()
   }
   function inputHandler(event: { chessboard: ChessBoardInstance; type: string; square: string; squareFrom: Square; squareTo: Square; piece: string }) {
     event.chessboard.removeMarkers(MARKER_TYPE.dot)

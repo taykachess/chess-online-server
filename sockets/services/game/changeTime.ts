@@ -11,7 +11,6 @@ export async function changeTime({ gameId, increment, tsmp, turn, game, now }: {
   }
 
   const time = turn == 'w' ? game.time[0] : game.time[1]
-  // const now = new Date().getTime();
   const diff = now - tsmp
   const newTime = time - diff
   const isLostOnTime = newTime <= 0

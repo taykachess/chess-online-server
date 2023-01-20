@@ -1,12 +1,9 @@
 <script lang="ts">
   import { createEventDispatcher, onMount } from 'svelte'
-  import { Chessboard, MARKER_TYPE, type ChessBoardInstance, type Config } from 'cm-chessboard-ts'
-  import type { ChessInstance } from 'cm-chess-ts'
-  import { board, chess, tournamentTv } from '$store/tournament/tournamentTv'
+  import { Chessboard, MARKER_TYPE, type Config } from 'cm-chessboard-ts'
+  import { board, chess } from '$store/tournament/tournamentTv'
 
   const dispatcher = createEventDispatcher()
-  // export let chess: ChessInstance;
-  // export let board: ChessBoardInstance;
 
   let boardHTML: HTMLElement
 
@@ -28,13 +25,7 @@
       size: 40, // the sprite tiles size, defaults to 40x40px
       cache: true, // cache the sprite
     },
-    // extensions:{}
   }
-
-  // function onMove(move: string) {
-  //   const result = chess.move(move);
-  //   if (result) board.setPosition(chess.fen());
-  // }
 
   onMount(() => {
     $board = new Chessboard(boardHTML, config)

@@ -1,4 +1,3 @@
-import { games } from '../../global/games'
 import { io } from '../../global/io'
 import { prisma } from '../../global/prisma'
 
@@ -16,12 +15,10 @@ import {
   setTournamentActiveGames,
   setTournamentMatchResult,
 } from '../../global/tournament'
-import { onGameStartRandomMode } from '../../providers/game/dev/onGameStartRandomMode'
-import { Game, GetGame, Result } from '../../types/game'
+import { Game, Result } from '../../types/game'
 import { MatchSwiss } from '../../types/tournament'
 import { transformResult } from '../../utils/transformResult'
-import { TOURNAMENT_GAME_PREPARE_TIME, TOURNAMENT_ROOM } from '../../variables/redisIndex'
-import { getGameForFrontend } from '../game/getGame'
+import { TOURNAMENT_ROOM } from '../../variables/redisIndex'
 import { calculateBuchholz } from './calculateBuchholz'
 import { pairingSwiss } from './pairingSwiss'
 import { setTournamentTv } from './setTournamentTv'
@@ -85,8 +82,6 @@ export async function finishTournamentGame({ game, gameId, tournamentId, result 
     }
   }
 
-  // if(res[0]==ga)
-
   //   Настраиваем правильно игроков перед жеребьевкой следующего раунда
 
   await swissSetResultToPlayers({
@@ -140,7 +135,6 @@ export async function finishTournamentGame({ game, gameId, tournamentId, result 
         const gameId = await startTournamentGame({
           pair,
           tournamentId,
-          players,
           board: index + 1,
           control: game.control,
           round,

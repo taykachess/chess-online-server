@@ -1,7 +1,7 @@
 <script lang="ts">
   import { goto } from '$app/navigation'
   import Badge from '$components/common/Badge.svelte'
-  import BadgeTournamentFormat from '$components/common/badgeTournamentFormat.svelte'
+  import BadgeTournamentFormat from '$components/common/BadgeTournamentFormat.svelte'
   import Pagination from '$components/common/Pagination.svelte'
   import ChessClockSvg from '$components/icons/ChessClockSVG.svelte'
   import IconCalendarDays from '$components/icons/IconCalendarDays.svelte'
@@ -40,42 +40,38 @@
   let currentPage = 1
 </script>
 
-<!-- prettier-ignore -->
-<div class=" grid grid-cols-8 bg-slate-100 rounded-tr-md rounded-tl-md  w-full text-center text-sm border p-1">
-  <div class=" col-span-3  py-2   border-gray-300 text-gray-900 font-bold"> Турнир </div>
-  <div class=" col-span-1  py-2   border-gray-300 text-gray-900 font-bold flex justify-center  "> 
-    <div class="w-6 h-6">
-      <IconCalendarDays/> 
+<div class=" grid w-full grid-cols-8 rounded-tr-md rounded-tl-md  border bg-slate-100 p-1 text-center text-sm">
+  <div class=" col-span-3  border-gray-300   py-2 font-bold text-gray-900">Турнир</div>
+  <div class=" col-span-1  flex   justify-center border-gray-300 py-2 font-bold text-gray-900  ">
+    <div class="h-6 w-6">
+      <IconCalendarDays />
     </div>
   </div>
-  <div class=" col-span-2  py-2  border-gray-300 text-gray-900 font-bold"> Тип </div>
-  <div class=" col-span-1  py-1  border-gray-300 text-gray-900 font-bold flex justify-center  ">
-    <div class="w-8 h-8">
-      <ChessClockSvg/> 
-
+  <div class=" col-span-2  border-gray-300  py-2 font-bold text-gray-900">Тип</div>
+  <div class=" col-span-1  flex  justify-center border-gray-300 py-1 font-bold text-gray-900  ">
+    <div class="h-8 w-8">
+      <ChessClockSvg />
     </div>
   </div>
-  <div class=" col-span-1  py-2  border-gray-300 text-gray-900 font-bold"> Участники </div>
+  <div class=" col-span-1  border-gray-300  py-2 font-bold text-gray-900">Участники</div>
 </div>
 
-<!-- prettier-ignore -->
-{#each tournaments as tournament, index }
+{#each tournaments as tournament, index}
   <!-- svelte-ignore a11y-click-events-have-key-events -->
-  <div on:click={()=>goto(`/tournament/${tournament.id}`)} class=" grid w-full grid-cols-8 border-x border-b {index%2?"bg-slate-50":" bg-white"} text-center text-sm font-medium hover:bg-sky-50 cursor-pointer  ">
-    <div class=" col-span-3  py-2    border-gray-300 text-gray-700 truncate"> {tournament.name} </div>
-    <div class=" col-span-1  py-2    border-gray-300 text-gray-700  flex items-center justify-center "> 
-      
-      {
-        formatDate(
-          new Date(tournament.startTime).getTime(),
-          $time,
-          tournament.status
-        )
-      } 
+  <div
+    on:click={() => goto(`/tournament/${tournament.id}`)}
+    class=" grid w-full grid-cols-8 border-x border-b {index % 2 ? 'bg-slate-50' : ' bg-white'} cursor-pointer text-center text-sm font-medium hover:bg-sky-50  "
+  >
+    <div class=" col-span-3  truncate    border-gray-300 py-2 text-gray-700">{tournament.name}</div>
+    <div class=" col-span-1  flex    items-center justify-center  border-gray-300 py-2 text-gray-700 ">
+      {formatDate(new Date(tournament.startTime).getTime(), $time, tournament.status)}
     </div>
-    <div class=" col-span-2  py-2   border-gray-300 text-gray-700"> <BadgeTournamentFormat format={tournament.format}   /> <Badge color={{bg:" bg-blue-100 ", text:" p-px"}}>{tournament.rounds} туров</Badge> </div>
-    <div class=" col-span-1  py-2   border-gray-300 text-gray-700 flex items-center justify-center"> {tournament.control}</div>
-    <div class=" col-span-1  py-2  border-gray-300 text-gray-700"> {tournament._count.participants}/{tournament.playerLimit}</div>
+    <div class=" col-span-2  border-gray-300   py-2 text-gray-700">
+      <BadgeTournamentFormat format={tournament.format} />
+      <Badge color={{ bg: ' bg-blue-100 ', text: ' p-px' }}>{tournament.rounds} туров</Badge>
+    </div>
+    <div class=" col-span-1  flex   items-center justify-center border-gray-300 py-2 text-gray-700">{tournament.control}</div>
+    <div class=" col-span-1  border-gray-300  py-2 text-gray-700">{tournament._count.participants}/{tournament.playerLimit}</div>
   </div>
 {/each}
 

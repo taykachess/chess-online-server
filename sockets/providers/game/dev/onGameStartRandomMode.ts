@@ -1,4 +1,3 @@
-import { Chess } from 'chess.js'
 import { getGame, increasePly } from '../../../global/games'
 import { io } from '../../../global/io'
 import { changeTime } from '../../../services/game/changeTime'
@@ -12,7 +11,6 @@ export async function onGameStartRandomMode({ gameId }: { gameId: string }) {
     if (!game) throw Error('Game not found from StartRandomMove')
 
     const chess = game.chess
-    // chess.loadPgn(game.pgn);
     const turn = chess.turn()
 
     const moves = chess.moves()
@@ -41,8 +39,7 @@ export async function onGameStartRandomMode({ gameId }: { gameId: string }) {
       return
     }
 
-    // prettier-ignore
-    io.to(GAME_ROOM(gameId)).emit("game:move", resultMove.san);
+    io.to(GAME_ROOM(gameId)).emit('game:move', resultMove.san)
     const randomTime = Math.round(Math.random() * 5) * 1000
     if (result == '*')
       if ((chess.turn() == 'w' && game.white.bot) || (chess.turn() == 'b' && game.black.bot))

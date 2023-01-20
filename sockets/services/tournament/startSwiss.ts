@@ -58,24 +58,16 @@ export async function startSwiss({
     const gameId = await startTournamentGame({
       pair,
       tournamentId,
-      players,
       board: index + 1,
       control: tournament.control,
       round: 1,
     })
-
-    // if (gameId && process.env.NODE_ENV == "dev")
-    //   setTimeout(() => {
-    //     onGameStartRandomMode({ gameId });
-    //   }, TOURNAMENT_GAME_PREPARE_TIME);
-
     pair[3] = `${gameId}`
   }
 
   if (pairings[0][3]) {
     await setTournamentTv(tournamentId, pairings[0][3])
   }
-  // tournamentSwiss.tv = pairings[0][3];
 
   await addTournamentMatch({
     tournamentId,
@@ -83,8 +75,4 @@ export async function startSwiss({
   })
 
   return { pairings, players: playersValues }
-
-  //   io.to(TOURNAMENT_ROOM(tournamentId)).emit("tournament:pairings", {
-  //     pairings,
-  //   });
 }

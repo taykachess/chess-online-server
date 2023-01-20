@@ -1,9 +1,9 @@
 import { getGame, setLastOfferDraw } from '../../global/games'
 import { io } from '../../global/io'
 
-import type { SocketType } from '../../types/sockets'
-
 import { GAME_ROOM } from '../../variables/redisIndex'
+
+import type { SocketType } from '../../types/sockets'
 
 export async function onDrawOffer(this: SocketType, { gameId }: { gameId: string }) {
   const socket = this

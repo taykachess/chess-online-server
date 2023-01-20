@@ -17,16 +17,20 @@ export const POST: RequestHandler = async ({ params, locals }) => {
   })
 
   if (!tournament || tournament.status != 'running') return error(404)
-  if (tournament?.participants.length == 1) {
+
+  // Продолжить игру, в ранее зарегистрированном турнире
+
+  if (tournament.participants.length == 1) {
     const status = await redis.json.set(TOURNAMENTS_IN_PROGRESS_REDIS, `$.${params.id}.players["${locals.user.username}"].active`, true)
 
-    // prettier-ignore
-    emitter.to(TOURNAMENT_ROOM(params.id)).emit("tournament:continue", {username:locals.user.username});
+    emitter.to(TOURNAMENT_ROOM(params.id)).emit('tournament:continue', { username: locals.user.username })
 
     console.log('Player registered ')
 
     return new Response(status)
   } else if (tournament?.participants.length == 0) {
+    // Зарегистрироваться в уже проходящем турнире
+
     const user = await prisma.user.update({
       where: { username: locals.user.username },
       data: {
@@ -52,10 +56,9 @@ export const POST: RequestHandler = async ({ params, locals }) => {
       active: true,
     }
 
-    // prettier-ignore
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    const status = await redis.json.set(TOURNAMENTS_IN_PROGRESS_REDIS,`$.${params.id}.players["${locals.user.username}"]`,player);
+    const status = await redis.json.set(TOURNAMENTS_IN_PROGRESS_REDIS, `$.${params.id}.players["${locals.user.username}"]`, player)
 
     emitter.to(TOURNAMENT_ROOM(params.id)).emit('tournament:entry', player)
     console.log('Player registered and set to redis')

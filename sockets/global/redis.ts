@@ -1,7 +1,5 @@
 import { createClient } from 'redis'
-// import { TOURNAMENTS_IN_PROGRESS_REDIS } from "../variables/redisIndex";
 
-// import { MATCHES_IN_PROGRESS_REDIS } from "../variables/redisIndex";
 const redis = createClient()
 
 const pubClient = createClient()
@@ -19,19 +17,7 @@ if (process.env.NODE_ENV == 'dev') {
   })()
 }
 
-// redis.pubsub
-
-;(async () => {
-  const data = {}
-  //   New object must be created first
-
-  await Promise.all([
-    redis.json.set('challenges', `$`, data),
-    redis.json.set('games', `$`, {}),
-    redis.json.set('matches', `$`, {}),
-    redis.json.set('matchesinprogress', `$`, {}),
-    redis.json.set('tournamentsInProgress', `$`, {}),
-  ])
-})()
+redis.json.set('challenges', `$`, {})
+redis.json.set('tournamentsInProgress', `$`, {})
 
 export { redis, pubClient, subClient }

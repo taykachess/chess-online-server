@@ -14,14 +14,9 @@
       default:
         return { text: 'text-slate-100', bg: 'bg-green-800' }
     }
-    //   title
-    //     ? title == "GM" ? { text: "text-slate-100", bg: "bg-red-800" }
-    //     : title == "IM"
-    //     ? { text: "text-slate-100", bg: "bg-green-800" }
-    //     : { text: "text-slate-100", bg: "bg-green-800" }
   }
 
-  $: color = badgeColor(title)
+  let color = badgeColor(title)
 </script>
 
 <Badge {color}>{title}</Badge>

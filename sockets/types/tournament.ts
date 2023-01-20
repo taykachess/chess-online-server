@@ -1,6 +1,4 @@
 import type { TournamentFormat, TournamentStatus } from '@prisma/client'
-import { ChessInstance } from 'cm-chess-ts'
-import { ChessBoardInstance } from 'cm-chessboard-ts'
 import type { Title, Result, GetGame } from './game'
 
 export interface TournamentTable {
@@ -14,16 +12,14 @@ export interface TournamentTable {
   playerLimit: number
   status: TournamentStatus
   rounds: number
-  // participants: Prisma.UserSelect;
-  // players: { id: string }[];
   startTime: Date
 }
 
-export type TournamentTableRecord = {
-  link: string
-  records: string[]
-  registered: boolean
-}
+// export type TournamentTableRecord = {
+//   link: string
+//   records: string[]
+//   registered: boolean
+// }
 
 export type GetTournament = {
   name: string
@@ -52,20 +48,8 @@ export type GetTournament = {
 }
 
 export interface TournamentTv {
-  // game ID
-  // tv: string;
-  // Информация об игре
   game: GetGame
-
-  // chess?: ChessInstance;
-  // board?: ChessBoardInstance;
 }
-
-// export interface GetTournamentSwiss extends GetTournament {
-//   rounds: number | null;
-//   currentRound: number;
-//   standing?: number;
-// }
 
 export interface PlayerSwiss {
   // GameIds
@@ -115,23 +99,23 @@ export type MatchSwissShortPlayer = {
 // Opponent, gameId
 export type MatchSwissShort = [MatchSwissShortPlayer, string | null]
 
-export interface MatchRobin extends Match {
-  player1: string | null
-  player2: string | null
-}
+// export interface MatchRobin extends Match {
+//   player1: string | null
+//   player2: string | null
+// }
 
-export interface MatchElimination extends Match {
-  player1: string | null
-  player2: string | null
-  win?: {
-    round: number
-    match: number
-  }
-  loss?: {
-    round: number
-    match: number
-  }
-}
+// export interface MatchElimination extends Match {
+//   player1: string | null
+//   player2: string | null
+//   win?: {
+//     round: number
+//     match: number
+//   }
+//   loss?: {
+//     round: number
+//     match: number
+//   }
+// }
 
 export interface TournamentSwiss {
   players: Record<string, PlayerSwiss>

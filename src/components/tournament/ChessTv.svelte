@@ -21,21 +21,20 @@
 
 <div class="  text-gray-800 ">
   {#if $tournamentTv && $tournamentTv.game}
-    <!-- prettier-ignore -->
     <div class=" flex">
-      <span class=" mr-2 text-red-800 font-bold  ">{
-        $tournamentTv.game.result=="*"
-        ?''
-        :$tournamentTv.game.result=='1'
-        ?'0'
-        :$tournamentTv.game.result=='0.5'
-        ?'0.5'
-        :$tournamentTv.game.result=='0'
-        ?'1'
-        :$tournamentTv.game.result=="+"
-        ?'-'
-        :'+'
-        }</span>
+      <span class=" mr-2 font-bold text-red-800  "
+        >{$tournamentTv.game.result == '*'
+          ? ''
+          : $tournamentTv.game.result == '1'
+          ? '0'
+          : $tournamentTv.game.result == '0.5'
+          ? '0.5'
+          : $tournamentTv.game.result == '0'
+          ? '1'
+          : $tournamentTv.game.result == '+'
+          ? '-'
+          : '+'}</span
+      >
       <div class="">
         {#if $tournamentTv.game.black.title}
           <BadgeTitle title={$tournamentTv.game.black.title} />
@@ -46,7 +45,7 @@
       <div class=" ml-auto ">
         {formatTime($tournamentTv.game.time[1])}
       </div>
-  </div>
+    </div>
     <div class=" relative overflow-hidden rounded-lg bg-blue-400 ">
       <!-- {#if $chess} -->
       <MiniChessBoard on:boardMounted />
@@ -61,10 +60,9 @@
       <!-- {/if} -->
     </div>
 
-    <!-- prettier-ignore -->
     <div class=" flex">
       <div class="">
-        <span class=" mr-2 text-green-800 font-bold">{$tournamentTv.game.result=="*"?'':$tournamentTv.game.result}</span>
+        <span class=" mr-2 font-bold text-green-800">{$tournamentTv.game.result == '*' ? '' : $tournamentTv.game.result}</span>
         {#if $tournamentTv.game.white.title}
           <BadgeTitle title={$tournamentTv.game.white.title} />
         {/if}
@@ -74,7 +72,6 @@
       <div class=" ml-auto">
         {formatTime($tournamentTv.game.time[0])}
       </div>
-
     </div>
   {/if}
 </div>

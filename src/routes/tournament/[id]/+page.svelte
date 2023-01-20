@@ -15,7 +15,7 @@
   import { tournament } from '$store/tournament/tournament'
   import { board, chess, intervalId, isTournamentTimerVisible, liveTournamentGameId, requestId, selectedTournamentGameId, tournamentPrepareTime, tournamentTv } from '$store/tournament/tournamentTv'
   import type { GetGame } from '$types/game'
-  import type { GetTournament, MatchSwiss, TournamentTv } from '$types/tournament'
+  import type { GetTournament, MatchSwiss } from '$types/tournament'
   import { Chess } from 'cm-chess-ts'
   import { onMount, tick } from 'svelte'
   import { onDestroy } from 'svelte'

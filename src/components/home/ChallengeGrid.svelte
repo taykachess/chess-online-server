@@ -5,8 +5,7 @@
   import { socket } from '$store/sockets/socket'
 
   import type { ChallengeFilters } from '$types/challenge'
-  // prettier-ignore
-  const controls = ["1+0", "1+1", "1+2", "3+0", "3+2", "5+3", "10+0", "10+5"];
+  const controls = ['1+0', '1+1', '1+2', '3+0', '3+2', '5+3', '10+0', '10+5']
   function createChallenge({ control, filters }: { control: string; filters: ChallengeFilters }) {
     if ($currentChallengeControl === control) return cancelChallenge()
     $currentChallengeControl = control

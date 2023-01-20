@@ -49,17 +49,7 @@ export async function onMatchCreatePrivate(this: SocketType, match: MatchCreateD
     // if (status==1) {
     console.log('OK', status)
 
-    io.to(USER_ROOM(friend.username)).emit("match:private:create", extendedMatch)
-
-    // }
-
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    // prettier-ignore
-    // const status2 = await redis.hSet(MATCHES_REDIS_GOT(match.player),
-    //   `${match.player}`,
-    //   match
-    // );
+    io.to(USER_ROOM(friend.username)).emit('match:private:create', extendedMatch)
   } catch (error) {
     console.log(error)
   }

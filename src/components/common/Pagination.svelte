@@ -68,11 +68,6 @@
         <div class="border-r bg-white px-3 py-1 text-sm font-medium">...</div>
       {/if}
     {/each}
-    <!-- Current: "z-10 bg-indigo-50 border-indigo-500 text-indigo-600", Default: "bg-white border-gray-300 text-gray-500 hover:bg-gray-50" -->
-
-    <!-- <span
-        class="relative inline-flex items-center border border-gray-300 bg-white px-3 py-1 text-sm font-medium text-gray-700"
-        >...</span -->
 
     <div
       on:click={() => {

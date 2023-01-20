@@ -50,16 +50,14 @@
       <div class=" ml-auto mr-4 flex space-x-2">
         {#each games as gameId}
           <!-- svelte-ignore a11y-click-events-have-key-events -->
-          <!-- prettier-ignore -->
-          {#if gameId != $page.params.id }
-        <div on:click={()=>goto(`/game/${gameId}`)} class=" relative rounded-lg border px-8 py-1 text-sm text-sky-500 shadow-md cursor-pointer hover:bg-sky-100 ">
-          Текущая игра
-          <div class=" absolute -top-1 -right-1">
-            <PulseAnimatedElement></PulseAnimatedElement>
-          </div>
-        </div>
-          
-        {/if}
+          {#if gameId != $page.params.id}
+            <div on:click={() => goto(`/game/${gameId}`)} class=" relative cursor-pointer rounded-lg border px-8 py-1 text-sm text-sky-500 shadow-md hover:bg-sky-100 ">
+              Текущая игра
+              <div class=" absolute -top-1 -right-1">
+                <PulseAnimatedElement />
+              </div>
+            </div>
+          {/if}
         {/each}
       </div>
     {/if}

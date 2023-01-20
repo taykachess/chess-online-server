@@ -6,11 +6,7 @@
   export let state: string | undefined = undefined
   export let type: 'login' | 'signup'
   const code_challenge = 'mQMOoD93XTahZHU4OtTwImi_0soQ_maBmVnIIjcCQ4Y'
-  //   prettier-ignore
-  let lichessRedirect =
-    type == "login"
-      ? `${dev ? PUBLIC_APP_DEV_URL : PUBLIC_APP_PROD_URL}/api/auth/lichess/login`
-      : `${dev ? PUBLIC_APP_DEV_URL : PUBLIC_APP_PROD_URL}/api/auth/lichess/signup`;
+  let lichessRedirect = type == 'login' ? `${dev ? PUBLIC_APP_DEV_URL : PUBLIC_APP_PROD_URL}/api/auth/lichess/login` : `${dev ? PUBLIC_APP_DEV_URL : PUBLIC_APP_PROD_URL}/api/auth/lichess/signup`
 </script>
 
 <!-- svelte-ignore a11y-click-events-have-key-events -->

@@ -16,8 +16,6 @@ export async function onDrawAccept(this: SocketType, { gameId }: { gameId: strin
     if (game.lastOfferDraw.ply + 2 < game.ply) throw Error('Too late')
 
     await setGameOver({ gameId, result: '0.5', game })
-
-    // await onGameOver({ gameId, result });
   } catch (error) {
     // console.log(error);
   }

@@ -15,11 +15,10 @@
     })
   }
 
-  //  prettier-ignore
-  async function getCountAllTournaments({ register, created }: { register?: "yes", created?:"yes" }) {
+  async function getCountAllTournaments({ register, created }: { register?: 'yes'; created?: 'yes' }) {
     return fetch(`/api/tournament/count?register=${register}&created=${created}`, {
-      method: "GET",
-    });
+      method: 'GET',
+    })
   }
 
   async function onClickPagination(page: number) {

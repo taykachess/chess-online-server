@@ -1,29 +1,12 @@
-import { redis } from '../../global/redis'
-
-import { addPlayerMatches, decreaseTournamentActiveGameByOne, increasePlayerScore, setPlayerReceivedBye } from '../../global/tournament'
+import { addPlayerMatches, increasePlayerScore, setPlayerReceivedBye } from '../../global/tournament'
 import { MatchSwiss } from '../../types/tournament'
-import { PLAYER_IN_GAME_REDIS, TOURNAMENT_GAME_PREPARE_TIME, USER_ROOM } from '../../variables/redisIndex'
 import { createGame } from '../game/createGame'
-
-import type { PlayerSwiss } from '../../types/tournament'
-import { io } from '../../global/io'
 import { prisma } from '../../global/prisma'
 import { onGameStartRandomMode } from '../../providers/game/dev/onGameStartRandomMode'
-export async function startTournamentGame({
-  pair,
-  tournamentId,
-  players,
-  board,
-  control,
-  round,
-}: {
-  pair: MatchSwiss
-  tournamentId: string
-  players: Record<string, PlayerSwiss>
-  board: number
-  round: number
-  control: string
-}) {
+
+import { TOURNAMENT_GAME_PREPARE_TIME } from '../../variables/redisIndex'
+
+export async function startTournamentGame({ pair, tournamentId, board, control, round }: { pair: MatchSwiss; tournamentId: string; board: number; round: number; control: string }) {
   if (!pair[1]) {
     // decreaseTournamentActiveGameByOne(tournamentId);
     increasePlayerScore({ tournamentId, username: pair[0].id, point: 1 })
@@ -34,15 +17,13 @@ export async function startTournamentGame({
         {
           id: 'Bye',
           rating: 0,
-          // title: black.title,
-          res: 1,
+          res: '1',
           color: 'w',
         },
         '',
       ],
     })
-    // prettier-ignore
-    setPlayerReceivedBye({tournamentId, username:pair[0].id, receivedBye:true})
+    setPlayerReceivedBye({ tournamentId, username: pair[0].id, receivedBye: true })
     return
   }
 
@@ -64,14 +45,10 @@ export async function startTournamentGame({
       white: {
         username: pair[0].id,
         ...white,
-        // rating: players[pair[0].id].rating,
-        // title: players[pair[0].id].title,
       },
       black: {
         username: pair[1].id,
         ...black,
-        // rating: players[pair[1].id].rating,
-        // title: players[pair[1].id].title,
       },
       control,
       tournamentId,
@@ -84,15 +61,6 @@ export async function startTournamentGame({
     setTimeout(() => {
       onGameStartRandomMode({ gameId })
     }, TOURNAMENT_GAME_PREPARE_TIME)
-
-  // io.to([USER_ROOM(pair[0].id), USER_ROOM(pair[1].id)]).emit("game:started", {
-  //   gameId,
-  // });
-
-  // Promise.all([
-  //   redis.SADD(PLAYER_IN_GAME_REDIS(pair[0].id), gameId),
-  //   redis.SADD(PLAYER_IN_GAME_REDIS(pair[1].id), gameId),
-  // ]);
 
   return gameId
 }
