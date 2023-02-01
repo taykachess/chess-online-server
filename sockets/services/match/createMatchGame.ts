@@ -35,8 +35,6 @@ export async function createMatchGame(matchId: string, gameId: string, white: st
     if (!match.stage) throw Error('Must be current stage!')
     const res = transformResultMatch(result, white, match.player1, gameId, match.stage)
 
-    
-
     if (!match) throw Error('Match not found')
 
     switch (match.type) {
@@ -66,7 +64,7 @@ async function handleBestOfMatch(match: Prisma.MatchGetPayload<{}, typeof prisma
     where: {
       id: matchId,
     },
-    data: {å
+    data: {
       result: {
         push: res,
       },
