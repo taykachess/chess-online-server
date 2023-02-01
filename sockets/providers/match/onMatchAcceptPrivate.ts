@@ -2,7 +2,7 @@ import { io } from '../../global/io'
 import { prisma } from '../../global/prisma'
 import { redis } from '../../global/redis'
 import { createGame } from '../../services/game/createGame'
-import { MatchCreateDtoExtended } from '../../types/match'
+import { MatchCreateTimeDtoExtended } from '../../types/match'
 import { SocketType } from '../../types/sockets'
 import { MATCHES_REDIS_GOT, USER_ROOM } from '../../variables/redisIndex'
 
@@ -16,7 +16,7 @@ export async function onMatchAcceptPrivate(this: SocketType, player: string) {
 
     console.log(dataMatch)
 
-    let match: MatchCreateDtoExtended
+    let match: MatchCreateTimeDtoExtended
     if (dataMatch) match = JSON.parse(dataMatch)
     else throw Error('Wrong match information')
     const matchFromPrisma = await prisma.match.create({

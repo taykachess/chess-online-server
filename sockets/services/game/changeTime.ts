@@ -5,7 +5,7 @@ import { TOURNAMENT_GAME_PREPARE_TIME } from '../../variables/redisIndex'
 
 import { setGameOver } from './setGameOver'
 
-export async function changeTime({ gameId, increment, tsmp, turn, game, now }: { gameId: string; increment: number; tsmp: number; turn: 'w' | 'b'; game: Game; now: number }) {
+export function changeTime({ gameId, increment, tsmp, turn, game, now }: { gameId: string; increment: number; tsmp: number; turn: 'w' | 'b'; game: Game; now: number }) {
   if (game.tournamentId && game.ply == 0) {
     tsmp = tsmp + TOURNAMENT_GAME_PREPARE_TIME
   }

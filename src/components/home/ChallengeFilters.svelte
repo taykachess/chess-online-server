@@ -29,9 +29,9 @@
     isOpen = true
   }}
   type="button"
-  class="relative inline-flex w-16 items-center justify-center  rounded-l-md border-r  border-gray-300 bg-white px-3 py-1 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+  class="relative rounded-md  bg-white px-2"
 >
-  <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"
+  <svg class="h-5 w-5  rounded-md  text-slate-700 " fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"
     ><path
       stroke-linecap="round"
       stroke-linejoin="round"

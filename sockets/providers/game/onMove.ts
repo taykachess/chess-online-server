@@ -13,6 +13,8 @@ import type { SocketType } from '../../types/sockets'
 export async function onMove(this: SocketType, { move, gameId }: { move: string; gameId: string }) {
   const socket = this
 
+  const start = performance.now()
+
   try {
     const [game] = getGame(gameId)
     if (!game) throw Error('Game not found from OnMove')
@@ -26,9 +28,13 @@ export async function onMove(this: SocketType, { move, gameId }: { move: string;
     const resultMove = chess.move(move)
 
     if (!resultMove) throw Error('Move is incorrect')
-    const now = new Date().getTime()
+
+    const middle = performance.now()
+    console.log(middle - start, 'ms ')
+
+    const now = Date.now()
     if (game.tournamentId && game.ply == 0 && now < TOURNAMENT_GAME_PREPARE_TIME + game.tsmp) throw Error('No time yet')
-    await changeTime({
+    changeTime({
       gameId,
       increment: game.increment,
       tsmp: game.tsmp,
@@ -54,6 +60,10 @@ export async function onMove(this: SocketType, { move, gameId }: { move: string;
     increasePly(gameId)
 
     socket.to(GAME_ROOM(gameId)).emit('game:move', move)
+
+    const end = performance.now()
+
+    console.log(end - start, 'ms ')
   } catch (error) {
     // console.log(error);
   }

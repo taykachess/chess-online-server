@@ -1,6 +1,6 @@
 import type { RemoteSocket, Server, Socket } from 'socket.io'
 import type { ChallengeFilters, GetChallenge } from './challenge'
-import type { MatchCreateDto, MatchCreateDtoExtended } from './match'
+import type { MatchCreateTimeDto, MatchCreateTimeDtoExtended } from './match'
 import type { GetGame, Result, Title } from './game'
 
 import { MatchSwiss, MatchSwissShortPlayer, PlayerSwiss } from './tournament'
@@ -16,7 +16,7 @@ export interface ServerToClientEvents {
   'challenge:deleted': ({ socketId }: { socketId?: string }) => void
 
   'match:deleted': ({ socketId }: { socketId?: string }) => void
-  'match:private:create': (match: MatchCreateDtoExtended) => void
+  'match:private:create': (match: MatchCreateTimeDtoExtended) => void
   'match:private:cancelled': (player: string) => void
   'match:private:refuse': (player: string) => void
   'match:private:gameOver': ({ res, curr, stage, tsmp }: { res: [string, Result, number]; curr?: string; stage?: number; tsmp?: Date }) => void
@@ -55,7 +55,7 @@ export interface ClientToServerEvents {
   'match:unsub': (id: string) => void
   'match:subscribe': (id: string) => void
   'match:accept': (username: string) => void
-  'match:private:create': (match: MatchCreateDto) => void
+  'match:private:create': (match: MatchCreateTimeDto) => void
 
   'game:leave': ({ gameId }: { gameId: string }) => void
   'game:move': ({ move, gameId }: { move: string; gameId: string }) => void

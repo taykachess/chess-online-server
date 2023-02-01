@@ -1,11 +1,11 @@
 import { io } from '../../global/io'
 import { prisma } from '../../global/prisma'
 import { redis } from '../../global/redis'
-import { MatchCreateDto, MatchCreateDtoExtended } from '../../types/match'
+import { MatchCreateTimeDto, MatchCreateTimeDtoExtended } from '../../types/match'
 import { SocketType } from '../../types/sockets'
 import { MATCHES_REDIS_GOT, USER_ROOM } from '../../variables/redisIndex'
 
-export async function onMatchCreatePrivate(this: SocketType, match: MatchCreateDto) {
+export async function onMatchCreatePrivate(this: SocketType, match: MatchCreateTimeDto) {
   // const match = (await request.json()) as MatchCreateDto;
   const socket = this
 
@@ -37,7 +37,7 @@ export async function onMatchCreatePrivate(this: SocketType, match: MatchCreateD
     if (!me) throw Error('Not found')
     if (me.username == friend.username) throw Error('The same user')
 
-    const extendedMatch: MatchCreateDtoExtended = {
+    const extendedMatch: MatchCreateTimeDtoExtended = {
       ...match,
       sender: me,
     }

@@ -112,19 +112,18 @@
 </script>
 
 <div class=" my-2" />
-<div class=" grid sm:w-full  sm:grid-cols-6 sm:gap-x-4  ">
+<div class="   ">
   <!-- <div class="w-full sm:col-span-2 ">
     <ChallengeGrid />
   </div> -->
-  <div class=" sm:col-span-6 ">
-    <div class="my-4 flex justify-between">
+  <!-- <div class=" sm:col-span-6 " /> -->
+  <div class=" sm:mt-4 ">
+    <div class="my-4 flex justify-center space-x-4 ">
       <ChallengeCreateFast />
       <MatchSendPrivate />
       <ChallengeSendPrivate />
       <!-- <ChallengeMatchFriend /> -->
     </div>
-  </div>
-  <div class="sm:col-span-3 sm:mt-4 ">
     <ChallengeList bind:challenges={$listOfChallenges.challenges} />
   </div>
 </div>

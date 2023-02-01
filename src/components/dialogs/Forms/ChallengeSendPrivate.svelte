@@ -1,4 +1,6 @@
 <script lang="ts">
+  import ColorShadowButton from '$components/common/Buttons/ColorShadowButton.svelte'
+  import IconAxe from '$components/icons/IconAxe.svelte'
   import IconCheck from '$components/icons/IconCheck.svelte'
   import { Button, FloatingLabelInput, Label, Modal, Range, Search } from 'flowbite-svelte'
   let defaultModal = false
@@ -29,7 +31,14 @@
   }
 </script>
 
-<Button color={'green'} on:click={() => (defaultModal = true)}>Игра с другом</Button>
+<div class="">
+  <ColorShadowButton color="green" text="Создать ИГРУ с другом" onClick={() => (defaultModal = true)}>
+    <div slot="icon" class="">
+      <IconAxe />
+    </div>
+  </ColorShadowButton>
+</div>
+<!-- <Button color={'green'} on:click={() => (defaultModal = true)}>Игра с другом</Button> -->
 <Modal title="Игра с другом" bind:open={defaultModal} autoclose>
   <form>
     <div class=" relative  h-20 w-1/2  ">

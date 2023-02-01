@@ -1,5 +1,6 @@
 <script lang="ts">
   import { page } from '$app/stores'
+  import ColorShadowButton from '$components/common/Buttons/ColorShadowButton.svelte'
   import IconPersonPlus from '$components/icons/IconPersonPlus.svelte'
 
   async function Register() {
@@ -9,7 +10,13 @@
   }
 </script>
 
-<button on:click={Register} class="isolate inline-flex rounded-md bg-white shadow-sm shadow-slate-800 hover:bg-gray-50 ">
+<ColorShadowButton color="white" onClick={Register} text="Регистрация">
+  <div class="" slot="icon">
+    <IconPersonPlus />
+  </div>
+</ColorShadowButton>
+
+<!-- <button on:click={Register} class="isolate inline-flex rounded-md bg-white shadow-sm shadow-slate-800 hover:bg-gray-50 ">
   <button
     type="button"
     class="inline-flex cursor-pointer items-center rounded-l border  border-gray-300 px-2.5 py-1.5 text-xs font-medium text-gray-700  shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
@@ -24,4 +31,4 @@
       <IconPersonPlus />
     </div>
   </button>
-</button>
+</button> -->

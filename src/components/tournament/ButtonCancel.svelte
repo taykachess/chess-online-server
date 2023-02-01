@@ -1,5 +1,6 @@
 <script lang="ts">
   import { page } from '$app/stores'
+  import ColorShadowButton from '$components/common/Buttons/ColorShadowButton.svelte'
   import IconPersonMinus from '$components/icons/IconPersonMinus.svelte'
 
   async function CancelRegister() {
@@ -9,20 +10,8 @@
   }
 </script>
 
-<!-- svelte-ignore a11y-click-events-have-key-events -->
-<span on:click={CancelRegister} class="isolate inline-flex rounded-md bg-red-100 shadow-sm shadow-slate-800 hover:bg-red-50 ">
-  <button
-    type="button"
-    class="inline-flex cursor-pointer items-center rounded-l border  border-gray-300 px-2.5 py-1.5 text-xs font-medium text-gray-700  shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-  >
-    Отменить регистрацию
-  </button>
-  <button
-    type="button"
-    class="relative -ml-px inline-flex items-center rounded-r-md border border-gray-300  px-2.5 py-1.5 font-medium text-gray-700   focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
-  >
-    <div class="h-4 w-4">
-      <IconPersonMinus />
-    </div>
-  </button>
-</span>
+<ColorShadowButton color="red" onClick={CancelRegister} text="Отменить регистрацию">
+  <div class="" slot="icon">
+    <IconPersonMinus />
+  </div>
+</ColorShadowButton>

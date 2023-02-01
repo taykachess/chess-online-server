@@ -71,25 +71,32 @@ enum TournamentFormat {
 }
 
 model Match {
-  id          String      @id @default(uuid())
-  startDate   DateTime    @default(now())
-  player1     String
-  player2     String
-  rounds      Int?
-  // [int,int,int]
-  result      Json[]
-  status      MatchStatus
-  armageddon  Boolean     @default(false)
-  games       Game[]
-  type        MatchType   @default(bestof)
+  id         String      @id @default(uuid())
+  startDate  DateTime    @default(now())
+  player1    String
+  player2    String
+  rounds     Int?
+  result     Json[]
+  status     MatchStatus
+  armageddon Boolean     @default(false)
+  games      Game[]
+  type       MatchType
+
+  // FOR BESTOF TYPE
+  totalRounds Int?
+  scoreW      Float @default(0)
+  scoreB      Float @default(0)
+
   // FOR TIME TYPE
   // [[20, "1+0"],..]
   periods     Json?
   stage       Int?
-  tsmp        DateTime?   @db.Timestamp()
+  tsmp        DateTime? @db.Timestamp()
   currentGame String?
 
   tournamentId String?
+
+  // solvedPuzzles Int[]
 }
 
 enum MatchType {
