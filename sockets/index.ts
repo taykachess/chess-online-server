@@ -58,7 +58,7 @@ Promise.all([pubClient.connect(), subClient.connect()]).then(() => {
   })
 })
 
-// runTournament()
+runTournament()
 
 function runTournament() {
   prisma.tournament

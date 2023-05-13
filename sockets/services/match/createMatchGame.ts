@@ -20,16 +20,15 @@ export async function createMatchGame(matchId: string, gameId: string, white: st
           },
         },
       },
-      select: {
-        // periods: true,
-        // startDate: true,
-        type: true,
-        tsmp: true,
-        stage: true,
-        player1: true,
-        player2: true,
-        periodsData: true,
-      },
+      // select: {
+
+      //   type: true,
+      //   tsmp: true,
+      //   stage: true,
+      //   player1: true,
+      //   player2: true,
+      //   periodsData: true,
+      // },
     })
 
     if (!match.stage) throw Error('Must be current stage!')
@@ -60,23 +59,36 @@ async function handleBestOfMatch(match: Prisma.MatchGetPayload<{}, typeof prisma
     return
   }
 
-  await prisma.match.update({
-    where: {
-      id: matchId,
-    },
-    data: {
-      result: {
-        push: res,
-      },
-    },
-  })
+  let gamesInCurrentStage = 0
 
-  const gamesInCurrentStage = match.periodsData.reduce((prev, curr) => {
-    return prev + curr[0]
-  }, 0)
+  for (let i = 0; i < match.stage; i++) {
+    gamesInCurrentStage += match.periodsData[i][0]
+  }
+  // const gamesInCurrentStage = match.periodsData.reduce((prev, curr) => {
+  //   return prev + curr[0]
+  // }, 0)
   const gamesPlayed = match.scoreB + match.scoreW
 
   if (gamesPlayed > gamesInCurrentStage) {
+    await prisma.match.update({
+      where: {
+        id: matchId,
+      },
+      data: {
+        result: {
+          push: res,
+        },
+        stage: {
+          increment: 1,
+        },
+        scoreW: {
+          increment: +transformResult(res[1], 'w'),
+        },
+        scoreB: {
+          increment: +transformResult(res[1], 'b'),
+        },
+      },
+    })
     console.log('Need next stage')
     return
   } else {
